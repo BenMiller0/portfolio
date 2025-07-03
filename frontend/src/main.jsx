@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import Debug from './Debug';
-import './index.css';
+import NotFound from './NotFound';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -11,6 +11,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/debug" element={<Debug />} />
+        <Route path="*" element={<NotFound />} /> {/* <-- Fallback route */}
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
