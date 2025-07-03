@@ -17,5 +17,10 @@ app.get('/api', (req, res) => {
   res.send('API running');
 });
 
+app.get('/', (req, res) => {
+  res.send('Welcome to my backend!');
+});
+
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
