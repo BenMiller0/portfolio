@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom right, #2d2d2d, #1a1a1a);
+  font-family: sans-serif;
+  color: #f0f0f0;
+  overflow: hidden;
+}
+
+.desktop {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.bio {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  max-width: 300px;
+  text-align: right;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.icon {
+  position: absolute;
+  width: 80px;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.icon img {
+  width: 64px;
+  height: 64px;
+  display: block;
+  margin: 0 auto 0.3rem;
+  filter: drop-shadow(1px 1px 2px #000);
+}
+
+.icon span {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
