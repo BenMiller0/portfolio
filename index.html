@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio - Desktop</title>
+    <title>Benjamin Miller - Portfolio</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="desktop">
-        <div class="icons-container">
-            <!-- Folder icons will be added here by JavaScript -->
+    <div class="desktop-background">
+        <div class="name-display">Benjamin Miller<span class="cursor">_</span></div>
+        <div class="school-display">UC San Diego</div>
+        <div class="triton-logo"></div>
+        <div class="desktop">
+            <div class="icons-container" id="iconsContainer">
+                <!-- Folders will be added here by JavaScript -->
+            </div>
         </div>
     </div>
 
@@ -21,10 +26,11 @@
         <div class="time-display" id="timeDisplay"></div>
     </div>
 
+    <!-- About Window -->
     <div class="window" id="aboutWindow" style="display: none;">
         <div class="window-header">
             <span>About Me</span>
-            <button class="close-button" onclick="closeWindow('aboutWindow')">×</button>
+            <button class="close-button">&times;</button>
         </div>
         <div class="window-content">
             <h2>About Me</h2>
@@ -33,10 +39,11 @@
         </div>
     </div>
 
+    <!-- Contact Window -->
     <div class="window" id="contactWindow" style="display: none;">
         <div class="window-header">
             <span>Contact</span>
-            <button class="close-button" onclick="closeWindow('contactWindow')">×</button>
+            <button class="close-button">&times;</button>
         </div>
         <div class="window-content">
             <h2>Contact Information</h2>
@@ -47,17 +54,16 @@
         </div>
     </div>
 
-    <!-- Project windows will be added dynamically by JavaScript -->
-
+    <!-- Start Menu -->
     <div class="start-menu" id="startMenu" style="display: none;">
         <div class="start-menu-content">
-            <div class="menu-item" onclick="openWindow('aboutWindow'); closeStartMenu()">
+            <div class="menu-item" data-window="aboutWindow">
                 <i class="fas fa-user"></i> About Me
             </div>
-            <div class="menu-item" onclick="openWindow('contactWindow'); closeStartMenu()">
+            <div class="menu-item" data-window="contactWindow">
                 <i class="fas fa-envelope"></i> Contact
             </div>
-            <div class="menu-item" onclick="closeStartMenu()">
+            <div class="menu-item" id="exitButton">
                 <i class="fas fa-power-off"></i> Exit
             </div>
         </div>

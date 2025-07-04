@@ -1,3 +1,4 @@
+/* ===== Base Styles ===== */
 * {
     margin: 0;
     padding: 0;
@@ -6,18 +7,113 @@
 }
 
 body {
-    background-color: #008080;
     height: 100vh;
     overflow: hidden;
     position: relative;
 }
 
+@keyframes blink {
+    from, to { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.1; transform: scale(1); }
+    100% { opacity: 0.3; transform: scale(1.1); }
+}
+
+/* ===== Background Elements ===== */
+.desktop-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(135deg, #182B3A 0%, #0A4D6E 100%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="50" height="50" x="0" y="0" fill="%2300529C" opacity="0.1"/><rect width="50" height="50" x="50" y="50" fill="%2300529C" opacity="0.1"/></svg>');
+    z-index: -1;
+    overflow: hidden;
+}
+
+.desktop-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 163, 224, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 163, 224, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    opacity: 0.3;
+}
+
+/* ===== Desktop Branding ===== */
+.name-display {
+    position: fixed;
+    top: 20%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    color: white;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px rgba(0, 163, 224, 0.7);
+    letter-spacing: -1px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.name-display::after {
+    content: '_';
+    animation: blink 1s step-end infinite;
+}
+
+.school-display {
+    position: fixed;
+    top: calc(20% + 4.5rem);
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #00A3E0, #6ECFF5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.triton-logo {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 120px;
+    height: 120px;
+    background: 
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10L90 50L50 90L10 50L50 10Z" fill="none" stroke="%2300A3E0" stroke-width="0.5"/><path d="M30 50H70M50 30V70" fill="none" stroke="%2300A3E0" stroke-width="0.5"/></svg>') 
+        center/contain no-repeat;
+    opacity: 0.2;
+    animation: pulse 8s infinite alternate;
+    pointer-events: none;
+}
+
+/* ===== Desktop Interface ===== */
 .desktop {
+    position: relative;
     height: calc(100vh - 40px);
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
+    z-index: 2;
 }
 
 .icons-container {
@@ -36,6 +132,7 @@ body {
     text-align: center;
     padding: 5px;
     border-radius: 3px;
+    transition: background-color 0.2s ease;
 }
 
 .folder:hover {
@@ -45,10 +142,12 @@ body {
 .folder-icon {
     width: 60px;
     height: 50px;
-    background-color: #ffcc00;
+    background: linear-gradient(145deg, #2196F3, #0d8aee);
     border-radius: 5px 5px 0 0;
     position: relative;
     margin-bottom: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
 }
 
 .folder-icon:after {
@@ -56,10 +155,15 @@ body {
     position: absolute;
     width: 30px;
     height: 5px;
-    background-color: #ffcc00;
+    background: linear-gradient(145deg, #1a82d8, #0d8aee);
     bottom: -5px;
     left: 0;
     border-radius: 0 0 5px 5px;
+}
+
+.folder:hover .folder-icon {
+    transform: translateY(-3px);
+    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 .folder-name {
@@ -69,23 +173,25 @@ body {
     word-break: break-all;
 }
 
+/* ===== Taskbar ===== */
 .taskbar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     height: 40px;
-    background-color: #c0c0c0;
+    background: rgba(44, 62, 80, 0.9);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
-    border-top: 2px solid #dfdfdf;
+    border-top: 1px solid #3498db;
+    z-index: 100;
 }
 
 .start-button {
     padding: 5px 10px;
-    background: linear-gradient(to bottom, #008080, #004040);
+    background: linear-gradient(to bottom, #3498db, #2980b9);
     color: white;
     border-radius: 3px;
     cursor: pointer;
@@ -93,42 +199,44 @@ body {
     align-items: center;
     gap: 5px;
     font-weight: bold;
-    border: 1px solid #004040;
+    border: 1px solid #2980b9;
+    transition: background 0.2s ease;
 }
 
 .start-button:hover {
-    background: linear-gradient(to bottom, #004040, #008080);
+    background: linear-gradient(to bottom, #2980b9, #3498db);
 }
 
 .time-display {
-    background-color: #c0c0c0;
     padding: 5px 10px;
     border: 1px solid #808080;
     border-radius: 3px;
     font-size: 12px;
+    color: white;
 }
 
+/* ===== Windows ===== */
 .window {
     position: absolute;
-    top: 50px;
-    left: 50px;
-    width: 500px;
-    background-color: #c0c0c0;
-    border: 2px solid #dfdfdf;
+    width: min(90%, 500px);
+    border: 1px solid #2c3e50;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 5px;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
-    z-index: 10;
+    z-index: 200;
 }
 
 .window-header {
-    background: linear-gradient(to right, #000080, #1084d0);
+    background: linear-gradient(to right, #2c3e50, #3498db);
     color: white;
     padding: 5px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: move;
-    border-radius: 3px 3px 0 0;
+    border-radius: 5px 5px 0 0;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 .close-button {
@@ -138,6 +246,7 @@ body {
     font-size: 16px;
     cursor: pointer;
     padding: 0 5px;
+    transition: background-color 0.2s ease;
 }
 
 .close-button:hover {
@@ -147,18 +256,35 @@ body {
 .window-content {
     padding: 15px;
     min-height: 200px;
+    background: white;
+    color: #2c3e50;
 }
 
+.window-content h2 {
+    color: #3498db;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.window-content h3 {
+    color: #2980b9;
+    margin-top: 20px;
+    font-size: 1.1rem;
+}
+
+/* ===== Start Menu ===== */
 .start-menu {
     position: absolute;
     bottom: 40px;
     left: 0;
     width: 200px;
-    background-color: #c0c0c0;
-    border: 2px solid #dfdfdf;
+    background: rgba(44, 62, 80, 0.95);
+    border: 1px solid #3498db;
     border-radius: 5px 5px 0 0;
     box-shadow: 3px -3px 10px rgba(0, 0, 0, 0.3);
-    z-index: 20;
+    z-index: 150;
+    color: white;
 }
 
 .start-menu-content {
@@ -171,13 +297,14 @@ body {
     align-items: center;
     gap: 10px;
     cursor: pointer;
+    transition: background 0.2s ease;
 }
 
 .menu-item:hover {
-    background-color: #000080;
-    color: white;
+    background: linear-gradient(to right, #3498db, #2980b9);
 }
 
+/* ===== Utilities ===== */
 .project-content {
     display: none;
 }
