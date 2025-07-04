@@ -1,0 +1,187 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #008080;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.desktop {
+    height: calc(100vh - 40px);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.icons-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 20px;
+}
+
+.folder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    cursor: pointer;
+    text-align: center;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.folder:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.folder-icon {
+    width: 60px;
+    height: 50px;
+    background-color: #ffcc00;
+    border-radius: 5px 5px 0 0;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.folder-icon:after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 5px;
+    background-color: #ffcc00;
+    bottom: -5px;
+    left: 0;
+    border-radius: 0 0 5px 5px;
+}
+
+.folder-name {
+    color: white;
+    font-size: 12px;
+    text-shadow: 1px 1px 1px black;
+    word-break: break-all;
+}
+
+.taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background-color: #c0c0c0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    border-top: 2px solid #dfdfdf;
+}
+
+.start-button {
+    padding: 5px 10px;
+    background: linear-gradient(to bottom, #008080, #004040);
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+    border: 1px solid #004040;
+}
+
+.start-button:hover {
+    background: linear-gradient(to bottom, #004040, #008080);
+}
+
+.time-display {
+    background-color: #c0c0c0;
+    padding: 5px 10px;
+    border: 1px solid #808080;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.window {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 500px;
+    background-color: #c0c0c0;
+    border: 2px solid #dfdfdf;
+    border-radius: 5px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.window-header {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: white;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    border-radius: 3px 3px 0 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.close-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.window-content {
+    padding: 15px;
+    min-height: 200px;
+}
+
+.start-menu {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    width: 200px;
+    background-color: #c0c0c0;
+    border: 2px solid #dfdfdf;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 3px -3px 10px rgba(0, 0, 0, 0.3);
+    z-index: 20;
+}
+
+.start-menu-content {
+    padding: 10px 0;
+}
+
+.menu-item {
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background-color: #000080;
+    color: white;
+}
+
+.project-content {
+    display: none;
+}
+
+.project-content.active {
+    display: block;
+}

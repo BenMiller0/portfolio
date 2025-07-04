@@ -1,48 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Benjamin Miller's Desktop</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio - Desktop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <div class="desktop">
-    <div class="bio">
-      <h1>Benjamin Miller</h1>
-      <p>📍 San Diego, CA</p>
-      <p>🖥️ CS @ UC San Diego · Regent Scholar</p>
-      <p>🔧 Embedded Systems · Full Stack · Robotics</p>
-      <p>💬 Let's build something weird and smart.</p>
+    <div class="desktop">
+        <div class="icons-container">
+            <!-- Folder icons will be added here by JavaScript -->
+        </div>
     </div>
 
-    <div class="icon" style="top: 100px; left: 50px;">
-      <a href="https://github.com/BenMiller0/socket-surge" target="_blank">
-        <img src="folder-icon.png" alt="Project Folder" />
-        <span>Socket Surge</span>
-      </a>
+    <div class="taskbar">
+        <div class="start-button" id="startButton">
+            <i class="fas fa-bars"></i> Start
+        </div>
+        <div class="time-display" id="timeDisplay"></div>
     </div>
 
-    <div class="icon" style="top: 220px; left: 50px;">
-      <a href="https://github.com/BenMiller0/sound-vocode" target="_blank">
-        <img src="folder-icon.png" alt="Project Folder" />
-        <span>Sound Vocode</span>
-      </a>
+    <div class="window" id="aboutWindow" style="display: none;">
+        <div class="window-header">
+            <span>About Me</span>
+            <button class="close-button" onclick="closeWindow('aboutWindow')">×</button>
+        </div>
+        <div class="window-content">
+            <h2>About Me</h2>
+            <p>Welcome to my portfolio! I'm a creative developer who builds amazing digital experiences.</p>
+            <p>Skills: HTML, CSS, JavaScript, React, Node.js</p>
+        </div>
     </div>
 
-    <div class="icon" style="top: 340px; left: 50px;">
-      <a href="resume.pdf" target="_blank">
-        <img src="doc-icon.png" alt="Resume Document" />
-        <span>Resume.pdf</span>
-      </a>
+    <div class="window" id="contactWindow" style="display: none;">
+        <div class="window-header">
+            <span>Contact</span>
+            <button class="close-button" onclick="closeWindow('contactWindow')">×</button>
+        </div>
+        <div class="window-content">
+            <h2>Contact Information</h2>
+            <p>Email: your.email@example.com</p>
+            <p>Phone: (123) 456-7890</p>
+            <p>LinkedIn: linkedin.com/in/yourprofile</p>
+            <p>GitHub: github.com/yourusername</p>
+        </div>
     </div>
 
-    <div class="icon" style="top: 460px; left: 50px;">
-      <a href="mailto:your.email@example.com">
-        <img src="email-icon.png" alt="Email Me" />
-        <span>Contact</span>
-      </a>
+    <!-- Project windows will be added dynamically by JavaScript -->
+
+    <div class="start-menu" id="startMenu" style="display: none;">
+        <div class="start-menu-content">
+            <div class="menu-item" onclick="openWindow('aboutWindow'); closeStartMenu()">
+                <i class="fas fa-user"></i> About Me
+            </div>
+            <div class="menu-item" onclick="openWindow('contactWindow'); closeStartMenu()">
+                <i class="fas fa-envelope"></i> Contact
+            </div>
+            <div class="menu-item" onclick="closeStartMenu()">
+                <i class="fas fa-power-off"></i> Exit
+            </div>
+        </div>
     </div>
-  </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
