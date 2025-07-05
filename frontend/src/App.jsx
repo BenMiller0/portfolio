@@ -3,7 +3,7 @@ import './styles.css';
 
 const projects = [
   { id: 'project1', label: 'AI Gesture Control Python', title: 'AI Camera-Based Gesture Response System in Python', 
-    description: 'Accomplished responsive gesture-controlled actuation on a Raspberry Pi AI camera...', 
+    description: 'Accomplished responsive gesture-controlled actuation on a Raspberry Pi AI camera, as measured by reliable physical component activation, by training and deploying customized machine learning models for real-time gesture detection in Python.', 
     technologies: 'Python, PyTorch, COCO (KeyPoints), dataset, Raspberry Pi AI Camera',
     github: 'https://github.com/BenMiller0/AI-Camera-Based-Gesture-Response-System-in-Python',
   }
@@ -20,6 +20,7 @@ const windowsInfo = {
         <h3>Skills</h3>
         <p><b>Programming Languages:</b> C/C++, ARM Assembly, System Verilog, Python, MATLAB, Java, JavaScript, TypeScript</p>
         <p><b>Hardware:</b> ESP 32, Raspberry Pi, sensors (e.g., accelerometers, gyroscopes), motors, camera modules</p>
+        <p><b>Web Development:</b> jQuery, Hugo, Node.js, React, CSS, HTML, REST APIs, Vite, Express</p>
         <p><b>Operating Systems:</b> Linux, macOS, Windows</p>
       </>
     )
@@ -158,7 +159,11 @@ const App = () => {
                   <p>{p.description}</p>
                   <h3>Technologies Used:</h3>
                   <p>{p.technologies}</p>
-                  {p.github && <p><a href={p.github} target="_blank" rel="noopener noreferrer">GitHub</a></p>}
+                  {p.github && (
+        <h3>
+          <a href={p.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        </h3>
+      )}
                 </>
               ))}
             >
@@ -166,6 +171,16 @@ const App = () => {
               <div className="folder-name">{p.label}</div>
             </div>
           ))}
+          <div className="resume-icons">
+          <a href="/hardware_resume.pdf" download className="doc-icon">
+            <div className="doc-icon-image" />
+            <div className="folder-name ">Hardware Resume</div>
+          </a>
+          <a href="/software_resume.pdf" download className="doc-icon">
+            <div className="doc-icon-image" />
+            <div className="folder-name ">Software Resume</div>
+          </a>
+        </div>
 
           {Object.entries(windowsInfo).map(([id, win]) => (
             <div
