@@ -263,9 +263,9 @@ body {
 }
 
 .doc-icon-image {
-  width: 80px;
-  height: 60px;
-  background-image: url('/doc-icon.png'); /* Make sure this file is in public/ */
+  width: 70px;
+  height: 80px;
+  background-image: url('doc-icon.png'); /* Make sure this file is in public/ */
   background-size: cover;
   background-position: center;
   border-radius: 5px;
