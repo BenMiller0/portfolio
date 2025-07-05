@@ -64,7 +64,7 @@ body {
     text-shadow: 0 0 10px rgba(0, 163, 224, 0.7);
     letter-spacing: -1px;
     pointer-events: none;
-    z-index: 2;
+    z-index: 1;
 }
 
 .name-display::after {
@@ -273,42 +273,4 @@ body {
     font-size: 1.1rem;
 }
 
-/* ===== Start Menu ===== */
-.start-menu {
-    position: absolute;
-    bottom: 40px;
-    left: 0;
-    width: 200px;
-    background: rgba(44, 62, 80, 0.95);
-    border: 1px solid #3498db;
-    border-radius: 5px 5px 0 0;
-    box-shadow: 3px -3px 10px rgba(0, 0, 0, 0.3);
-    z-index: 150;
-    color: white;
-}
 
-.start-menu-content {
-    padding: 10px 0;
-}
-
-.menu-item {
-    padding: 8px 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.menu-item:hover {
-    background: linear-gradient(to right, #3498db, #2980b9);
-}
-
-/* ===== Utilities ===== */
-.project-content {
-    display: none;
-}
-
-.project-content.active {
-    display: block;
-}
