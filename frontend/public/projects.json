@@ -1,0 +1,26 @@
+[
+  {
+    "id": "project1",
+    "label": "AI Gesture Control Python",
+    "title": "AI Camera-Based Gesture Response System in Python",
+    "description": "Accomplished responsive gesture-controlled actuation on a Raspberry Pi AI camera, as measured by reliable physical component activation, by training and deploying customized machine learning models for real-time gesture detection in Python.",
+    "technologies": "Python, PyTorch, COCO (KeyPoints), dataset, Raspberry Pi AI Camera",
+    "github": "https://github.com/BenMiller0/AI-Camera-Based-Gesture-Response-System-in-Python"
+  },
+  {
+    "id": "project2",
+    "label": "Campus Events Planner Application",
+    "title": "Campus Events Planner Web Application in JavaScriptn",
+    "description": "Developed a functional web application for discovering and organizing campus events with HTML, CSS, and JavaScript and integrating a storage system for event tracking, as measured by consistent user engagement and successful event sign-ups during user testing.",
+    "technologies": "JavaScript, HTML, CSS, Jest",
+    "github": "https://github.com/cse110-sp25-group11/card-game"
+  },
+   {
+    "id": "project3",
+    "label": "Interactive Robotic Figure in C/C++",
+    "title": "Interactive Robotic Figure in C/C++",
+    "description": "Accomplished real-time voice-controlled motor actuation to simulate lifelike robotic mouth movements via optimized audio processing on a Raspberry Pi in C, as validated by precise synchronization between audio input and servo motion.",
+    "technologies": "C, C++, Raspberry Pi, Arduino, Servo Motors",
+    "github": "https://github.com/cse110-sp25-group11/card-game"
+  }
+]
