@@ -127,7 +127,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 80px;
+    width: 100px;
     cursor: pointer;
     text-align: center;
     padding: 5px;
@@ -140,8 +140,8 @@ body {
 }
 
 .folder-icon {
-    width: 60px;
-    height: 50px;
+    width: 80px;
+    height: 60px;
     background: linear-gradient(145deg, #2196F3, #0d8aee);
     border-radius: 5px 5px 0 0;
     position: relative;
@@ -171,6 +171,8 @@ body {
     font-size: 12px;
     text-shadow: 1px 1px 1px black;
     word-break: break-all;
+    word-break: break-word;  /* Allow full words to wrap cleanly */
+    overflow-wrap: anywhere; /* Prevent overflow on long words */
 }
 
 /* ===== Taskbar ===== */
@@ -223,7 +225,8 @@ body {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     background: rgba(255, 255, 255, 0.95);
     border-radius: 5px;
-    z-index: 200;
+    z-index: 10; /* Default z-index */
+    user-select: none; /* Prevent text selection while dragging */
 }
 
 .window-header {
@@ -258,6 +261,7 @@ body {
     min-height: 200px;
     background: white;
     color: #2c3e50;
+    user-select: text;
 }
 
 .window-content h2 {
