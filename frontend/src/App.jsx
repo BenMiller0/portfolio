@@ -2,19 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import './styles.css';
 
 const projects = [
-  { id: 'project1', name: 'Web App', description: 'A responsive web application built with React and Node.js', technologies: 'React, Node.js, MongoDB' },
-  { id: 'project2', name: 'Mobile Game', description: 'A cross-platform mobile game developed with Unity', technologies: 'Unity, C#' },
-  { id: 'project3', name: 'Data Visualization', description: 'Interactive data visualization dashboard', technologies: 'D3.js, Python, Flask' },
+  { id: 'project1', name: 'AI Camera-Based Gesture Response System in Python', description: 'A responsive web application built with React and Node.js', technologies: 'React, Node.js, MongoDB' },
 ];
 
 const windowsInfo = {
   aboutWindow: {
     title: 'About Me',
+    label: 'About me',
+    color: 'lightgreen',
     content: (
       <>
         <h2>About Me</h2>
-        <p>Welcome to my portfolio! I'm a creative developer who builds amazing digital experiences.</p>
-        <p>Skills: HTML, CSS, JavaScript, React, Node.js</p>
+        <h3>Skills</h3>
+        <p><b>Programming Languages:</b> C/C++, ARM Assembly, System Verilog, Python, MATLAB, Java, JavaScript, TypeScript</p>
+        <p><b>Hardware:</b>  ESP 32, Raspberry Pi, sensors (e.g., accelerometers, gyroscopes), motors, camera modules, power supply units, and communication modules</p> 
+        <p><b>Operating Systems:</b> Linux, macOS, Windows</p>
+        <p><b>Web Development:</b> jQuery, Hugo, Node.js, React, CSS, HTML, REST APIs, Vite, Express</p>
+        <p><b>Other:</b> PyTorch, Git Version Control, Bash, CI/CD, Scrum/Agile, Virtual Machines, MongoDB</p>
       </>
     )
   },
@@ -45,7 +49,6 @@ const App = () => {
 
     return (
     <div className="desktop-background" onClick={() => console.log('Clicked desktop background')}>
-      {/* WINDOWS: Place OUTSIDE the .desktop div so z-index layering works properly */}
       {openWindows.map(win => (
         <Window
           key={win.id}
@@ -83,14 +86,19 @@ const App = () => {
           ))}
 
           {Object.entries(windowsInfo).map(([id, win]) => (
+          <div
+            key={id}
+            className="folder"
+            onClick={() => openWindow(id, win.title, win.content)}
+          >
             <div
-              key={id}
-              className="folder"
-              onClick={() => openWindow(id, win.title, win.content)}
-            >
-              <div className="folder-icon"></div>
-              <div className="folder-name">{win.title}</div>
-            </div>
+              className="folder-icon"
+              style={{
+                background: win.color || 'linear-gradient(145deg, #2196F3, #0d8aee)'
+              }}
+            />
+            <div className="folder-name">{win.label || win.title}</div>
+          </div>
           ))}
         </div>
       </div>
