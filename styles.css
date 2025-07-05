@@ -32,7 +32,7 @@ body {
     background: 
         linear-gradient(135deg, #182B3A 0%, #0A4D6E 100%),
         url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="50" height="50" x="0" y="0" fill="%2300529C" opacity="0.1"/><rect width="50" height="50" x="50" y="50" fill="%2300529C" opacity="0.1"/></svg>');
-    z-index: -1;
+    z-index: 1;
     overflow: hidden;
 }
 
@@ -64,7 +64,7 @@ body {
     text-shadow: 0 0 10px rgba(0, 163, 224, 0.7);
     letter-spacing: -1px;
     pointer-events: none;
-    z-index: 1;
+    z-index: 2;
 }
 
 .name-display::after {
