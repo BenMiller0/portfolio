@@ -22,5 +22,13 @@
     "description": "Accomplished real-time voice-controlled motor actuation to simulate lifelike robotic mouth movements via optimized audio processing on a Raspberry Pi in C, as validated by precise synchronization between audio input and servo motion.",
     "technologies": "C, C++, Raspberry Pi, Arduino, Servo Motors",
     "github": "https://github.com/BenMiller0/teaAnimatronic"
+  },
+   {
+    "id": "project4",
+    "label": "TEA @ UCSD Site",
+    "title": "Themed Entertainment Association at UCSD Website",
+    "description": "Developed and maintained the Themed Entertainment Association at UCSD’s website using Tailwind CSS, significantly boosting the club’s digital presence and increasing online engagement and visibility.",
+    "technologies": "Tailwind CSS, HTML, JavaScript, Github Actions",
+    "github": "https://github.com/BenMiller0/teaatucsdsite"
   }
 ]
