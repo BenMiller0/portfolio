@@ -15,6 +15,7 @@ const windowsInfo = {
         <p><b>Programming Languages:</b> C/C++, ARM Assembly, System Verilog, Python, MATLAB, Java, JavaScript, TypeScript</p>
         <p><b>Hardware:</b> ESP 32, Raspberry Pi, sensors (e.g., accelerometers, gyroscopes), motors, camera modules</p>
         <p><b>Web Development:</b> jQuery, Hugo, Node.js, React, CSS, HTML, REST APIs, Vite, Express</p>
+        <p><b>Machine Learning:</b> PyTorch, NumPy, Computer Vision, Pandas</p>
         <p><b>Operating Systems:</b> Linux, macOS, Windows</p>
       </>
     )
