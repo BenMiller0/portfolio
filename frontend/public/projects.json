@@ -30,5 +30,13 @@
     "description": "Developed and maintained the Themed Entertainment Association at UCSD’s website using Tailwind CSS, significantly boosting the club’s digital presence and increasing online engagement and visibility.",
     "technologies": "Tailwind CSS, HTML, JavaScript, Github Actions",
     "github": "https://github.com/BenMiller0/teaatucsdsite"
+  },
+   {
+    "id": "project4",
+    "label": "Grade Prediction AI Model",
+    "title": "Grade Prediction AI Model",
+    "description": "A PyTorch-based machine learning model that predicts a student's final letter grade in a target course using their past academic performance and public course data.",
+    "technologies": "Python, Pytorch, Pandas",
+    "github": "https://github.com/BenMiller0/GradePredictionModel"
   }
 ]
