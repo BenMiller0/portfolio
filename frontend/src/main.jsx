@@ -11,7 +11,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/debug" element={<Debug />} />
-        <Route path="*" element={<NotFound />} /> {/* <-- Fallback route */}
+        <Route path="*" element={<Debug />} /> {/* <-- Fallback route */}
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
