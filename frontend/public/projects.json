@@ -32,11 +32,18 @@
     "github": "https://github.com/BenMiller0/teaatucsdsite"
   },
    {
-    "id": "project4",
+    "id": "project5",
     "label": "Grade Prediction AI Model",
     "title": "Grade Prediction AI Model",
     "description": "A PyTorch-based machine learning model that predicts a student's final letter grade in a target course using their past academic performance and public course data.",
     "technologies": "Python, Pytorch, Pandas",
     "github": "https://github.com/BenMiller0/GradePredictionModel"
+  }, {
+    "id": "project6",
+    "label": "Multithreaded File Compressor in C++",
+    "title": "Multithreaded File Compressor in C++",
+    "description": "Multithreaded application for high speed file compression",
+    "technologies": "C++",
+    "github": "https://github.com/BenMiller0/multiThreadedCompressor"
   }
 ]
