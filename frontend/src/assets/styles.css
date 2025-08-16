@@ -50,7 +50,7 @@ body {
   opacity: 0.3;
 }
 
-/* ===== Desktop Branding ===== */
+/* ===== Branding & Logos ===== */
 .name-display {
   position: fixed;
   top: 20%;
@@ -265,7 +265,7 @@ body {
 .doc-icon-image {
   width: 70px;
   height: 80px;
-  background-image: url('/doc-icon.png'); /* Make sure this file is in public/ */
+  background-image: url('/doc-icon.png');
   background-size: cover;
   background-position: center;
   border-radius: 5px;
@@ -279,4 +279,126 @@ body {
   text-align: center;
   text-shadow: 1px 1px 1px black;
   word-break: break-word;
+}
+
+/* ===== Mobile-Specific Styles ===== */
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto; /* Allow scrolling on small devices */
+  }
+
+  .desktop-background {
+    background-size: 50px 50px;
+  }
+
+  /* Hide elements not essential for mobile */
+  .triton-logo {
+    display: none;
+  }
+
+  .name-display,
+  .school-display {
+    position: static;
+    transform: none;
+    margin-top: 2rem;
+    padding: 0 1rem;
+    text-align: left;
+    font-size: clamp(1.5rem, 8vw, 2.5rem);
+  }
+
+  .school-display {
+    margin-top: 0.5rem;
+    font-size: clamp(1rem, 4vw, 1.2rem);
+  }
+
+  .desktop {
+    padding: 1rem;
+    height: auto;
+    display: block; /* Change to block to allow vertical stacking */
+  }
+
+  .icons-container {
+    flex-direction: column; /* Stack icons vertically */
+    align-items: flex-start;
+    gap: 15px;
+    margin-top: 2rem;
+  }
+
+  .folder {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+  }
+
+  .folder-icon {
+    width: 40px;
+    height: 30px;
+    margin-bottom: 0;
+    margin-right: 15px;
+  }
+
+  .folder-icon:after {
+    display: none;
+  }
+
+  .folder-name {
+    font-size: 1rem;
+  }
+
+  .folder:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .folder:hover .folder-icon {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .resume-icons {
+    position: static;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .doc-icon {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+  }
+
+  .doc-icon-image {
+    width: 40px;
+    height: 45px;
+    margin-bottom: 0;
+    margin-right: 15px;
+  }
+
+  /* Windows are not draggable on mobile, and are centered */
+  .window {
+    /* We must use !important to override the inline styles from React */
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 95% !important;
+    max-width: 500px;
+    height: auto !important; /* Allow height to adjust based on content */
+    max-height: 90vh !important; /* Set a maximum height to prevent it from going off-screen */
+    overflow-y: auto !important; /* Enable vertical scrolling for the content */
+    margin: auto !important;
+  }
+
+
+  .window-header {
+    cursor: default; /* Remove the drag cursor */
+  }
 }
