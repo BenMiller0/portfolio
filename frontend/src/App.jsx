@@ -34,6 +34,49 @@ const windowsInfo = {
         <p>Inspired by the simplicity and nostalgia of old OS interfaces.</p>
       </>
     )
+  },
+  experienceWindow: {
+    title: 'Experience',
+    label: 'Experience',
+    color: 'orange',
+    content: (
+      <div className="space-y-6 p-4">
+      <div>
+        <h3 className="font-bold">Software Engineering Intern, Western Digital</h3>
+        <p className="text-sm text-gray-500">Sep. 2025 – Present</p>
+        <ul className="list-disc list-inside ml-4">
+          <p> - Improved firmware performance by implementing and debugging C++ features, reducing bug resolution time across sprints.</p>
+          <p> - Accelerated testing workflows by building Python-based test tools for CI pipelines, decreasing manual test cycles by 30% during QA validation.</p>
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="font-bold">Software Engineering Lead & VP, Themed Entertainment Association at UCSD</h3>
+        <p className="text-sm text-gray-500">Jun. 2024 – Present</p>
+        <ul className="list-disc list-inside ml-4">
+          <p> - Led software development initiatives using Agile methodologies and collaborative sprints, delivering projects at on-campus events and meeting project milestones on time.</p>
+          <p> - Organized and represented UCSD in national engineering team competitions, coordinating interdisciplinary collaboration and ensuring effective teamwork.</p>
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="font-bold">Software Developer Intern, Center for Applied Internet Data Analysis</h3>
+        <p className="text-sm text-gray-500">Apr. 2025 – Aug. 2025</p>
+        <ul className="list-disc list-inside ml-4">
+          <p> - Enhanced website usability by developing and maintaining JavaScript and Python scripts, streamlining content management workflows.</p>
+          <p> - Maintained a website with 2,000+ daily visitors, ensuring reliability and performance with Git-based collaborative version control.</p>
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="font-bold">Resident Advisor, COSMOS UC San Diego</h3>
+        <p className="text-sm text-gray-500">Jul. 2024 – Aug. 2024</p>
+        <ul className="list-disc list-inside ml-4">
+          <p> - Provided guidance and mentorship for the Video Game Programming and Game AI Design group, empowering students through personalized support and advice.</p>
+        </ul>
+      </div>
+    </div>
+    )
   }
 };
 
@@ -128,6 +171,15 @@ const App = () => {
     setZIndexCounter(zIndexCounter + 1);
   };
 
+  // Function to chunk projects into groups of 3
+  const chunkProjects = (arr, size) => {
+    return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
+  };
+
+  const projectChunks = chunkProjects(projects, 3);
+
   return (
     <>
       {/* Background Layer - Fixed/Absolute positioned */}
@@ -140,51 +192,59 @@ const App = () => {
       <div className="school-display">UC San Diego - Computer Science</div>
 
       <div className="desktop">
-        <div className="icons-container">
-          {projects.map(p => (
-            <div
-              key={p.id}
-              className="folder"
-              onClick={() => openWindow(p.id, p.title, (
-                <>
-                  <h2>{p.title}</h2>
-                  <p>{p.description}</p>
-                  <h3>Technologies Used:</h3>
-                  <p>{p.technologies}</p>
-                  {p.github && (
-                    <h3>
-                      <a href={p.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-                    </h3>
-                  )}
-                </>
-              ))}
-            >
-              <div className="folder-icon" />
-              <div className="folder-name">{p.label}</div>
-            </div>
-          ))}
-
-          <div className="resume-icons">
-            <a href="/hardware_resume.pdf" download className="doc-icon">
-              <div className="doc-icon-image" />
-              <div className="folder-name">Hardware Resume</div>
-            </a>
-            <a href="/software_resume.pdf" download className="doc-icon">
-              <div className="doc-icon-image" />
-              <div className="folder-name">Software Resume</div>
-            </a>
+        <div className="main-icons-container">
+          <div className="system-icons">
+            {Object.entries(windowsInfo).map(([id, win]) => (
+              <div
+                key={id}
+                className="folder"
+                onClick={() => openWindow(id, win.title, win.content)}
+              >
+                <div className="folder-icon" style={{ background: win.color }} />
+                <div className="folder-name">{win.label}</div>
+              </div>
+            ))}
           </div>
 
-          {Object.entries(windowsInfo).map(([id, win]) => (
-            <div
-              key={id}
-              className="folder"
-              onClick={() => openWindow(id, win.title, win.content)}
-            >
-              <div className="folder-icon" style={{ background: win.color }} />
-              <div className="folder-name">{win.label}</div>
-            </div>
-          ))}
+          <div className="projects-container">
+            {projectChunks.map((chunk, chunkIndex) => (
+              <div key={chunkIndex} className="project-row">
+                {chunk.map(p => (
+                  <div
+                    key={p.id}
+                    className="folder"
+                    onClick={() => openWindow(p.id, p.title, (
+                      <>
+                        <h2>{p.title}</h2>
+                        <p>{p.description}</p>
+                        <h3>Technologies Used:</h3>
+                        <p>{p.technologies}</p>
+                        {p.github && (
+                          <h3>
+                            <a href={p.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+                          </h3>
+                        )}
+                      </>
+                    ))}
+                  >
+                    <div className="folder-icon" />
+                    <div className="folder-name">{p.label}</div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="resume-icons">
+          <a href="/hardware_resume.pdf" download className="doc-icon">
+            <div className="doc-icon-image" />
+            <div className="folder-name">Hardware Resume</div>
+          </a>
+          <a href="/software_resume.pdf" download className="doc-icon">
+            <div className="doc-icon-image" />
+            <div className="folder-name">Software Resume</div>
+          </a>
         </div>
       </div>
 
