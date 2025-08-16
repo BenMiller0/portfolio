@@ -21,8 +21,8 @@ const windowsInfo = {
     )
   },
   aboutSiteWindow: {
-    title: 'ReadMe.txt',
-    label: 'ReadMe.txt',
+    title: 'README',
+    label: 'README',
     color: '#f2f2f2',
     content: (
       <>
