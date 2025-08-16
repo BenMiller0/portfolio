@@ -37,8 +37,6 @@ const windowsInfo = {
   }
 };
 
-
-
 const Window = ({ id, title, children, onClose, position, onDrag }) => {
   const windowRef = useRef(null);
   const isDragging = useRef(false);
@@ -131,21 +129,13 @@ const App = () => {
   };
 
   return (
-    <div className="desktop-background">
-      {openWindows.map(win => (
-        <Window
-          key={win.id}
-          id={win.id}
-          title={win.title}
-          onClose={() => closeWindow(win.id)}
-          position={win.position}
-          onDrag={updateWindowPosition}
-          style={{ zIndex: win.zIndex }}
-        >
-          {win.content}
-        </Window>
-      ))}
+    <>
+      {/* Background Layer - Fixed/Absolute positioned */}
+      <div className="desktop-background">
+        <div className="triton-logo"></div>
+      </div>
 
+      {/* Content Layer - Scrollable */}
       <div className="name-display">Benjamin Miller</div>
       <div className="school-display">UC San Diego - Computer Science</div>
 
@@ -197,7 +187,22 @@ const App = () => {
           ))}
         </div>
       </div>
-    </div>
+
+      {/* Windows Layer - Absolute positioned */}
+      {openWindows.map(win => (
+        <Window
+          key={win.id}
+          id={win.id}
+          title={win.title}
+          onClose={() => closeWindow(win.id)}
+          position={win.position}
+          onDrag={updateWindowPosition}
+          style={{ zIndex: win.zIndex }}
+        >
+          {win.content}
+        </Window>
+      ))}
+    </>
   );
 };
 
