@@ -45,8 +45,7 @@ const windowsInfo = {
         <h3 className="font-bold">Software Engineering Intern, Western Digital</h3>
         <p className="text-sm text-gray-500">Sep. 2025 – Present</p>
         <ul className="list-disc list-inside ml-4">
-          <p> - Improved firmware performance by implementing and debugging C++ features, reducing bug resolution time across sprints.</p>
-          <p> - Accelerated testing workflows by building Python-based test tools for CI pipelines, decreasing manual test cycles by 30% during QA validation.</p>
+          
         </ul>
       </div>
 
