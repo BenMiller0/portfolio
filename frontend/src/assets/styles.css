@@ -123,7 +123,7 @@ body {
 /* ===== Desktop Interface ===== */
 .desktop {
   position: relative;
-  height: calc(100vh - 40px);
+  height: calc(100vh - 45px);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -133,7 +133,7 @@ body {
 .main-icons-container {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 45px;
 }
 
 .system-icons, .project-icons {
@@ -293,6 +293,28 @@ body {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+.github-icon-image {
+  width: 80px;
+  height: 80px;
+  background-image: url('/github.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  margin-bottom: 5px;
+
+}
+
+.linkedin-icon-image {
+  width: 80px;
+  height: 80px;
+  background-image: url('/linkedIn.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  margin-bottom: 5px;
+
+}
+
 .doc-icon .folder-name {
   color: white;
   font-size: 12px;
@@ -342,12 +364,14 @@ body {
     gap: 20px;
   }
 
-  .system-icons, .project-icons {
+  .system-icons,
+  .project-icons {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
 
+  /* ===== Folders ===== */
   .folder {
     flex-direction: row;
     align-items: center;
@@ -359,14 +383,23 @@ body {
   }
 
   .folder-icon {
-    width: 40px;
+    width: 45px;
     height: 30px;
     margin-bottom: 0;
     margin-right: 15px;
+    position: relative;       /* allow :after to show */
+    overflow: visible;        /* show the bottom tip */
   }
 
   .folder-icon:after {
-    display: none;
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 3px;
+    bottom: -3px;
+    left: 0;
+    background: linear-gradient(145deg, #1a82d8, #0d8aee);
+    border-radius: 0 0 3px 3px;
   }
 
   .folder-name {
@@ -382,6 +415,7 @@ body {
     box-shadow: none;
   }
 
+  /* ===== Resume & Icons ===== */
   .resume-icons {
     position: static;
     flex-direction: column;
@@ -390,22 +424,42 @@ body {
     margin-top: 15px;
   }
 
-  .doc-icon {
+  .doc-icon,
+  .github-icon,
+  .linkedin-icon {
     flex-direction: row;
     align-items: center;
     width: 100%;
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
+    text-decoration: none;
   }
 
-  .doc-icon-image {
-    width: 40px;
+  .doc-icon-image,
+  .github-icon-image,
+  .linkedin-icon-image {
+    width: 45px;
     height: 45px;
     margin-bottom: 0;
     margin-right: 15px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+    border-radius: 5px;
   }
 
+  .doc-icon .folder-name,
+  .github-icon .folder-name,
+  .linkedin-icon .folder-name {
+    font-size: 1rem;
+    text-align: left;
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    word-break: break-word;
+  }
+
+  /* ===== Windows ===== */
   .window {
     position: fixed !important;
     top: 50% !important;

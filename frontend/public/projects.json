@@ -10,7 +10,7 @@
   {
     "id": "project2",
     "label": "Campus Events Planner Application",
-    "title": "Campus Events Planner Web Application in JavaScriptn",
+    "title": "Campus Events Planner Web Application in JavaScript",
     "description": "Developed a functional web application for discovering and organizing campus events with HTML, CSS, and JavaScript and integrating a storage system for event tracking, as measured by consistent user engagement and successful event sign-ups during user testing.",
     "technologies": "JavaScript, HTML, CSS, Jest",
     "github": "https://github.com/cse110-sp25-group11/card-game"

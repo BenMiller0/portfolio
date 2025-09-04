@@ -41,40 +41,40 @@ const windowsInfo = {
     color: 'orange',
     content: (
       <div className="space-y-6 p-4">
-      <div>
-        <h3 className="font-bold">Software Engineering Intern, Western Digital</h3>
-        <p className="text-sm text-gray-500">Sep. 2025 – Present</p>
-        <ul className="list-disc list-inside ml-4">
-          
-        </ul>
-      </div>
+        <div>
+          <h3 className="font-bold">Software Engineering Intern, Western Digital</h3>
+          <p className="text-sm text-gray-500">Sep. 2025 – Present</p>
+          <ul className="list-disc list-inside ml-4">
+            <p> - Currently working on C++ firmware, building Python test tools, and diving into real time operating system (RTOS) level code that ships in enterprise-class hard disk drives (HDDs) </p>
+          </ul>
+        </div>
 
-      <div>
-        <h3 className="font-bold">Software Engineering Lead & VP, Themed Entertainment Association at UCSD</h3>
-        <p className="text-sm text-gray-500">Jun. 2024 – Present</p>
-        <ul className="list-disc list-inside ml-4">
-          <p> - Led software development initiatives using Agile methodologies and collaborative sprints, delivering projects at on-campus events and meeting project milestones on time.</p>
-          <p> - Organized and represented UCSD in national engineering team competitions, coordinating interdisciplinary collaboration and ensuring effective teamwork.</p>
-        </ul>
-      </div>
+        <div>
+          <h3 className="font-bold">Software Engineering Lead & VP, Themed Entertainment Association at UCSD</h3>
+          <p className="text-sm text-gray-500">Jun. 2024 – Present</p>
+          <ul className="list-disc list-inside ml-4">
+            <p> - Led software development initiatives using Agile methodologies and collaborative sprints, delivering projects at on-campus events and meeting project milestones on time.</p>
+            <p> - Organized and represented UCSD in national engineering team competitions, coordinating interdisciplinary collaboration and ensuring effective teamwork.</p>
+          </ul>
+        </div>
 
-      <div>
-        <h3 className="font-bold">Software Developer Intern, Center for Applied Internet Data Analysis</h3>
-        <p className="text-sm text-gray-500">Apr. 2025 – Aug. 2025</p>
-        <ul className="list-disc list-inside ml-4">
-          <p> - Enhanced website usability by developing and maintaining JavaScript and Python scripts, streamlining content management workflows.</p>
-          <p> - Maintained a website with 2,000+ daily visitors, ensuring reliability and performance with Git-based collaborative version control.</p>
-        </ul>
-      </div>
+        <div>
+          <h3 className="font-bold">Software Developer Intern, Center for Applied Internet Data Analysis</h3>
+          <p className="text-sm text-gray-500">Apr. 2025 – Aug. 2025</p>
+          <ul className="list-disc list-inside ml-4">
+            <p> - Enhanced website usability by developing and maintaining JavaScript and Python scripts, streamlining content management workflows.</p>
+            <p> - Maintained a website with 2,000+ daily visitors, ensuring reliability and performance with Git-based collaborative version control.</p>
+          </ul>
+        </div>
 
-      <div>
-        <h3 className="font-bold">Resident Advisor, COSMOS UC San Diego</h3>
-        <p className="text-sm text-gray-500">Jul. 2024 – Aug. 2024</p>
-        <ul className="list-disc list-inside ml-4">
-          <p> - Provided guidance and mentorship for the Video Game Programming and Game AI Design group, empowering students through personalized support and advice.</p>
-        </ul>
+        <div>
+          <h3 className="font-bold">Resident Advisor, COSMOS UC San Diego</h3>
+          <p className="text-sm text-gray-500">Jul. 2024 – Aug. 2024</p>
+          <ul className="list-disc list-inside ml-4">
+            <p> - Provided guidance and mentorship for the Video Game Programming and Game AI Design group, empowering students through personalized support and advice.</p>
+          </ul>
+        </div>
       </div>
-    </div>
     )
   }
 };
@@ -203,6 +203,24 @@ const App = () => {
                 <div className="folder-name">{win.label}</div>
               </div>
             ))}
+                      <a 
+            href="https://github.com/BenMiller0" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="doc-icon"
+          >
+            <div className="github-icon-image" />
+            <div className="folder-name">GitHub</div>
+          </a>
+          <a 
+            href="https://linkedin.com/in/benjamin-miller-ucsd" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="doc-icon"
+          >
+            <div className="linkedin-icon-image" />
+            <div className="folder-name">LinkedIn</div>
+          </a>
           </div>
 
           <div className="projects-container">
