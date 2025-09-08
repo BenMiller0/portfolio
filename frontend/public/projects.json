@@ -3,8 +3,8 @@
     "id": "project1",
     "label": "AI Gesture Control Python",
     "title": "AI Camera-Based Gesture Response System in Python",
-    "description": "Accomplished responsive gesture-controlled actuation on a Raspberry Pi AI camera, as measured by reliable physical component activation, by training and deploying customized machine learning models for real-time gesture detection in Python.",
-    "technologies": "Python, PyTorch, COCO (KeyPoints) dataset, Raspberry Pi AI Camera",
+    "description": "Deployed a real-time computer vision system on an AI Accelerator Camera by tuning inferencing in Python to enable low-latency, responsive gesture-control for an interactive storytelling attraction on campus.",
+    "technologies": "Python, AI/ML, Computer Vision,  COCO Keypoints Dataset",
     "github": "https://github.com/BenMiller0/AI-Camera-Based-Gesture-Response-System-in-Python"
   },
   {
@@ -12,14 +12,14 @@
     "label": "Campus Events Planner Application",
     "title": "Campus Events Planner Web Application in JavaScript",
     "description": "Developed a functional web application for discovering and organizing campus events with HTML, CSS, and JavaScript and integrating a storage system for event tracking, as measured by consistent user engagement and successful event sign-ups during user testing.",
-    "technologies": "JavaScript, HTML, CSS, Jest",
+    "technologies": "JavaScript, HTML, CSS, Jest, CI/CD",
     "github": "https://github.com/cse110-sp25-group11/card-game"
   },
    {
     "id": "project3",
     "label": "Interactive Robotic Figure in C/C++",
     "title": "Interactive Robotic Figure in C/C++",
-    "description": "Accomplished real-time voice-controlled motor actuation to simulate lifelike robotic mouth movements via optimized audio processing on a Raspberry Pi in C, as validated by precise synchronization between audio input and servo motion.",
+    "description": "Accomplished real-time audio-to-motion translation for a robotic figure, as measured by 100+ live conversation demos and 16K+ social media views, by developing a C audio-to-motion pipeline to synchronize voice actor speech with robotic mouth movements, resulting in a lifelike performance.",
     "technologies": "C, C++, Raspberry Pi, Arduino, Servo Motors",
     "github": "https://github.com/BenMiller0/teaAnimatronic"
   },
@@ -43,7 +43,7 @@
     "label": "Multithreaded File Compressor in C++",
     "title": "Multithreaded File Compressor in C++",
     "description": "Multithreaded application for high speed file compression",
-    "technologies": "C++",
+    "technologies": "C++, Makefile",
     "github": "https://github.com/BenMiller0/multiThreadedCompressor"
   }
 ]
