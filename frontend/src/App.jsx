@@ -13,7 +13,7 @@ const windowsInfo = {
         My background combines hands-on hardware integration with software engineering, allowing me to contribute effectively to interdisciplinary projects that bridge physical systems and intelligent software solutions.
         <h3>Skills</h3>
         <p><b>Programming Languages:</b> C/C++, ARM Assembly, System Verilog, Python, MATLAB, Java, JavaScript, TypeScript</p>
-        <p><b>Hardware:</b> ESP 32, Raspberry Pi, sensors (e.g., accelerometers, gyroscopes), motors, camera modules</p>
+        <p><b>Hardware:</b> ESP 32, Raspberry Pi, Aurdino</p>
         <p><b>Web Development:</b> jQuery, Hugo, Node.js, React, CSS, HTML, REST APIs, Vite, Express</p>
         <p><b>Machine Learning:</b> PyTorch, NumPy, Computer Vision, Pandas</p>
         <p><b>Operating Systems:</b> Linux, macOS, Windows</p>
@@ -45,7 +45,7 @@ const windowsInfo = {
           <h3 className="font-bold">Software Engineering Intern, Western Digital</h3>
           <p className="text-sm text-gray-500">Sep. 2025 – Present</p>
           <ul className="list-disc list-inside ml-4">
-            <p> - Currently working on C++ firmware, building Python test tools, and diving into real time operating system (RTOS) level code that ships in enterprise-class hard disk drives (HDDs) </p>
+            <p> - Designing and implementing C++ firmware for hard drives in an agile environment, validated through comprehensive unit and integration testing. </p>
           </ul>
         </div>
 
@@ -53,7 +53,7 @@ const windowsInfo = {
           <h3 className="font-bold">Software Engineering Lead & VP, Themed Entertainment Association at UCSD</h3>
           <p className="text-sm text-gray-500">Jun. 2024 – Present</p>
           <ul className="list-disc list-inside ml-4">
-            <p> - Led software development initiatives using Agile methodologies and collaborative sprints, delivering projects at on-campus events and meeting project milestones on time.</p>
+            <p> - Led software development including launching the association’s website (JavaScript, CI/CD) and themed attraction production software (Python, C, C++), enabling reliable themed attraction operations.</p>
             <p> - Organized and represented UCSD in national engineering team competitions, coordinating interdisciplinary collaboration and ensuring effective teamwork.</p>
           </ul>
         </div>
