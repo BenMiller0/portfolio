@@ -19,7 +19,7 @@
     "id": "project3",
     "label": "Interactive Robotic Figure in C/C++",
     "title": "Interactive Robotic Figure in C/C++",
-    "description": "Accomplished real-time audio-to-motion translation for a robotic figure, as measured by 100+ live conversation demos and 16K+ social media views, by developing a C audio-to-motion pipeline to synchronize voice actor speech with robotic mouth movements, resulting in a lifelike performance.",
+    "description": "Accomplished real-time audio-to-motion translation for a robotic figure, as measured by 100+ live conversation demos and 17K+ social media views, by developing a C audio-to-motion pipeline to synchronize voice actor speech with robotic mouth movements, resulting in a lifelike performance.",
     "technologies": "C, C++, Raspberry Pi, Arduino, Servo Motors",
     "github": "https://github.com/BenMiller0/teaAnimatronic"
   },
