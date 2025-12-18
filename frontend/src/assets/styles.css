@@ -325,7 +325,6 @@ body {
 
 /* ===== Mobile-Specific Styles ===== */
 @media (max-width: 768px) {
-  /* Prevent scrolling the whole page so it feels like an app/OS */
   body {
     overflow: hidden; 
     position: fixed;
@@ -333,17 +332,14 @@ body {
     height: 100%;
   }
 
-  /* Adjust background pattern size */
   .desktop-background {
     background-size: 50px 50px;
   }
 
-  /* Hide the large logo to save space */
   .triton-logo {
     display: none;
   }
 
-  /* Shrink the header text so it doesn't cover icons */
   .name-display {
     top: 5%;
     font-size: 1.8rem;
@@ -355,25 +351,21 @@ body {
     font-size: 0.9rem;
   }
 
-  /* Keep the desktop container layout, but adjust padding */
   .desktop {
     padding: 10px;
-    /* Push content down so it's not behind the name header */
     padding-top: 120px; 
     height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  /* --- GRID LAYOUT RETENTION --- */
-  /* Instead of forcing column, we keep the row wrap but shrink gaps */
   .main-icons-container {
     gap: 20px;
   }
 
   .system-icons, .project-icons {
     gap: 10px;
-    justify-content: center; /* Center icons if there are few */
+    justify-content: center;
   }
 
   .project-row {
@@ -381,9 +373,8 @@ body {
     gap: 10px;
   }
 
-  /* Make folders smaller to fit mobile screens, but keep the "icon" look */
   .folder {
-    width: 80px; /* Slightly smaller than desktop 100px */
+    width: 80px; 
     padding: 2px;
   }
 
@@ -400,12 +391,16 @@ body {
     font-size: 11px;
   }
 
-  /* Adjust Resume Icons to fit better */
+  /* CENTERED RESUME ICONS FOR MOBILE */
   .resume-icons {
-    top: auto;
-    bottom: 20px;
-    right: 10px;
-    flex-direction: row; /* Horizontal list at bottom on mobile */
+    position: static;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    gap: 20px;
+    margin-top: 30px;
+    padding-bottom: 40px;
   }
 
   .doc-icon-image {
@@ -418,17 +413,13 @@ body {
     height: 60px;
   }
 
-  /* --- WINDOWS --- */
-  /* Crucial: Do NOT use position: fixed !important here. 
-     We want the inline JS styles (top/left) to control position so dragging works. */
   .window {
-    width: 90vw !important; /* Make window wide enough for phone */
+    width: 90vw !important; 
     max-height: 70vh;
     overflow-y: auto;
-    /* We intentionally do NOT center it with CSS so the user can drag it */
   }
 
   .window-header {
-    padding: 10px; /* Larger touch target for dragging */
+    padding: 10px;
   }
 }
