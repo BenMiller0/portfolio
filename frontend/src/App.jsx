@@ -84,27 +84,62 @@ const Window = ({ id, title, children, onClose, position, onDrag }) => {
   const isDragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
 
+  // --- Mouse Handlers (Desktop) ---
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
-    if (!windowRef.current) return;
-
-    const rect = windowRef.current.getBoundingClientRect();
-    offset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    isDragging.current = true;
-
+    startDrag(e.clientX, e.clientY);
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   };
 
   const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    onDrag(id, { x: e.clientX - offset.current.x, y: e.clientY - offset.current.y });
+    moveDrag(e.clientX, e.clientY);
   };
 
   const handleMouseUp = () => {
-    isDragging.current = false;
+    stopDrag();
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
+  };
+
+  // --- Touch Handlers (Mobile) ---
+  const handleTouchStart = (e) => {
+    // Prevent default browser scrolling when touching the header
+    // e.stopPropagation(); 
+    const touch = e.touches[0];
+    startDrag(touch.clientX, touch.clientY);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+  };
+
+  const handleTouchMove = (e) => {
+    // Prevent screen scrolling while dragging window
+    // e.preventDefault(); 
+    const touch = e.touches[0];
+    moveDrag(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchEnd = () => {
+    stopDrag();
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
+  };
+
+  // --- Shared Logic ---
+  const startDrag = (clientX, clientY) => {
+    if (!windowRef.current) return;
+    const rect = windowRef.current.getBoundingClientRect();
+    offset.current = { x: clientX - rect.left, y: clientY - rect.top };
+    isDragging.current = true;
+  };
+
+  const moveDrag = (clientX, clientY) => {
+    if (!isDragging.current) return;
+    onDrag(id, { x: clientX - offset.current.x, y: clientY - offset.current.y });
+  };
+
+  const stopDrag = () => {
+    isDragging.current = false;
   };
 
   return (
@@ -113,9 +148,14 @@ const Window = ({ id, title, children, onClose, position, onDrag }) => {
       className="window"
       style={{ left: `${position.x}px`, top: `${position.y}px`, position: 'absolute' }}
     >
-      <div className="window-header" onMouseDown={handleMouseDown}>
+      <div 
+        className="window-header" 
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart} 
+      >
         <span>{title}</span>
-        <button className="close-button" onClick={onClose}>&times;</button>
+        {/* Added onTouchEnd to button to prevent drag logic interfering with close */}
+        <button className="close-button" onClick={onClose} onTouchEnd={(e) => e.stopPropagation()}>&times;</button>
       </div>
       <div className="window-content">{children}</div>
     </div>
