@@ -97,6 +97,8 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
 
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
+    // Trigger onFocus to bring to front
+    onFocus && onFocus();
     startDrag(e.clientX, e.clientY);
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -110,6 +112,8 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
   };
 
   const handleTouchStart = (e) => {
+    // Trigger onFocus to bring to front
+    onFocus && onFocus();
     const touch = e.touches[0];
     startDrag(touch.clientX, touch.clientY);
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
@@ -131,18 +135,18 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
     <div
       ref={windowRef}
       className="window"
-      onMouseDown={onFocus}
-      onTouchStart={onFocus}
+      onMouseDown={() => onFocus && onFocus()}
+      onTouchStart={() => onFocus && onFocus()}
       style={{ 
         left: `${position.x}px`, 
         top: `${position.y}px`, 
         position: 'absolute',
-        ...style 
+        ...style // Applies the zIndex
       }}
     >
       <div className="window-header" onMouseDown={handleMouseDown} onTouchStart={handleTouchStart}>
         <span>{title}</span>
-        <button className="close-button" onClick={(e) => { e.stopPropagation(); onClose(); }}>&times;</button>
+        <button className="close-button" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => e.stopPropagation()}>&times;</button>
       </div>
       <div className="window-content">{children}</div>
     </div>
@@ -168,17 +172,26 @@ const App = () => {
       let startX, startY;
 
       if (isMobile) {
+        // Mobile Center Calculation
         const estimatedWidth = Math.min(window.innerWidth * 0.90, 500);
         startX = (window.innerWidth - estimatedWidth) / 2;
-        startY = 100 + (openWindows.length * 20);
+        // Start lower down so it doesn't overlap header, and stagger slightly
+        startY = 140 + (openWindows.length * 20); 
       } else {
+        // Desktop Cascade
         startX = 100 + (openWindows.length * 30) % 500;
         startY = 100 + (openWindows.length * 30) % 300;
       }
 
       setOpenWindows([
         ...openWindows,
-        { id, title, content, position: { x: Math.max(0, startX), y: Math.max(50, startY) }, zIndex: zIndexCounter }
+        { 
+          id, 
+          title, 
+          content, 
+          position: { x: Math.max(0, startX), y: Math.max(50, startY) }, 
+          zIndex: zIndexCounter 
+        }
       ]);
       setZIndexCounter(zIndexCounter + 1);
     } else {

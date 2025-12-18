@@ -324,57 +324,87 @@ body {
 }
 
 /* ===== Mobile-Specific Styles ===== */
+/* ===== Mobile-Specific Styles ===== */
 @media (max-width: 768px) {
-  body {
-    overflow: hidden; 
-    position: fixed;
-    width: 100%;
-    height: 100%;
+  /* 1. FORCE ROOT SCROLLING */
+  /* This overrides any desktop 'overflow: hidden' locks */
+  html, body {
+    overflow-y: auto !important; /* Force vertical scroll */
+    overflow-x: hidden;          /* Prevent horizontal scroll */
+    height: auto !important;     /* Allow body to grow with content */
+    min-height: 100%;            /* Ensure it covers full screen at minimum */
+    position: static !important; /* Remove 'fixed' lock if present */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
 
+  /* 2. KEEP BACKGROUND FIXED */
+  /* The background stays still while you scroll the content over it */
   .desktop-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background-size: 50px 50px;
+    z-index: 0;
   }
 
+  /* 3. LOGO & BRANDING POSITIONING */
+  /* Change to absolute so they scroll up and away */
   .triton-logo {
     display: none;
   }
 
   .name-display {
-    top: 5%;
+    position: absolute; /* absolute makes it scroll with the page */
+    top: 50px;
+    left: 0;
+    width: 100%;
     font-size: 1.8rem;
     padding: 0 10px;
+    z-index: 1;
   }
 
   .school-display {
-    top: calc(5% + 2.5rem);
+    position: absolute;
+    top: 90px; /* Below name */
+    left: 0;
+    width: 100%;
     font-size: 0.9rem;
+    z-index: 1;
   }
 
+  /* 4. CONTENT CONTAINER */
+  /* Allow this to grow as tall as needed */
   .desktop {
+    position: relative;
+    height: auto !important; /* override desktop fixed height */
+    min-height: 100vh;
     padding: 10px;
-    padding-top: 120px; 
-    height: 100vh;
+    padding-top: 150px; /* Push content below the name header */
     display: flex;
     flex-direction: column;
+    overflow: visible; /* Let children expand the container */
+    z-index: 2;
   }
 
+  /* 5. GRID & ICON ADJUSTMENTS */
   .main-icons-container {
     gap: 20px;
   }
 
   .system-icons, .project-icons {
-    gap: 10px;
+    gap: 15px;
     justify-content: center;
   }
 
   .project-row {
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
   }
 
   .folder {
-    width: 80px; 
+    width: 80px;
     padding: 2px;
   }
 
@@ -391,16 +421,19 @@ body {
     font-size: 11px;
   }
 
-  /* CENTERED RESUME ICONS FOR MOBILE */
+  /* 6. RESUME ICONS (BOTTOM) */
+  /* These will now sit at the bottom of the scrollable area */
   .resume-icons {
-    position: static;
+    position: relative; /* In flow of document */
+    top: auto;
+    right: auto;
     display: flex;
     flex-direction: row;
     justify-content: center;
     width: 100%;
     gap: 20px;
-    margin-top: 30px;
-    padding-bottom: 40px;
+    margin-top: 50px;    /* Space from projects */
+    padding-bottom: 50px; /* Space from bottom of phone screen */
   }
 
   .doc-icon-image {
@@ -413,10 +446,13 @@ body {
     height: 60px;
   }
 
+  /* 7. WINDOWS */
   .window {
-    width: 90vw !important; 
+    width: 90vw !important;
     max-height: 70vh;
     overflow-y: auto;
+    /* Ensure windows are fixed relative to screen so they don't scroll away when you read them? 
+       Actually, standard OS behavior is absolute. We keep absolute. */
   }
 
   .window-header {
