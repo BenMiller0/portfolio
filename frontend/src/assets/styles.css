@@ -123,7 +123,7 @@ body {
 /* ===== Desktop Interface ===== */
 .desktop {
   position: relative;
-  height: calc(100vh - 40px);
+  height: calc(100vh - 45px);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -133,7 +133,7 @@ body {
 .main-icons-container {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 45px;
 }
 
 .system-icons, .project-icons {
@@ -293,6 +293,28 @@ body {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+.github-icon-image {
+  width: 80px;
+  height: 80px;
+  background-image: url('/github.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  margin-bottom: 5px;
+
+}
+
+.linkedin-icon-image {
+  width: 80px;
+  height: 80px;
+  background-image: url('/linkedIn.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  margin-bottom: 5px;
+
+}
+
 .doc-icon .folder-name {
   color: white;
   font-size: 12px;
@@ -302,124 +324,138 @@ body {
 }
 
 /* ===== Mobile-Specific Styles ===== */
+/* ===== Mobile-Specific Styles ===== */
 @media (max-width: 768px) {
-  body {
-    overflow-y: auto;
+  /* 1. FORCE ROOT SCROLLING */
+  /* This overrides any desktop 'overflow: hidden' locks */
+  html, body {
+    overflow-y: auto !important; /* Force vertical scroll */
+    overflow-x: hidden;          /* Prevent horizontal scroll */
+    height: auto !important;     /* Allow body to grow with content */
+    min-height: 100%;            /* Ensure it covers full screen at minimum */
+    position: static !important; /* Remove 'fixed' lock if present */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
 
+  /* 2. KEEP BACKGROUND FIXED */
+  /* The background stays still while you scroll the content over it */
   .desktop-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background-size: 50px 50px;
+    z-index: 0;
   }
 
+  /* 3. LOGO & BRANDING POSITIONING */
+  /* Change to absolute so they scroll up and away */
   .triton-logo {
     display: none;
   }
 
-  .name-display,
-  .school-display {
-    position: static;
-    transform: none;
-    margin-top: 2rem;
-    padding: 0 1rem;
-    text-align: left;
-    font-size: clamp(1.5rem, 8vw, 2.5rem);
+  .name-display {
+    position: absolute; /* absolute makes it scroll with the page */
+    top: 50px;
+    left: 0;
+    width: 100%;
+    font-size: 1.8rem;
+    padding: 0 10px;
+    z-index: 1;
   }
 
   .school-display {
-    margin-top: 0.5rem;
-    font-size: clamp(1rem, 4vw, 1.2rem);
+    position: absolute;
+    top: 90px; /* Below name */
+    left: 0;
+    width: 100%;
+    font-size: 0.9rem;
+    z-index: 1;
   }
 
+  /* 4. CONTENT CONTAINER */
+  /* Allow this to grow as tall as needed */
   .desktop {
-    padding: 1rem;
-    height: auto;
-    display: block;
-  }
-
-  .main-icons-container {
+    position: relative;
+    height: auto !important; /* override desktop fixed height */
+    min-height: 100vh;
+    padding: 10px;
+    padding-top: 150px; /* Push content below the name header */
     display: flex;
     flex-direction: column;
+    overflow: visible; /* Let children expand the container */
+    z-index: 2;
+  }
+
+  /* 5. GRID & ICON ADJUSTMENTS */
+  .main-icons-container {
     gap: 20px;
   }
 
   .system-icons, .project-icons {
-    flex-direction: column;
-    align-items: flex-start;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  .project-row {
+    justify-content: center;
     gap: 15px;
   }
 
   .folder {
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    width: 80px;
+    padding: 2px;
   }
 
   .folder-icon {
-    width: 40px;
-    height: 30px;
-    margin-bottom: 0;
-    margin-right: 15px;
+    width: 60px;
+    height: 45px;
   }
 
   .folder-icon:after {
-    display: none;
+    width: 25px;
   }
 
   .folder-name {
-    font-size: 1rem;
+    font-size: 11px;
   }
 
-  .folder:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .folder:hover .folder-icon {
-    transform: none;
-    box-shadow: none;
-  }
-
+  /* 6. RESUME ICONS (BOTTOM) */
+  /* These will now sit at the bottom of the scrollable area */
   .resume-icons {
-    position: static;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-    margin-top: 15px;
-  }
-
-  .doc-icon {
+    position: relative; /* In flow of document */
+    top: auto;
+    right: auto;
+    display: flex;
     flex-direction: row;
-    align-items: center;
+    justify-content: center;
     width: 100%;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    gap: 20px;
+    margin-top: 50px;    /* Space from projects */
+    padding-bottom: 50px; /* Space from bottom of phone screen */
   }
 
   .doc-icon-image {
-    width: 40px;
-    height: 45px;
-    margin-bottom: 0;
-    margin-right: 15px;
+    width: 50px;
+    height: 60px;
   }
 
+  .github-icon-image, .linkedin-icon-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* 7. WINDOWS */
   .window {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 95% !important;
-    max-width: 500px;
-    height: auto !important;
-    max-height: 90vh !important;
-    overflow-y: auto !important;
-    margin: auto !important;
+    width: 90vw !important;
+    max-height: 70vh;
+    overflow-y: auto;
+    /* Ensure windows are fixed relative to screen so they don't scroll away when you read them? 
+       Actually, standard OS behavior is absolute. We keep absolute. */
   }
 
   .window-header {
-    cursor: default;
+    padding: 10px;
   }
 }
