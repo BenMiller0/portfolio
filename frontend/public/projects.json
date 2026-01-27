@@ -3,7 +3,7 @@
     "id": "project1",
     "label": "Interactive Robotic Figure in C/C++",
     "title": "Interactive Robotic Figure in C/C++",
-    "description": "Achieved real-time audio-to-motion translation for an interactive robotic figure, demonstrated through 100+ live conversation demos and 16K+ social media views, by developing an embedded C++ audio processing pipeline that synchronizes voice actor speech with robotic mouth movement via I2C communication. Improved embedded system performance by designing a multithreaded architecture for concurrent audio processing and motor control, reducing CPU usage and ensuring responsive, lifelike motion.",
+    "description": "Achieved real-time audio-to-motion translation for an interactive robotic figure, demonstrated through 100+ live conversation demos and 16K+ social media views, by developing an embedded C++ audio processing pipeline that synchronizes voice actor speech with robotic mouth movement via I2C communication. Improved embedded system performance by designing a multithreaded architecture for concurrent audio processing and motor control, optimizing CPU usage and ensuring responsive, lifelike motion.",
     "technologies": "C, C++, Raspberry Pi, Arduino, Servo Motors",
     "github": "https://github.com/BenMiller0/teaAnimatronic"
   },
