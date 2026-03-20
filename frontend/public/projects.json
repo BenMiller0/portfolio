@@ -11,7 +11,7 @@
     "id": "project2",
     "label": "AI Gesture Control Python",
     "title": "AI Camera-Based Gesture Response System in Python",
-    "description": "Deployed a real-time computer vision system on an AI Accelerator Camera by tuning inferencing in Python to enable low-latency, responsive gesture-control for an interactive storytelling attraction on campus.",
+    "description": "Deployed a real-time computer vision system on an AI Accelerator Camera by tuning inferencing in Python to enable low-latency, responsive gesture-control.",
     "technologies": "Python, AI/ML, Computer Vision, COCO Keypoints Dataset",
     "github": "https://github.com/BenMiller0/AI-Camera-Based-Gesture-Response-System-in-Python"
   },
@@ -23,22 +23,23 @@
     "technologies": "JavaScript, HTML, CSS, Jest, CI/CD",
     "github": "https://github.com/cse110-sp25-group11/card-game"
   },
-  {
+    {
     "id": "project4",
+    "label": "Grade Prediction AI Model",
+    "title": "Grade Prediction AI Model",
+    "description": "Built and evaluated linear regression and machine learning models to investigate the correlation between physical ride characteristics and guest demand (proxied by wait times).",
+    "technologies": "Python, Pandas, NumPy, Scikit-Learn",
+    "github": "https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times"
+  },
+  {
+    "id": "project5",
     "label": "TEA @ UCSD Site",
     "title": "Themed Entertainment Association at UCSD Website",
     "description": "Developed and maintained the Themed Entertainment Association at UCSD’s website using Tailwind CSS, significantly boosting the club’s digital presence and increasing online engagement and visibility.",
     "technologies": "Tailwind CSS, HTML, JavaScript, Github Actions",
     "github": "https://github.com/BenMiller0/teaatucsdsite"
   },
-  {
-    "id": "project5",
-    "label": "Grade Prediction AI Model",
-    "title": "Grade Prediction AI Model",
-    "description": "A PyTorch-based machine learning model that predicts a student's final letter grade in a target course using their past academic performance and public course data.",
-    "technologies": "Python, Pytorch, Pandas",
-    "github": "https://github.com/BenMiller0/GradePredictionModel"
-  }, {
+ {
     "id": "project6",
     "label": "Multithreaded File Compressor in C++",
     "title": "Multithreaded File Compressor in C++",
