@@ -25,8 +25,8 @@
   },
     {
     "id": "project4",
-    "label": "Grade Prediction AI Model",
-    "title": "Grade Prediction AI Model",
+    "label": "ML Modeling Theme Park Wait Times",
+    "title": "Predictive Modeling of Theme Park Wait Times",
     "description": "Built and evaluated linear regression and machine learning models to investigate the correlation between physical ride characteristics and guest demand (proxied by wait times).",
     "technologies": "Python, Pandas, NumPy, Scikit-Learn",
     "github": "https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times"
