@@ -76,10 +76,36 @@ const windowsInfo = {
   }
 };
 
-const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style }) => {
+const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style, onBack }) => {
   const windowRef = useRef(null);
   const isDragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
+  const currentZIndex = useRef(style.zIndex || 100);
+
+  // Apply initial z-index when component mounts
+  useEffect(() => {
+    if (windowRef.current) {
+      windowRef.current.style.zIndex = currentZIndex.current;
+    }
+  }, []);
+
+  const bringToFrontImmediate = () => {
+    if (windowRef.current) {
+      // Find the highest z-index among all windows
+      const windows = document.querySelectorAll('.window');
+      const highestZ = Math.max(...Array.from(windows).map(w => parseInt(w.style.zIndex || 0)));
+      const newZIndex = highestZ + 1;
+      
+      // Set z-index directly on DOM element
+      windowRef.current.style.zIndex = newZIndex;
+      currentZIndex.current = newZIndex;
+      
+      // Update React state without triggering re-render that would override
+      if (onFocus) {
+        onFocus();
+      }
+    }
+  };
 
   const startDrag = (clientX, clientY) => {
     if (!windowRef.current) return;
@@ -97,8 +123,7 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
 
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
-    // Trigger onFocus to bring to front
-    onFocus && onFocus();
+    bringToFrontImmediate();
     startDrag(e.clientX, e.clientY);
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -112,8 +137,7 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
   };
 
   const handleTouchStart = (e) => {
-    // Trigger onFocus to bring to front
-    onFocus && onFocus();
+    bringToFrontImmediate();
     const touch = e.touches[0];
     startDrag(touch.clientX, touch.clientY);
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
@@ -135,21 +159,86 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
     <div
       ref={windowRef}
       className="window"
-      onMouseDown={() => onFocus && onFocus()}
-      onTouchStart={() => onFocus && onFocus()}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          bringToFrontImmediate();
+        }
+      }}
       style={{ 
         left: `${position.x}px`, 
         top: `${position.y}px`, 
-        position: 'absolute',
-        ...style // Applies the zIndex
+        position: 'absolute'
+        // Don't apply zIndex from style prop to prevent React overrides
       }}
     >
-      <div className="window-header" onMouseDown={handleMouseDown} onTouchStart={handleTouchStart}>
+      <div className="window-header">
+        {onBack && <button className="back-button" onClick={(e) => { e.stopPropagation(); onClose(); onBack(); }} onTouchEnd={(e) => e.stopPropagation()}>← Back</button>}
         <span>{title}</span>
         <button className="close-button" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => e.stopPropagation()}>&times;</button>
       </div>
-      <div className="window-content">{children}</div>
+      <div className="window-content" onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          bringToFrontImmediate();
+        }
+      }}>
+        {children}
+      </div>
     </div>
+  );
+};
+
+const ProjectWindowContent = ({ project }) => {
+  const sizeStyles = {
+    small: { maxWidth: '100px', height: 'auto' },
+    medium: { maxWidth: '300px', height: 'auto' },
+    large: { maxWidth: '400px', height: 'auto' },
+    xlarge: { maxWidth: '500px', height: 'auto' }
+  };
+
+  const currentSize = project.imageSize || 'medium';
+
+  return (
+    <>
+      <h2>{project.title}</h2>
+      <p>{project.description}</p>
+      <h3>Technologies Used:</h3>
+      <p>{project.technologies}</p>
+      
+      {project.photos && project.photos.length > 0 && (
+        <>
+          <h3>Project Photos:</h3>
+          <div className="photo-gallery" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+            {project.photos.map((photo, index) => (
+              <img 
+                key={index}
+                src={`/project_photos/${photo}`}
+                alt={`${project.title} - Photo ${index + 1}`}
+                className="project-photo"
+                style={{ 
+                  ...sizeStyles[currentSize],
+                  borderRadius: '8px',
+                  border: '2px solid #ccc',
+                  flex: '1 1 auto',
+                  minWidth: '200px'
+                }}
+              />
+            ))}
+          </div>
+        </>
+      )}
+      
+      {project.miscLink && project.miscLink.displayName && project.miscLink.url && (
+        <h3>
+          <a href={project.miscLink.url} target="_blank" rel="noopener noreferrer">
+            {project.miscLink.displayName}
+          </a>
+        </h3>
+      )}
+      
+      {project.github && <h3><a href={project.github} target="_blank" rel="noopener noreferrer">GitHub</a></h3>}
+    </>
   );
 };
 
@@ -165,7 +254,7 @@ const App = () => {
       .catch(err => console.error('Failed to load projects:', err));
   }, []);
 
-  const openWindow = (id, title, content) => {
+  const openWindow = (id, title, content, onBack = null) => {
     const existingIndex = openWindows.findIndex(win => win.id === id);
     if (existingIndex === -1) {
       const isMobile = window.innerWidth < 768;
@@ -190,13 +279,33 @@ const App = () => {
           title, 
           content, 
           position: { x: Math.max(0, startX), y: Math.max(50, startY) }, 
-          zIndex: zIndexCounter 
+          zIndex: zIndexCounter,
+          onBack 
         }
       ]);
       setZIndexCounter(zIndexCounter + 1);
     } else {
       bringToFront(id);
     }
+  };
+
+  const openMoreProjectsWindow = () => {
+    const moreProjectsContent = (
+      <div className="more-projects-window">
+        <h2>More Projects</h2>
+        <div className="more-projects-grid">
+          {moreProjects.map(p => (
+            <div key={p.id} className="folder" onClick={() => openWindow(p.id, p.title, (
+              <ProjectWindowContent project={p} />
+            ), () => openMoreProjectsWindow())}>
+              <div className="folder-icon" />
+              <div className="folder-name">{p.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+    openWindow('moreProjects', 'More Projects', moreProjectsContent);
   };
 
   const closeWindow = (id) => setOpenWindows(openWindows.filter(win => win.id !== id));
@@ -206,12 +315,18 @@ const App = () => {
   };
 
   const bringToFront = (id) => {
-    setOpenWindows(prev => prev.map(win => win.id === id ? { ...win, zIndex: zIndexCounter } : win));
-    setZIndexCounter(prev => prev + 1);
+    setZIndexCounter(prev => {
+      const newZIndex = prev + 1;
+      setOpenWindows(windows => windows.map(win => win.id === id ? { ...win, zIndex: newZIndex } : win));
+      return newZIndex;
+    });
   };
 
   const chunkProjects = (arr, size) => Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size));
-  const projectChunks = chunkProjects(projects, 3);
+  const mainProjects = projects.slice(0, 3);
+  const moreProjects = projects.slice(3);
+  const projectChunks = chunkProjects(mainProjects, 3);
+  const moreProjectsChunks = chunkProjects(moreProjects, 3);
 
   return (
     <>
@@ -237,19 +352,12 @@ const App = () => {
               <div className="folder-name">LinkedIn</div>
             </a>
           </div>
-
           <div className="projects-container">
             {projectChunks.map((chunk, chunkIndex) => (
               <div key={chunkIndex} className="project-row">
                 {chunk.map(p => (
                   <div key={p.id} className="folder" onClick={() => openWindow(p.id, p.title, (
-                    <>
-                      <h2>{p.title}</h2>
-                      <p>{p.description}</p>
-                      <h3>Technologies Used:</h3>
-                      <p>{p.technologies}</p>
-                      {p.github && <h3><a href={p.github} target="_blank" rel="noopener noreferrer">GitHub</a></h3>}
-                    </>
+                    <ProjectWindowContent project={p} />
                   ))}>
                     <div className="folder-icon" />
                     <div className="folder-name">{p.label}</div>
@@ -257,6 +365,14 @@ const App = () => {
                 ))}
               </div>
             ))}
+            {moreProjects.length > 0 && (
+              <div className="project-row">
+                <div className="folder" onClick={() => openMoreProjectsWindow()}>
+                  <div className="folder-icon" style={{ background: '#4a90e2' }} />
+                  <div className="folder-name">More Projects</div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -281,6 +397,7 @@ const App = () => {
           position={win.position}
           onDrag={updateWindowPosition}
           onFocus={() => bringToFront(win.id)}
+          onBack={win.onBack}
           style={{ zIndex: win.zIndex }}
         >
           {win.content}

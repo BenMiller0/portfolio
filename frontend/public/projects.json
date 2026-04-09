@@ -5,46 +5,64 @@
     "title": "Interactive Robotic Figure in C/C++",
     "description": "Achieved real-time audio-to-motion translation for an interactive robotic figure, demonstrated through 100+ live conversation demos and 16K+ social media views, by developing an embedded C++ audio processing pipeline that synchronizes voice actor speech with robotic mouth movement via I2C communication. Improved embedded system performance by designing a multithreaded architecture for concurrent audio processing and motor control, optimizing CPU usage and ensuring responsive, lifelike motion.",
     "technologies": "C, C++, Raspberry Pi, Arduino, Servo Motors",
-    "github": "https://github.com/BenMiller0/teaAnimatronic"
+    "github": "https://github.com/BenMiller0/teaAnimatronic",
+    "photos": ["Taro.png"],
+    "imageSize": "small",
+    "miscLink": {"displayName": "Demo Video", "url": "https://www.youtube.com/watch?v=8_HPtF_c1NU"}
   },
   {
     "id": "project2",
-    "label": "AI Gesture Control Python",
-    "title": "AI Camera-Based Gesture Response System in Python",
-    "description": "Deployed a real-time computer vision system on an AI Accelerator Camera by tuning inferencing in Python to enable low-latency, responsive gesture-control.",
-    "technologies": "Python, AI/ML, Computer Vision, COCO Keypoints Dataset",
-    "github": "https://github.com/BenMiller0/AI-Camera-Based-Gesture-Response-System-in-Python"
+    "label": "Computer Vision Spell Casting",
+    "title": "Computer Vision based spell detection",
+    "description": "Built a distributed edge-AI interactive system for the Qualcomm Multiverse Hackathon using a custom Andriod app and Arduino UNO Q, combining on-device computer vision and speech recognition to detect “wand spells” that trigger real-time hardware actuation (motors, LED matrix). Designed a multi-device architecture using MQTT where mobile AI inference publishes events to an embedded broker controlling physical hardware, with a Python/Flask dashboard streaming live spell events across the network.",
+    "technologies": "Python, AI/ML, Computer Vision, Aurdino UNO Q [Linux machine + Microcontroller]",
+    "github": "https://github.com/BenMiller0/computer_vision_spell_casting",
+    "photos": ["wand_spell_caster.jpg","full_wand_system.jpg"],
+    "imageSize": "small",
+    "miscLink": {"displayName": "Project Page", "url": "https://devpost.com/software/muggle-wand-training"}
   },
   {
     "id": "project3",
-    "label": "Campus Events Planner Application",
-    "title": "Campus Events Planner Web Application in JavaScript",
-    "description": "Developed a functional web application for discovering and organizing campus events with HTML, CSS, and JavaScript and integrating a storage system for event tracking, as measured by consistent user engagement and successful event sign-ups during user testing.",
-    "technologies": "JavaScript, HTML, CSS, Jest, CI/CD",
-    "github": "https://github.com/cse110-sp25-group11/card-game"
-  },
-    {
-    "id": "project4",
     "label": "ML Modeling Theme Park Wait Times",
     "title": "Predictive Modeling of Theme Park Wait Times",
     "description": "Built and evaluated linear regression and machine learning models to investigate the correlation between physical ride characteristics and guest demand (proxied by wait times).",
     "technologies": "Python, Pandas, NumPy, Scikit-Learn",
-    "github": "https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times"
+    "github": "https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times",
+    "photos": [],
+    "imageSize": "medium",
+    "miscLink": {"displayName": "", "url": ""}
+  },
+  {
+    "id": "project4",
+    "label": "Campus Events Planner Application",
+    "title": "Campus Events Planner Web Application in JavaScript",
+    "description": "Developed a functional web application for discovering and organizing campus events with HTML, CSS, and JavaScript and integrating a storage system for event tracking, as measured by consistent user engagement and successful event sign-ups during user testing.",
+    "technologies": "JavaScript, HTML, CSS, Jest, CI/CD",
+    "github": "https://github.com/cse110-sp25-group11/card-game",
+    "photos": [],
+    "imageSize": "medium",
+    "miscLink": {"displayName": "", "url": ""}
   },
   {
     "id": "project5",
     "label": "TEA @ UCSD Site",
     "title": "Themed Entertainment Association at UCSD Website",
-    "description": "Developed and maintained the Themed Entertainment Association at UCSD’s website using Tailwind CSS, significantly boosting the club’s digital presence and increasing online engagement and visibility.",
+    "description": "Developed and maintained the Themed Entertainment Association at UCSD's website using Tailwind CSS, significantly boosting the club's digital presence and increasing online engagement and visibility.",
     "technologies": "Tailwind CSS, HTML, JavaScript, Github Actions",
-    "github": "https://github.com/BenMiller0/teaatucsdsite"
+    "github": "https://github.com/BenMiller0/teaatucsdsite",
+    "photos": [],
+    "imageSize": "medium",
+    "miscLink": {"displayName": "", "url": ""}
   },
- {
+  {
     "id": "project6",
     "label": "Multithreaded File Compressor in C++",
     "title": "Multithreaded File Compressor in C++",
     "description": "Multithreaded application for high speed file compression",
     "technologies": "C++, Makefile",
-    "github": "https://github.com/BenMiller0/multiThreadedCompressor"
+    "github": "https://github.com/BenMiller0/multiThreadedCompressor",
+    "photos": [],
+    "imageSize": "medium",
+    "miscLink": {"displayName": "", "url": ""}
   }
 ]
