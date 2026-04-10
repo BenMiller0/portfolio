@@ -9,14 +9,13 @@ const windowsInfo = {
     content: (
       <>
         <h2>About Me</h2>
-        I am a third year computer science student at UC San Diego with a 3.8 GPA. I have gained experience across embedded systems, machine learning, and full-stack development.
-        My background combines hands-on hardware integration with software engineering, allowing me to contribute effectively to interdisciplinary projects that bridge physical systems and intelligent software solutions.
+        As a third-year Computer Science student at UC San Diego (GPA 3.8), I have experience in embedded systems, AI/ML, and full-stack development. I’ve built real-time hardware control systems, machine learning systems, and full-stack apps, combining hardware integration with software engineering to deliver interdisciplinary solutions.
         <h3>Skills</h3>
         <p><b>Programming Languages:</b> C, C++, ARM Assembly, System Verilog, Python, MATLAB, Java, JavaScript, TypeScript</p>
-        <p><b>Hardware:</b> ESP 32, Raspberry Pi, Aurdino</p>
-        <p><b>Web Development:</b> jQuery, Hugo, Node.js, React, CSS, HTML, REST APIs, Vite, Express</p>
-        <p><b>Machine Learning:</b> PyTorch, NumPy, Computer Vision, Pandas</p>
-        <p><b>Operating Systems:</b> Linux, macOS, Windows</p>
+        <p><b>Embedded Systems:</b> FreeRTOS, I2C, PWM, GPIO, ESP32, Servos, Raspberry Pi</p>
+        <p><b>Web Development:</b> Flask, FastAPI, React, Node.js, REST APIs, Tailwind CSS, HTML, Vite, Express</p>
+        <p><b>Machine Learning:</b> NumPy, PyTorch, Pandas, scikit-learn, OpenCV</p>
+        <p><b>Tools & DevOps:</b> Linux, Git, Docker, CI/CD, Bash, Agile/Scrum, Virtual Machines</p>
       </>
     )
   },
@@ -199,10 +198,22 @@ const ProjectWindowContent = ({ project }) => {
 
   const currentSize = project.imageSize || 'medium';
 
+  const renderBulletPoints = (description) => {
+    if (!description) return null;
+    const lines = description.split('\n');
+    return (
+      <ul>
+        {lines.map((line, index) => (
+          <li key={index}>{line}</li>
+        ))}
+      </ul>
+    );
+  };
+
   return (
     <>
       <h2>{project.title}</h2>
-      <p>{project.description}</p>
+      {renderBulletPoints(project.description)}
       <h3>Technologies Used:</h3>
       <p>{project.technologies}</p>
       
@@ -298,7 +309,9 @@ const App = () => {
             <div key={p.id} className="folder" onClick={() => openWindow(p.id, p.title, (
               <ProjectWindowContent project={p} />
             ), () => openMoreProjectsWindow())}>
-              <div className="folder-icon" />
+              <div className="folder-icon">
+                {p.icon && <div className="folder-emoji">{p.icon}</div>}
+              </div>
               <div className="folder-name">{p.label}</div>
             </div>
           ))}
@@ -359,7 +372,9 @@ const App = () => {
                   <div key={p.id} className="folder" onClick={() => openWindow(p.id, p.title, (
                     <ProjectWindowContent project={p} />
                   ))}>
-                    <div className="folder-icon" />
+                    <div className="folder-icon">
+                      {p.icon && <div className="folder-emoji">{p.icon}</div>}
+                    </div>
                     <div className="folder-name">{p.label}</div>
                   </div>
                 ))}
