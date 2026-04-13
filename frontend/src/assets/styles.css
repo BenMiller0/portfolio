@@ -617,6 +617,19 @@ body.dark-mode .doc-icon-image {
   transition: filter 0.3s ease;
 }
 
+/* Light mode overrides for specific folders */
+body:not(.dark-mode) .folder-aboutWindow .folder-icon:after {
+  background: linear-gradient(145deg, #3cb371, #2e8b57) !important;
+}
+
+body:not(.dark-mode) .folder-aboutSiteWindow .folder-icon:after {
+  background: linear-gradient(145deg, #d9d9d9, #bfbfbf) !important;
+}
+
+body:not(.dark-mode) .folder-experienceWindow .folder-icon:after {
+  background: linear-gradient(145deg, #ffa500, #cc8400) !important;
+}
+
 /* Dark mode overrides for specific folders */
 body.dark-mode .folder-aboutWindow .folder-icon {
   background: linear-gradient(145deg, #4d8a5d, #3a6d48) !important;
