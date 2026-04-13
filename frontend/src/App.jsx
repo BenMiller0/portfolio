@@ -274,13 +274,15 @@ const App = () => {
       if (isMobile) {
         // Mobile Center Calculation
         const estimatedWidth = Math.min(window.innerWidth * 0.90, 500);
-        startX = (window.innerWidth - estimatedWidth) / 2;
+        startX = (window.innerWidth - estimatedWidth) / 2 + (openWindows.length * 30);
         // Start lower down so it doesn't overlap header, and stagger slightly
-        startY = 140 + (openWindows.length * 20); 
+        startY = 140 + (openWindows.length * 30); 
       } else {
-        // Desktop Cascade
-        startX = 100 + (openWindows.length * 30) % 500;
-        startY = 100 + (openWindows.length * 30) % 300;
+        // Desktop Center Calculation
+        const estimatedWidth = Math.min(window.innerWidth * 0.60, 600);
+        const estimatedHeight = Math.min(window.innerHeight * 0.70, 500);
+        startX = (window.innerWidth - estimatedWidth) / 2 + (openWindows.length * 30);
+        startY = (window.innerHeight - estimatedHeight) / 2 + (openWindows.length * 30);
       }
 
       setOpenWindows([
