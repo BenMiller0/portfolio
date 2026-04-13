@@ -26,9 +26,9 @@ const windowsInfo = {
     content: (
       <>
         <h2>README</h2>
-        <p>This portfolio is designed to look and feel like a desktop environment.</p>
-        <p>Click on folders to open project windows, and drag them around like real windows.</p>
-        <p>Technologies used include React, CSS, Vite, and JSON for data-driven UI generation.</p>
+        <p>This portfolio is designed to look and feel like a desktop environment, showcasing projects in embedded systems, AI/ML, and web development.</p>
+        <p>Click on folders to open project windows, and drag them around like real windows. Use the fullscreen button to expand windows.</p>
+        <p><b>Tech Stack:</b> React 19, Vite, Custom CSS with dark mode, JSON-based project configuration, Font Awesome icons</p>
         <p>Inspired by the simplicity and nostalgia of old OS interfaces.</p>
       </>
     )
@@ -75,7 +75,7 @@ const windowsInfo = {
   }
 };
 
-const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style, onBack }) => {
+const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style, onBack, isFullscreen, onToggleFullscreen }) => {
   const windowRef = useRef(null);
   const isDragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
@@ -122,6 +122,7 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
 
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
+    if (isFullscreen) return;
     bringToFrontImmediate();
     startDrag(e.clientX, e.clientY);
     document.addEventListener('mousemove', handleMouseMove);
@@ -136,6 +137,7 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
   };
 
   const handleTouchStart = (e) => {
+    if (isFullscreen) return;
     bringToFrontImmediate();
     const touch = e.touches[0];
     startDrag(touch.clientX, touch.clientY);
@@ -157,7 +159,7 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
   return (
     <div
       ref={windowRef}
-      className="window"
+      className={`window ${isFullscreen ? 'fullscreen' : ''}`}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
       onClick={(e) => {
@@ -165,17 +167,21 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
           bringToFrontImmediate();
         }
       }}
-      style={{ 
+      style={isFullscreen ? {} : { 
         left: `${position.x}px`, 
         top: `${position.y}px`, 
         position: 'absolute'
-        // Don't apply zIndex from style prop to prevent React overrides
       }}
     >
       <div className="window-header">
         {onBack && <button className="back-button" onClick={(e) => { e.stopPropagation(); onClose(); onBack(); }} onTouchEnd={(e) => e.stopPropagation()}>← Back</button>}
         <span>{title}</span>
-        <button className="close-button" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => e.stopPropagation()}>&times;</button>
+        <div className="window-controls">
+          <button className="fullscreen-button" onClick={(e) => { e.stopPropagation(); onToggleFullscreen && onToggleFullscreen(); }} onTouchEnd={(e) => e.stopPropagation()}>
+            {isFullscreen ? '⤢' : '⛶'}
+          </button>
+          <button className="close-button" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => e.stopPropagation()}>&times;</button>
+        </div>
       </div>
       <div className="window-content" onClick={(e) => {
         if (e.target === e.currentTarget) {
@@ -257,6 +263,7 @@ const App = () => {
   const [projects, setProjects] = useState([]);
   const [openWindows, setOpenWindows] = useState([]);
   const [zIndexCounter, setZIndexCounter] = useState(100);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     fetch('/projects.json')
@@ -264,6 +271,14 @@ const App = () => {
       .then(data => setProjects(data))
       .catch(err => console.error('Failed to load projects:', err));
   }, []);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
 
   const openWindow = (id, title, content, onBack = null) => {
     const existingIndex = openWindows.findIndex(win => win.id === id);
@@ -293,7 +308,8 @@ const App = () => {
           content, 
           position: { x: Math.max(0, startX), y: Math.max(50, startY) }, 
           zIndex: zIndexCounter,
-          onBack 
+          onBack,
+          isFullscreen: false
         }
       ]);
       setZIndexCounter(zIndexCounter + 1);
@@ -311,9 +327,7 @@ const App = () => {
             <div key={p.id} className="folder" onClick={() => openWindow(p.id, p.title, (
               <ProjectWindowContent project={p} />
             ), () => openMoreProjectsWindow())}>
-              <div className="folder-icon">
-                {p.icon && <div className="folder-emoji">{p.icon}</div>}
-              </div>
+              <div className="folder-icon"></div>
               <div className="folder-name">{p.label}</div>
             </div>
           ))}
@@ -337,6 +351,32 @@ const App = () => {
     });
   };
 
+  const toggleFullscreen = (id) => {
+    setOpenWindows(windows => windows.map(win => {
+      if (win.id === id) {
+        const newFullscreen = !win.isFullscreen;
+        if (newFullscreen) {
+          return { ...win, isFullscreen: true, position: { x: 0, y: 0 } };
+        } else {
+          const isMobile = window.innerWidth < 768;
+          let startX, startY;
+          if (isMobile) {
+            const estimatedWidth = Math.min(window.innerWidth * 0.90, 500);
+            startX = (window.innerWidth - estimatedWidth) / 2;
+            startY = 140;
+          } else {
+            const estimatedWidth = Math.min(window.innerWidth * 0.60, 600);
+            const estimatedHeight = Math.min(window.innerHeight * 0.70, 500);
+            startX = (window.innerWidth - estimatedWidth) / 2;
+            startY = (window.innerHeight - estimatedHeight) / 2;
+          }
+          return { ...win, isFullscreen: false, position: { x: Math.max(0, startX), y: Math.max(50, startY) } };
+        }
+      }
+      return win;
+    }));
+  };
+
   const chunkProjects = (arr, size) => Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size));
   const mainProjects = projects.slice(0, 3);
   const moreProjects = projects.slice(3);
@@ -353,7 +393,7 @@ const App = () => {
         <div className="main-icons-container">
           <div className="system-icons">
             {Object.entries(windowsInfo).map(([id, win]) => (
-              <div key={id} className="folder" onClick={() => openWindow(id, win.title, win.content)}>
+              <div key={id} className={`folder folder-${id}`} onClick={() => openWindow(id, win.title, win.content)}>
                 <div className="folder-icon" style={{ background: win.color }} />
                 <div className="folder-name">{win.label}</div>
               </div>
@@ -374,9 +414,7 @@ const App = () => {
                   <div key={p.id} className="folder" onClick={() => openWindow(p.id, p.title, (
                     <ProjectWindowContent project={p} />
                   ))}>
-                    <div className="folder-icon">
-                      {p.icon && <div className="folder-emoji">{p.icon}</div>}
-                    </div>
+                    <div className="folder-icon"></div>
                     <div className="folder-name">{p.label}</div>
                   </div>
                 ))}
@@ -385,7 +423,7 @@ const App = () => {
             {moreProjects.length > 0 && (
               <div className="project-row">
                 <div className="folder" onClick={() => openMoreProjectsWindow()}>
-                  <div className="folder-icon" style={{ background: '#4a90e2' }} />
+                  <div className="folder-icon" />
                   <div className="folder-name">More Projects</div>
                 </div>
               </div>
@@ -416,10 +454,20 @@ const App = () => {
           onFocus={() => bringToFront(win.id)}
           onBack={win.onBack}
           style={{ zIndex: win.zIndex }}
+          isFullscreen={win.isFullscreen}
+          onToggleFullscreen={() => toggleFullscreen(win.id)}
         >
           {win.content}
         </Window>
       ))}
+
+      <button 
+        className={`dark-mode-toggle ${darkMode ? 'dark' : 'light'}`}
+        onClick={() => setDarkMode(!darkMode)}
+      >
+        <span className="toggle-icon">{darkMode ? '☀️' : '🌙'}</span>
+        <span className="toggle-track"></span>
+      </button>
     </>
   );
 };

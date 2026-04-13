@@ -208,13 +208,33 @@ body {
 /* ===== Windows ===== */
 .window {
   position: absolute;
-  width: min(90%, 500px);
+  width: fit-content;
+  max-width: 90vw;
+  min-width: 400px;
   border: 1px solid #2c3e50;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   background: rgba(255, 255, 255, 0.95);
   border-radius: 5px;
   z-index: 10;
   user-select: none;
+}
+
+.window.fullscreen {
+  position: fixed !important;
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  border-radius: 0;
+  border: none;
+  z-index: 3000 !important;
+}
+
+.window.fullscreen .window-header {
+  border-radius: 0;
 }
 
 .window-header {
@@ -228,6 +248,26 @@ body {
   border-radius: 5px 5px 0 0;
   font-weight: bold;
   letter-spacing: 0.5px;
+}
+
+.window-controls {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.fullscreen-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: background-color 0.2s ease;
+}
+
+.fullscreen-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .close-button {
@@ -264,9 +304,14 @@ body {
 .window-content {
   padding: 15px;
   min-height: 200px;
+  max-width: 800px;
   background: white;
   color: #2c3e50;
   user-select: text;
+}
+
+.window.fullscreen .window-content {
+  max-width: none;
 }
 
 .window-content h2 {
@@ -383,6 +428,221 @@ body {
   text-align: center;
   text-shadow: 1px 1px 1px black;
   word-break: break-word;
+}
+
+/* ===== Dark Mode Toggle ===== */
+.dark-mode-toggle {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 70px;
+  height: 35px;
+  background: linear-gradient(145deg, #2c3e50, #34495e);
+  border: 2px solid #3498db;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dark-mode-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode-toggle:active {
+  transform: scale(0.95);
+}
+
+.toggle-icon {
+  font-size: 20px;
+  z-index: 2;
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.dark-mode-toggle.dark .toggle-icon {
+  transform: translateX(25px);
+}
+
+.toggle-track {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background: linear-gradient(145deg, #f39c12, #e67e22);
+  border-radius: 50%;
+  left: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 1;
+}
+
+.dark-mode-toggle.dark .toggle-track {
+  left: 40px;
+  background: linear-gradient(145deg, #f1c40f, #f39c12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* ===== Dark Mode Styles ===== */
+body.dark-mode {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+body.dark-mode .desktop-background {
+  background:
+    linear-gradient(135deg, #0f0f2e 0%, #0c163e 50%, #082a50 100%),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="50" height="50" x="0" y="0" fill="%236ECFF5" opacity="0.03"/><rect width="50" height="50" x="50" y="50" fill="%236ECFF5" opacity="0.03"/></svg>');
+}
+
+body.dark-mode .desktop-background::before {
+  background-image:
+    linear-gradient(rgba(110, 207, 245, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110, 207, 245, 0.08) 1px, transparent 1px);
+  opacity: 0.5;
+}
+
+body.dark-mode .name-display {
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(110, 207, 245, 0.6), 0 0 40px rgba(110, 207, 245, 0.3);
+}
+
+body.dark-mode .school-display {
+  background: linear-gradient(90deg, #6ECFF5, #00A3E0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.dark-mode .folder-icon {
+  background: linear-gradient(145deg, #4a6fa5, #2d4a6f);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 15px rgba(110, 207, 245, 0.1);
+}
+
+body.dark-mode .folder-icon:after {
+  background: linear-gradient(145deg, #2d4a6f, #1a2f4a);
+}
+
+body.dark-mode .folder:hover {
+  background-color: rgba(110, 207, 245, 0.15);
+}
+
+body.dark-mode .folder-name {
+  color: #f0f0f0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+body.dark-mode .window {
+  background: rgba(26, 33, 62, 0.96);
+  border: 1px solid #3a4a6a;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(110, 207, 245, 0.05);
+}
+
+body.dark-mode .window-header {
+  background: linear-gradient(to right, #1a2f4a, #16213e);
+  border-bottom: 1px solid #3a4a6a;
+}
+
+body.dark-mode .window-content {
+  background: rgba(20, 26, 50, 0.98);
+  color: #f0f0f0;
+}
+
+body.dark-mode .window-content h2 {
+  color: #6ECFF5;
+  border-bottom: 1px solid #3a4a6a;
+  text-shadow: 0 0 10px rgba(110, 207, 245, 0.3);
+}
+
+body.dark-mode .window-content h3 {
+  color: #00A3E0;
+}
+
+body.dark-mode .window-content a {
+  color: #6ECFF5;
+}
+
+body.dark-mode .window-content a:hover {
+  color: #00A3E0;
+}
+
+body.dark-mode .more-projects-window {
+  background: rgba(20, 26, 50, 0.98);
+}
+
+body.dark-mode .more-projects-grid .folder-name {
+  color: #f0f0f0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+body.dark-mode .more-projects-grid .folder-icon {
+  background: linear-gradient(145deg, #4a6fa5, #2d4a6f);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 15px rgba(110, 207, 245, 0.1);
+}
+
+body.dark-mode .more-projects-grid .folder-icon:after {
+  background: linear-gradient(145deg, #2d4a6f, #1a2f4a);
+}
+
+body.dark-mode .window.fullscreen {
+  position: fixed !important;
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(20, 20, 30, 0.98);
+  border: none;
+  z-index: 3000 !important;
+}
+
+body.dark-mode .github-icon-image {
+  filter: grayscale(100%) brightness(1.5);
+  transition: filter 0.3s ease;
+}
+
+body.dark-mode .linkedin-icon-image {
+  filter: brightness(0.7);
+  transition: filter 0.3s ease;
+}
+
+body.dark-mode .doc-icon-image {
+  filter: brightness(0.8);
+  transition: filter 0.3s ease;
+}
+
+/* Dark mode overrides for specific folders */
+body.dark-mode .folder-aboutWindow .folder-icon {
+  background: linear-gradient(145deg, #4d8a5d, #3a6d48) !important;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(76, 175, 80, 0.25) !important;
+}
+
+body.dark-mode .folder-aboutWindow .folder-icon:after {
+  background: linear-gradient(145deg, #3a6d48, #2f4a38) !important;
+}
+
+body.dark-mode .folder-aboutSiteWindow .folder-icon {
+  background: linear-gradient(145deg, #7a7a7a, #5d5d5d) !important;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(200, 200, 200, 0.2) !important;
+}
+
+body.dark-mode .folder-aboutSiteWindow .folder-icon:after {
+  background: linear-gradient(145deg, #5d5d5d, #4a4a4a) !important;
+}
+
+body.dark-mode .folder-experienceWindow .folder-icon {
+  background: linear-gradient(145deg, #8a6a4d, #6d523a) !important;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 152, 0, 0.25) !important;
+}
+
+body.dark-mode .folder-experienceWindow .folder-icon:after {
+  background: linear-gradient(145deg, #6d523a, #5a422f) !important;
 }
 
 /* ===== Mobile-Specific Styles ===== */
