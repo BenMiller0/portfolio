@@ -11,12 +11,10 @@ A personal portfolio website built with **React** and **Vite**, featuring a desk
 - **Frontend:** React 19 + Vite  
 - **Styling:** Custom CSS with dark mode support  
 - **Data Management:** JSON-based project configuration  
-- **Deployment:** Render (Static Site)  
-- **Icons:** Font Awesome  
 
 ---
 
-## ✨ Features
+## Features
 
 - Desktop-inspired interface with draggable windows
 - Responsive design supporting both desktop and mobile
@@ -28,7 +26,7 @@ A personal portfolio website built with **React** and **Vite**, featuring a desk
 
 ---
 
-## 📁 Featured Projects
+## Featured Projects
 
 The portfolio showcases diverse projects including:
 
@@ -41,7 +39,7 @@ The portfolio showcases diverse projects including:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -52,7 +50,7 @@ The portfolio showcases diverse projects including:
 1. Clone the repository:
 ```bash
 git clone https://github.com/BenMiller0/portfolio.git
-cd portfolio/frontend
+cd portfolio/app
 ```
 
 2. Install dependencies:
@@ -72,16 +70,21 @@ npm run build
 
 ---
 
-## 📝 Project Structure
+## Project Structure
 
 ```
 portfolio/
-├── frontend/
+├── app/
 │   ├── public/
 │   │   ├── projects.json      # Project data configuration
 │   │   └── project_photos/    # Project images
 │   ├── src/
 │   │   ├── App.jsx            # Main application component
+│   │   ├── components/        # React components
+│   │   │   ├── Window.jsx
+│   │   │   └── ProjectWindowContent.jsx
+│   │   ├── data/
+│   │   │   └── windowsInfo.jsx
 │   │   └── assets/
 │   │       └── styles.css     # Custom styling
 │   └── package.json

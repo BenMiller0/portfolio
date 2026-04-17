@@ -347,6 +347,36 @@ html, body {
   overflow-wrap: break-word;
 }
 
+.photo-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.project-photo {
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  flex: 1 1 auto;
+  min-width: 200px;
+  height: auto;
+}
+
+.project-photo-small {
+  max-width: 100px;
+}
+
+.project-photo-medium {
+  max-width: 300px;
+}
+
+.project-photo-large {
+  max-width: 400px;
+}
+
+.project-photo-xlarge {
+  max-width: 500px;
+}
+
 /* ===== More Projects Window ===== */
 .more-projects-window {
   padding: 10px;
@@ -737,7 +767,6 @@ body.dark-mode .folder-experienceWindow .folder-icon:after {
   background: linear-gradient(145deg, #6d523a, #5a422f) !important;
 }
 
-/* ===== Mobile-Specific Styles ===== */
 /* ===== Mobile-Specific Styles ===== */
 @media (max-width: 768px) {
   /* 1. FORCE ROOT SCROLLING */
