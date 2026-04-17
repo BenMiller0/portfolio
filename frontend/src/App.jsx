@@ -159,6 +159,7 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
   return (
     <div
       ref={windowRef}
+      data-window-id={id}
       className={`window ${isFullscreen ? 'fullscreen' : ''}`}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
@@ -291,22 +292,22 @@ const App = () => {
         const estimatedWidth = Math.min(window.innerWidth * 0.90, 500);
         startX = (window.innerWidth - estimatedWidth) / 2 + (openWindows.length * 30);
         // Start lower down so it doesn't overlap header, and stagger slightly
-        startY = 140 + (openWindows.length * 30); 
+        startY = 140 + (openWindows.length * 30);
       } else {
         // Desktop Center Calculation
         const estimatedWidth = Math.min(window.innerWidth * 0.60, 600);
         const estimatedHeight = Math.min(window.innerHeight * 0.70, 500);
         startX = (window.innerWidth - estimatedWidth) / 2 + (openWindows.length * 30);
-        startY = (window.innerHeight - estimatedHeight) / 2 + (openWindows.length * 30);
+        startY = 80 + (openWindows.length * 30);
       }
 
       setOpenWindows([
         ...openWindows,
-        { 
-          id, 
-          title, 
-          content, 
-          position: { x: Math.max(0, startX), y: Math.max(50, startY) }, 
+        {
+          id,
+          title,
+          content,
+          position: { x: Math.max(0, startX), y: Math.max(50, startY) },
           zIndex: zIndexCounter,
           onBack,
           isFullscreen: false
@@ -338,17 +339,19 @@ const App = () => {
   };
 
   const closeWindow = (id) => setOpenWindows(openWindows.filter(win => win.id !== id));
-  
-  const updateWindowPosition = (id, newPos) => {
-    setOpenWindows(openWindows.map(win => win.id === id ? { ...win, position: newPos } : win));
-  };
 
   const bringToFront = (id) => {
-    setZIndexCounter(prev => {
-      const newZIndex = prev + 1;
-      setOpenWindows(windows => windows.map(win => win.id === id ? { ...win, zIndex: newZIndex } : win));
-      return newZIndex;
-    });
+    setOpenWindows(windows => windows.map(win => {
+      if (win.id === id) {
+        return { ...win, zIndex: zIndexCounter };
+      }
+      return win;
+    }));
+    setZIndexCounter(zIndexCounter + 1);
+  };
+
+  const updateWindowPosition = (id, newPos) => {
+    setOpenWindows(openWindows.map(win => win.id === id ? { ...win, position: newPos } : win));
   };
 
   const toggleFullscreen = (id) => {
@@ -375,6 +378,45 @@ const App = () => {
       }
       return win;
     }));
+  };
+
+  const openResumeViewer = (pdfPath, title) => {
+    const windowId = title.replace(/\s+/g, '').toLowerCase();
+    const resumeContent = (
+      <div className="resume-viewer">
+        <h2>{title}</h2>
+        <iframe 
+          src={pdfPath} 
+          className="resume-iframe"
+          title={`${title} Viewer`}
+        />
+        <a 
+          href={pdfPath} 
+          download 
+          className="resume-download-btn"
+        >
+          Download Resume
+        </a>
+      </div>
+    );
+    const existingIndex = openWindows.findIndex(win => win.id === windowId);
+    if (existingIndex === -1) {
+      setOpenWindows([
+        ...openWindows,
+        {
+          id: windowId,
+          title,
+          content: resumeContent,
+          position: { x: 0, y: 0 },
+          zIndex: zIndexCounter,
+          onBack: null,
+          isFullscreen: true
+        }
+      ]);
+      setZIndexCounter(zIndexCounter + 1);
+    } else {
+      bringToFront(windowId);
+    }
   };
 
   const chunkProjects = (arr, size) => Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size));
@@ -432,14 +474,14 @@ const App = () => {
         </div>
 
         <div className="resume-icons">
-          <a href="/hardware_resume.pdf" download className="doc-icon">
+          <div className="doc-icon" onClick={() => openResumeViewer('/hardware_resume.pdf', 'Hardware Resume')}>
             <div className="doc-icon-image" />
             <div className="folder-name">Hardware Resume</div>
-          </a>
-          <a href="/software_resume.pdf" download className="doc-icon">
+          </div>
+          <div className="doc-icon" onClick={() => openResumeViewer('/software_resume.pdf', 'Software Resume')}>
             <div className="doc-icon-image" />
             <div className="folder-name">Software Resume</div>
-          </a>
+          </div>
         </div>
       </div>
 

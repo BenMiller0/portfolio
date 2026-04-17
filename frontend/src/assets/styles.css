@@ -6,8 +6,9 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
+html, body {
   height: 100vh;
+  overflow: hidden;
   position: relative;
 }
 
@@ -210,6 +211,7 @@ body {
   position: absolute;
   width: fit-content;
   max-width: 90vw;
+  max-height: 80vh;
   min-width: 400px;
   border: 1px solid #2c3e50;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
@@ -223,6 +225,7 @@ body {
   position: fixed !important;
   width: 100vw !important;
   max-width: none !important;
+  max-height: none !important;
   height: 100vh !important;
   top: 0 !important;
   left: 0 !important;
@@ -231,6 +234,7 @@ body {
   border-radius: 0;
   border: none;
   z-index: 3000 !important;
+  background: white !important;
 }
 
 .window.fullscreen .window-header {
@@ -305,13 +309,16 @@ body {
   padding: 15px;
   min-height: 200px;
   max-width: 800px;
+  max-height: calc(80vh - 50px);
   background: white;
   color: #2c3e50;
   user-select: text;
+  overflow-y: auto;
 }
 
 .window.fullscreen .window-content {
   max-width: none;
+  max-height: none;
 }
 
 .window-content h2 {
@@ -428,6 +435,78 @@ body {
   text-align: center;
   text-shadow: 1px 1px 1px black;
   word-break: break-word;
+}
+
+/* ===== Resume Viewer ===== */
+.resume-viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  height: 100%;
+}
+
+.resume-viewer h2 {
+  margin: 0 0 10px 0;
+  color: #3498db;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.resume-iframe {
+  width: 100%;
+  height: 60vh;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.window.fullscreen .resume-viewer {
+  height: calc(100vh - 80px);
+}
+
+.window.fullscreen .resume-iframe {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}
+
+.resume-download-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: linear-gradient(145deg, #3498db, #2980b9);
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+}
+
+.resume-download-btn:hover {
+  background: linear-gradient(145deg, #2980b9, #1a5276);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode resume viewer styles */
+body.dark-mode .resume-viewer h2 {
+  color: #6ECFF5;
+  border-bottom: 1px solid #3a4a6a;
+}
+
+body.dark-mode .resume-iframe {
+  border-color: #3a4a6a;
+  background: #1a1a2e;
+}
+
+body.dark-mode .resume-download-btn {
+  background: linear-gradient(145deg, #6ECFF5, #00A3E0);
 }
 
 /* ===== Dark Mode Toggle ===== */
@@ -597,7 +676,7 @@ body.dark-mode .window.fullscreen {
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  background: rgba(20, 20, 30, 0.98);
+  background: #141a32;
   border: none;
   z-index: 3000 !important;
 }
