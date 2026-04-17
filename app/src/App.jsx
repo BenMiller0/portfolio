@@ -36,7 +36,7 @@ const App = () => {
     }
   }, [openWindows]);
 
-  const openWindow = (id, title, content, onBack = null) => {
+  const openWindow = (id, title, content, onBack = null, color = null) => {
     const existingIndex = openWindows.findIndex(win => win.id === id);
     if (existingIndex === -1) {
       const isMobile = window.innerWidth < 768;
@@ -65,7 +65,8 @@ const App = () => {
           position: { x: Math.max(0, startX), y: Math.max(50, startY) },
           zIndex: zIndexCounter,
           onBack,
-          isFullscreen: false
+          isFullscreen: false,
+          color
         }
       ]);
       setZIndexCounter(zIndexCounter + 1);
@@ -167,7 +168,8 @@ const App = () => {
           position: { x: 0, y: 0 },
           zIndex: zIndexCounter,
           onBack: null,
-          isFullscreen: true
+          isFullscreen: true,
+          color: '#cc3333'
         }
       ]);
       setZIndexCounter(zIndexCounter + 1);
@@ -192,8 +194,8 @@ const App = () => {
         <div className="main-icons-container">
           <div className="system-icons">
             {Object.entries(windowsInfo).map(([id, win]) => (
-              <div key={id} className={`folder folder-${id}`} onClick={() => openWindow(id, win.title, win.content)}>
-                <div className="folder-icon" style={{ background: win.color }} />
+              <div key={id} className={`folder folder-${id}`} onClick={() => openWindow(id, win.title, win.content, null, win.color)}>
+                <div className="folder-icon" style={{ '--folder-color': win.color }} />
                 <div className="folder-name">{win.label}</div>
               </div>
             ))}
@@ -255,12 +257,13 @@ const App = () => {
           style={{ zIndex: win.zIndex }}
           isFullscreen={win.isFullscreen}
           onToggleFullscreen={() => toggleFullscreen(win.id)}
+          headerColor={win.color}
         >
           {win.content}
         </Window>
       ))}
 
-      <button 
+      <button
         className={`dark-mode-toggle ${darkMode ? 'dark' : 'light'}`}
         onClick={() => setDarkMode(!darkMode)}
       >

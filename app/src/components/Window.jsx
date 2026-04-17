@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style, onBack, isFullscreen, onToggleFullscreen }) => {
+const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style, onBack, isFullscreen, onToggleFullscreen, headerColor }) => {
   const windowRef = useRef(null);
   const isDragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
@@ -11,6 +11,17 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
       windowRef.current.style.zIndex = currentZIndex.current;
     }
   }, []);
+
+  const getHeaderClassName = () => {
+    if (!headerColor) return 'window-header';
+    const colorMap = {
+      'lightgreen': 'window-header-green',
+      'orange': 'window-header-orange',
+      '#f2f2f2': 'window-header-gray',
+      '#cc3333': 'window-header-red'
+    };
+    return colorMap[headerColor] || 'window-header';
+  };
 
   const bringToFrontImmediate = () => {
     if (windowRef.current) {
@@ -97,7 +108,7 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
         position: 'absolute'
       }}
     >
-      <div className="window-header">
+      <div className={getHeaderClassName()}>
         {onBack && <button className="back-button" onClick={(e) => { e.stopPropagation(); onClose(); onBack(); }} onTouchEnd={(e) => e.stopPropagation()}>← Back</button>}
         <span>{title}</span>
         <div className="window-controls">
