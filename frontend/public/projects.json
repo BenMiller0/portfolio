@@ -30,7 +30,7 @@
     "description": "Built and evaluated linear regression and machine learning models\nInvestigated correlation between physical ride characteristics and guest demand\nUsed wait times as proxy for guest demand",
     "technologies": "Python, Pandas, NumPy, Scikit-Learn",
     "github": "https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times",
-    "photos": [],
+    "photos": ["ML_theme_park_wait_times_predictions.png"],
     "imageSize": "medium",
     "miscLink": {"displayName": "", "url": ""},
     "icon": "🎢"
@@ -42,7 +42,7 @@
     "description": "Developed a functional web application for discovering and organizing campus events\nUsed HTML, CSS, and JavaScript\nIntegrated storage system for event tracking\nMeasured success through consistent user engagement and successful event sign-ups during user testing",
     "technologies": "JavaScript, HTML, CSS, Jest, CI/CD",
     "github": "https://github.com/cse110-sp25-group11/card-game",
-    "photos": [],
+    "photos": ["campus_events_planner.png"],
     "imageSize": "medium",
     "miscLink": {"displayName": "", "url": ""},
     "icon": "📅"
