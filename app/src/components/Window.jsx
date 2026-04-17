@@ -59,6 +59,8 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
 
   const handleTouchStart = (e) => {
     if (isFullscreen) return;
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return; // Disable drag on mobile
     bringToFrontImmediate();
     const touch = e.touches[0];
     startDrag(touch.clientX, touch.clientY);
@@ -102,7 +104,7 @@ const Window = ({ id, title, children, onClose, position, onDrag, onFocus, style
           <button className="fullscreen-button" onClick={(e) => { e.stopPropagation(); onToggleFullscreen && onToggleFullscreen(); }} onTouchEnd={(e) => e.stopPropagation()}>
             {isFullscreen ? '⤢' : '⛶'}
           </button>
-          <button className="close-button" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => e.stopPropagation()}>&times;</button>
+          <button className="close-button" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => e.stopPropagation()} aria-label="Close window">&times;</button>
         </div>
       </div>
       <div className="window-content" onClick={(e) => {

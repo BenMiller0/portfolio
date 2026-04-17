@@ -212,7 +212,6 @@ html, body {
   width: fit-content;
   max-width: 90vw;
   max-height: 80vh;
-  min-width: 400px;
   border: 1px solid #2c3e50;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   background: rgba(255, 255, 255, 0.95);
@@ -359,6 +358,7 @@ html, body {
   flex: 1 1 auto;
   min-width: 200px;
   height: auto;
+  max-width: 100%;
 }
 
 .project-photo-small {
@@ -726,47 +726,6 @@ body.dark-mode .doc-icon-image {
   transition: filter 0.3s ease;
 }
 
-/* Light mode overrides for specific folders */
-body:not(.dark-mode) .folder-aboutWindow .folder-icon:after {
-  background: linear-gradient(145deg, #3cb371, #2e8b57) !important;
-}
-
-body:not(.dark-mode) .folder-aboutSiteWindow .folder-icon:after {
-  background: linear-gradient(145deg, #d9d9d9, #bfbfbf) !important;
-}
-
-body:not(.dark-mode) .folder-experienceWindow .folder-icon:after {
-  background: linear-gradient(145deg, #ffa500, #cc8400) !important;
-}
-
-/* Dark mode overrides for specific folders */
-body.dark-mode .folder-aboutWindow .folder-icon {
-  background: linear-gradient(145deg, #4d8a5d, #3a6d48) !important;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(76, 175, 80, 0.25) !important;
-}
-
-body.dark-mode .folder-aboutWindow .folder-icon:after {
-  background: linear-gradient(145deg, #3a6d48, #2f4a38) !important;
-}
-
-body.dark-mode .folder-aboutSiteWindow .folder-icon {
-  background: linear-gradient(145deg, #7a7a7a, #5d5d5d) !important;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(200, 200, 200, 0.2) !important;
-}
-
-body.dark-mode .folder-aboutSiteWindow .folder-icon:after {
-  background: linear-gradient(145deg, #5d5d5d, #4a4a4a) !important;
-}
-
-body.dark-mode .folder-experienceWindow .folder-icon {
-  background: linear-gradient(145deg, #8a6a4d, #6d523a) !important;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 152, 0, 0.25) !important;
-}
-
-body.dark-mode .folder-experienceWindow .folder-icon:after {
-  background: linear-gradient(145deg, #6d523a, #5a422f) !important;
-}
-
 /* ===== Mobile-Specific Styles ===== */
 @media (max-width: 768px) {
   /* 1. FORCE ROOT SCROLLING */
@@ -891,14 +850,140 @@ body.dark-mode .folder-experienceWindow .folder-icon:after {
 
   /* 7. WINDOWS */
   .window {
-    width: 90vw !important;
-    max-height: 70vh;
+    width: 95vw !important;
+    min-width: unset !important;
+    max-height: 75vh;
     overflow-y: auto;
-    /* Ensure windows are fixed relative to screen so they don't scroll away when you read them? 
-       Actually, standard OS behavior is absolute. We keep absolute. */
+    left: 50% !important;
+    transform: translateX(-50%);
+    top: 100px !important;
+  }
+
+  /* Fullscreen override for mobile */
+  .window.fullscreen {
+    left: 0 !important;
+    transform: none !important;
+    top: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: none !important;
+  }
+
+  /* Disable body scrolling when fullscreen window is open on mobile */
+  body.fullscreen-window-open,
+  html.fullscreen-window-open {
+    overflow: hidden !important;
   }
 
   .window-header {
-    padding: 10px;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .window-content {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .window-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .window-content h3 {
+    font-size: 1rem;
+  }
+
+  .back-button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .close-button, .fullscreen-button {
+    font-size: 18px;
+    padding: 0 8px;
+  }
+
+  /* 8. RESUME VIEWER */
+  .resume-viewer {
+    gap: 10px;
+  }
+
+  .resume-iframe {
+    height: 50vh;
+  }
+
+  .window.fullscreen .resume-iframe {
+    height: calc(100vh - 140px);
+  }
+
+  .resume-download-btn {
+    padding: 14px 28px;
+    font-size: 15px;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .resume-viewer h2 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  /* Mobile-specific message for resume viewer */
+  .resume-viewer p {
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  /* 9. PHOTO GALLERY */
+  .photo-gallery {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .project-photo {
+    min-width: unset;
+    width: 100%;
+    max-width: 100% !important;
+  }
+
+  .project-photo-small,
+  .project-photo-medium,
+  .project-photo-large,
+  .project-photo-xlarge {
+    max-width: 100% !important;
+  }
+
+  /* 9. DARK MODE TOGGLE */
+  .dark-mode-toggle {
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 30px;
+  }
+
+  .toggle-icon {
+    font-size: 16px;
+  }
+
+  .toggle-track {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dark-mode-toggle.dark .toggle-track {
+    left: 35px;
+  }
+
+  /* 10. IMPROVE TOUCH TARGETS */
+  .folder,
+  .doc-icon {
+    padding: 8px;
+  }
+
+  .folder:hover,
+  .doc-icon:hover {
+    background-color: rgba(255, 255, 255, 0.3);
   }
 }

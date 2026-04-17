@@ -25,6 +25,17 @@ const App = () => {
     }
   }, [darkMode]);
 
+  useEffect(() => {
+    const hasFullscreen = openWindows.some(win => win.isFullscreen);
+    if (hasFullscreen) {
+      document.body.classList.add('fullscreen-window-open');
+      document.documentElement.classList.add('fullscreen-window-open');
+    } else {
+      document.body.classList.remove('fullscreen-window-open');
+      document.documentElement.classList.remove('fullscreen-window-open');
+    }
+  }, [openWindows]);
+
   const openWindow = (id, title, content, onBack = null) => {
     const existingIndex = openWindows.findIndex(win => win.id === id);
     if (existingIndex === -1) {
@@ -126,9 +137,11 @@ const App = () => {
 
   const openResumeViewer = (pdfPath, title) => {
     const windowId = title.replace(/\s+/g, '').toLowerCase();
+    const isMobile = window.innerWidth < 768;
     const resumeContent = (
       <div className="resume-viewer">
         <h2>{title}</h2>
+        {isMobile && <p>If the PDF doesn't display below, please use the download button.</p>}
         <iframe 
           src={pdfPath} 
           className="resume-iframe"
