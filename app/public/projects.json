@@ -56,7 +56,7 @@
     "label": "Multithreaded File Compressor in C++",
     "title": "Multithreaded File Compressor in C++",
     "description": "Multithreaded application for high speed file compression\nOptimized for performance using parallel processing",
-    "technologies": "C++, Makefile",
+    "technologies": "C++, Multi-Threading, Makefile",
     "github": "https://github.com/BenMiller0/multiThreadedCompressor",
     "photos": [],
     "imageSize": "medium"

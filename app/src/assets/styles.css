@@ -26,8 +26,6 @@ html, body {
   gap: 20px;
 }
 
-
-
 @keyframes blink {
   from, to { opacity: 0; }
   50% { opacity: 1; }
@@ -520,7 +518,6 @@ html, body {
   background-position: center;
   border-radius: 5px;
   margin-bottom: 5px;
-
 }
 
 .linkedin-icon-image {
@@ -531,7 +528,6 @@ html, body {
   background-position: center;
   border-radius: 5px;
   margin-bottom: 5px;
-
 }
 
 .doc-icon .folder-name {

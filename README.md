@@ -4,6 +4,10 @@
 
 A personal portfolio website built with **React** and **Vite**, featuring a desktop-inspired interface to showcase projects in embedded systems, AI/ML, and web development. The portfolio demonstrates interactive window management, drag-and-drop functionality, and a nostalgic desktop UI experience.
 
+**See [DESIGN.md](./DESIGN.md) for detailed architecture and implementation documentation.**
+
+
+
 ---
 
 ## 🛠 Tech Stack
@@ -74,21 +78,37 @@ npm run build
 
 ```
 portfolio/
-├── app/
-│   ├── public/
-│   │   ├── projects.json      # Project data configuration
-│   │   └── project_photos/    # Project images
-│   ├── src/
-│   │   ├── App.jsx            # Main application component
-│   │   ├── components/        # React components
-│   │   │   ├── Window.jsx
-│   │   │   └── ProjectWindowContent.jsx
-│   │   ├── data/
-│   │   │   └── windowsInfo.jsx
-│   │   └── assets/
-│   │       └── styles.css     # Custom styling
-│   └── package.json
-└── README.md
+├── .gitignore
+├── DESIGN.md
+├── README.md
+└── app/
+    ├── eslint.config.js           # ESLint configuration
+    ├── index.html                 # HTML template
+    ├── package.json               # Dependencies
+    ├── package-lock.json
+    ├── vite.config.js             # Vite configuration
+    ├── public/
+    │   ├── _redirects             # SPA routing configuration
+    │   ├── doc-icon.png           # Document icon
+    │   ├── favcon.png             # Site favicon
+    │   ├── github.png             # GitHub icon
+    │   ├── hardware_resume.pdf    # Hardware resume
+    │   ├── linkedIn.png           # LinkedIn icon
+    │   ├── project_photos/        # Project image assets
+    │   ├── projects.json          # Project data configuration
+    │   └── software_resume.pdf    # Software resume
+    └── src/
+        ├── App.jsx                # Main application component
+        ├── main.jsx               # React entry point
+        ├── assets/
+        │   └── styles.css         # Global styles and theming
+        ├── components/
+        │   └── Window.jsx         # Draggable window component
+        └── windows/
+            ├── ProjectWindowContent.jsx  # Project detail view
+            ├── aboutWindow.jsx          # About me window
+            ├── experienceWindow.jsx     # Experience window
+            └── readmeWindow.jsx         # Site info window
 ```
 
 ---

@@ -1,8 +1,6 @@
 import React from 'react';
 
 const ProjectWindowContent = ({ project }) => {
-  const currentSize = project.imageSize || 'medium';
-
   const renderBulletPoints = (description) => {
     if (!description) return null;
     const lines = description.split('\n');
@@ -31,7 +29,7 @@ const ProjectWindowContent = ({ project }) => {
                 key={index}
                 src={`/project_photos/${photo}`}
                 alt={`${project.title} - Photo ${index + 1}`}
-                className={`project-photo project-photo-${currentSize}`}
+                className={`project-photo project-photo-${project.imageSize || 'medium'}`}
               />
             ))}
           </div>

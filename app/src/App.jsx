@@ -1,8 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import './assets/styles.css';
 import Window from './components/Window';
-import ProjectWindowContent from './components/ProjectWindowContent';
-import { windowsInfo } from './data/windowsInfo.jsx';
+import ProjectWindowContent from './windows/ProjectWindowContent';
+import { aboutWindow } from './windows/aboutWindow';
+import { aboutSiteWindow } from './windows/readmeWindow';
+import { experienceWindow } from './windows/experienceWindow';
+
+// Constants
+const MOBILE_BREAKPOINT = 768;
+const MOBILE_WIDTH_PERCENT = 0.90;
+const MOBILE_MAX_WIDTH = 500;
+const MOBILE_START_Y = 140;
+const DESKTOP_WIDTH_PERCENT = 0.60;
+const DESKTOP_MAX_WIDTH = 600;
+const DESKTOP_HEIGHT_PERCENT = 0.70;
+const DESKTOP_MAX_HEIGHT = 500;
+const DESKTOP_START_Y = 80;
+const MIN_Y = 50;
+const WINDOW_OFFSET = 30;
+
+const windowsInfo = {
+  aboutWindow,
+  aboutSiteWindow,
+  experienceWindow
+};
+
+// Helper Functions
+const isMobileView = () => window.innerWidth < MOBILE_BREAKPOINT;
+
+const calculateWindowPosition = (windowCount, isFullscreen = false) => {
+  if (isFullscreen) {
+    return { x: 0, y: 0 };
+  }
+
+  const mobile = isMobileView();
+  let startX, startY;
+
+  if (mobile) {
+    const estimatedWidth = Math.min(window.innerWidth * MOBILE_WIDTH_PERCENT, MOBILE_MAX_WIDTH);
+    startX = (window.innerWidth - estimatedWidth) / 2 + (windowCount * WINDOW_OFFSET);
+    startY = MOBILE_START_Y + (windowCount * WINDOW_OFFSET);
+  } else {
+    const estimatedWidth = Math.min(window.innerWidth * DESKTOP_WIDTH_PERCENT, DESKTOP_MAX_WIDTH);
+    const estimatedHeight = Math.min(window.innerHeight * DESKTOP_HEIGHT_PERCENT, DESKTOP_MAX_HEIGHT);
+    startX = (window.innerWidth - estimatedWidth) / 2 + (windowCount * WINDOW_OFFSET);
+    startY = DESKTOP_START_Y + (windowCount * WINDOW_OFFSET);
+  }
+
+  return { x: Math.max(0, startX), y: Math.max(MIN_Y, startY) };
+};
+
+const calculateRestorePosition = () => {
+  const mobile = isMobileView();
+  let startX, startY;
+
+  if (mobile) {
+    const estimatedWidth = Math.min(window.innerWidth * MOBILE_WIDTH_PERCENT, MOBILE_MAX_WIDTH);
+    startX = (window.innerWidth - estimatedWidth) / 2;
+    startY = MOBILE_START_Y;
+  } else {
+    const estimatedWidth = Math.min(window.innerWidth * DESKTOP_WIDTH_PERCENT, DESKTOP_MAX_WIDTH);
+    const estimatedHeight = Math.min(window.innerHeight * DESKTOP_HEIGHT_PERCENT, DESKTOP_MAX_HEIGHT);
+    startX = (window.innerWidth - estimatedWidth) / 2;
+    startY = (window.innerHeight - estimatedHeight) / 2;
+  }
+
+  return { x: Math.max(0, startX), y: Math.max(MIN_Y, startY) };
+};
 
 const App = () => {
   const [projects, setProjects] = useState([]);
@@ -39,30 +103,15 @@ const App = () => {
   const openWindow = (id, title, content, onBack = null, color = null) => {
     const existingIndex = openWindows.findIndex(win => win.id === id);
     if (existingIndex === -1) {
-      const isMobile = window.innerWidth < 768;
-      let startX, startY;
-
-      if (isMobile) {
-        // Mobile Center Calculation
-        const estimatedWidth = Math.min(window.innerWidth * 0.90, 500);
-        startX = (window.innerWidth - estimatedWidth) / 2 + (openWindows.length * 30);
-        // Start lower down so it doesn't overlap header, and stagger slightly
-        startY = 140 + (openWindows.length * 30);
-      } else {
-        // Desktop Center Calculation
-        const estimatedWidth = Math.min(window.innerWidth * 0.60, 600);
-        const estimatedHeight = Math.min(window.innerHeight * 0.70, 500);
-        startX = (window.innerWidth - estimatedWidth) / 2 + (openWindows.length * 30);
-        startY = 80 + (openWindows.length * 30);
-      }
-
+      const position = calculateWindowPosition(openWindows.length);
+      
       setOpenWindows([
         ...openWindows,
         {
           id,
           title,
           content,
-          position: { x: Math.max(0, startX), y: Math.max(50, startY) },
+          position,
           zIndex: zIndexCounter,
           onBack,
           isFullscreen: false,
@@ -75,26 +124,27 @@ const App = () => {
     }
   };
 
-  const openMoreProjectsWindow = () => {
-    const moreProjectsContent = (
-      <div className="more-projects-window">
-        <h2>More Projects</h2>
-        <div className="more-projects-grid">
-          {moreProjects.map(p => (
-            <div key={p.id} className="folder" onClick={(e) => { 
-              e.stopPropagation(); 
-              openWindow(p.id, p.title, (
-                <ProjectWindowContent project={p} />
-              ), () => openMoreProjectsWindow()); 
-            }}>
-              <div className="folder-icon"></div>
-              <div className="folder-name">{p.label}</div>
-            </div>
-          ))}
-        </div>
+  const MoreProjectsContent = () => (
+    <div className="more-projects-window">
+      <h2>More Projects</h2>
+      <div className="more-projects-grid">
+        {moreProjects.map(p => (
+          <div key={p.id} className="folder" onClick={(e) => { 
+            e.stopPropagation(); 
+            openWindow(p.id, p.title, (
+              <ProjectWindowContent project={p} />
+            ), () => openMoreProjectsWindow()); 
+          }}>
+            <div className="folder-icon"></div>
+            <div className="folder-name">{p.label}</div>
+          </div>
+        ))}
       </div>
-    );
-    openWindow('moreProjects', 'More Projects', moreProjectsContent);
+    </div>
+  );
+
+  const openMoreProjectsWindow = () => {
+    openWindow('moreProjects', 'More Projects', <MoreProjectsContent />);
   };
 
   const closeWindow = (id) => setOpenWindows(openWindows.filter(win => win.id !== id));
@@ -120,32 +170,20 @@ const App = () => {
         if (newFullscreen) {
           return { ...win, isFullscreen: true, position: { x: 0, y: 0 } };
         } else {
-          const isMobile = window.innerWidth < 768;
-          let startX, startY;
-          if (isMobile) {
-            const estimatedWidth = Math.min(window.innerWidth * 0.90, 500);
-            startX = (window.innerWidth - estimatedWidth) / 2;
-            startY = 140;
-          } else {
-            const estimatedWidth = Math.min(window.innerWidth * 0.60, 600);
-            const estimatedHeight = Math.min(window.innerHeight * 0.70, 500);
-            startX = (window.innerWidth - estimatedWidth) / 2;
-            startY = (window.innerHeight - estimatedHeight) / 2;
-          }
-          return { ...win, isFullscreen: false, position: { x: Math.max(0, startX), y: Math.max(50, startY) } };
+          const position = calculateRestorePosition();
+          return { ...win, isFullscreen: false, position };
         }
       }
       return win;
     }));
   };
 
-  const openResumeViewer = (pdfPath, title) => {
-    const windowId = title.replace(/\s+/g, '').toLowerCase();
-    const isMobile = window.innerWidth < 768;
-    const resumeContent = (
+  const ResumeViewerContent = ({ pdfPath, title }) => {
+    const mobile = isMobileView();
+    return (
       <div className="resume-viewer">
         <h2>{title}</h2>
-        {isMobile && <p>If the PDF doesn't display below, please use the download button.</p>}
+        {mobile && <p>If the PDF doesn't display below, please use the download button.</p>}
         <iframe 
           src={pdfPath} 
           className="resume-iframe"
@@ -160,14 +198,19 @@ const App = () => {
         </a>
       </div>
     );
+  };
+
+  const openResumeViewer = (pdfPath, title) => {
+    const windowId = title.replace(/\s+/g, '').toLowerCase();
     const existingIndex = openWindows.findIndex(win => win.id === windowId);
+    
     if (existingIndex === -1) {
       setOpenWindows([
         ...openWindows,
         {
           id: windowId,
           title,
-          content: resumeContent,
+          content: <ResumeViewerContent pdfPath={pdfPath} title={title} />,
           position: { x: 0, y: 0 },
           zIndex: zIndexCounter,
           onBack: null,
@@ -181,11 +224,12 @@ const App = () => {
     }
   };
 
-  const chunkProjects = (arr, size) => Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size));
+  const chunkProjects = (arr, size) => 
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size));
+  
   const mainProjects = projects.slice(0, 3);
   const moreProjects = projects.slice(3);
   const projectChunks = chunkProjects(mainProjects, 3);
-  const moreProjectsChunks = chunkProjects(moreProjects, 3);
 
   return (
     <>
@@ -197,7 +241,7 @@ const App = () => {
         <div className="main-icons-container">
           <div className="system-icons">
             {Object.entries(windowsInfo).map(([id, win]) => (
-              <div key={id} className={`folder folder-${id}`} onClick={() => openWindow(id, win.title, win.content, null, win.color)}>
+              <div key={id} className={`folder folder-${id}`} onClick={() => openWindow(id, win.title, <win.component />, null, win.color)}>
                 <div className="folder-icon" style={{ '--folder-color': win.color }} />
                 <div className="folder-name">{win.label}</div>
               </div>
