@@ -8,8 +8,7 @@
     "github": "https://github.com/BenMiller0/teaAnimatronic",
     "photos": ["Taro.png"],
     "imageSize": "small",
-    "miscLink": {"displayName": "Demo Video", "url": "https://www.youtube.com/watch?v=8_HPtF_c1NU"},
-    "icon": "🤖"
+    "miscLink": {"displayName": "Demo Video", "url": "https://www.youtube.com/watch?v=8_HPtF_c1NU"}
   },
   {
     "id": "project2",
@@ -20,8 +19,7 @@
     "github": "https://github.com/BenMiller0/computer_vision_spell_casting",
     "photos": ["wand_spell_caster.jpg","full_wand_system.jpg"],
     "imageSize": "small",
-    "miscLink": {"displayName": "Project Page", "url": "https://devpost.com/software/muggle-wand-training"},
-    "icon": "🪄"
+    "miscLink": {"displayName": "Project Page", "url": "https://devpost.com/software/muggle-wand-training"}
   },
   {
     "id": "project3",
@@ -31,30 +29,27 @@
     "technologies": "Python, Pandas, NumPy, Scikit-Learn",
     "github": "https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times",
     "photos": ["ML_theme_park_wait_times_predictions.png"],
-    "imageSize": "medium",
-    "icon": "🎢"
+    "imageSize": "medium"
   },
   {
     "id": "project4",
     "label": "Campus Events Planner Application",
     "title": "Campus Events Planner Web Application in JavaScript",
-    "description": "Developed a functional web application for discovering and organizing campus events\nUsed HTML, CSS, and JavaScript\nIntegrated storage system for event tracking\nMeasured success through consistent user engagement and successful event sign-ups during user testing",
+    "description": "Developed a functional web application for discovering and organizing campus events\nDeveloped comprehensive CI/CD pipeline with unit, integration, and regression testing",
     "technologies": "JavaScript, HTML, CSS, Jest, CI/CD",
     "github": "https://github.com/cse110-sp25-group11/card-game",
     "photos": ["campus_events_planner.png"],
-    "imageSize": "medium",
-    "icon": "📅"
+    "imageSize": "medium"
   },
   {
     "id": "project5",
     "label": "TEA @ UCSD Site",
     "title": "Themed Entertainment Association at UCSD Website",
-    "description": "Developed and maintained the Themed Entertainment Association at UCSD's website\nUsed Tailwind CSS for styling\nSignificantly boosted the club's digital presence\nIncreased online engagement and visibility",
+    "description": "Developed and maintained the Themed Entertainment Association at UCSD's website\nSignificantly boosted the club's digital presence increasing online engagement and visibility",
     "technologies": "Tailwind CSS, HTML, JavaScript, Github Actions",
     "github": "https://github.com/BenMiller0/teaatucsdsite",
     "photos": [],
-    "imageSize": "medium",
-    "icon": "🎢"
+    "imageSize": "medium"
   },
   {
     "id": "project6",
@@ -64,7 +59,6 @@
     "technologies": "C++, Makefile",
     "github": "https://github.com/BenMiller0/multiThreadedCompressor",
     "photos": [],
-    "imageSize": "medium",
-    "icon": "📦"
+    "imageSize": "medium"
   }
 ]

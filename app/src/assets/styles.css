@@ -311,6 +311,23 @@ html, body {
   text-shadow: none;
 }
 
+/* Windows with red headers (resume windows) - larger when not fullscreen */
+.window:not(.fullscreen):has(.window-header-red) {
+  width: 900px !important;
+  min-width: 900px !important;
+  max-width: 90vw !important;
+  max-height: 85vh !important;
+}
+
+.window:not(.fullscreen):has(.window-header-red) .window-content {
+  max-width: 900px !important;
+  max-height: 85vh !important;
+}
+
+.window:not(.fullscreen):has(.window-header-red) .resume-iframe {
+  height: 65vh;
+}
+
 .window-controls {
   display: flex;
   gap: 5px;
@@ -694,6 +711,30 @@ body.dark-mode .folder-icon:after {
   background: linear-gradient(145deg, #2d4a6f, #1a2f4a);
 }
 
+body.dark-mode .folder-aboutWindow .folder-icon {
+  background: #2d5a2d !important;
+}
+
+body.dark-mode .folder-aboutWindow .folder-icon:after {
+  background: #1a3d1a !important;
+}
+
+body.dark-mode .folder-experienceWindow .folder-icon {
+  background: #cc6600 !important;
+}
+
+body.dark-mode .folder-experienceWindow .folder-icon:after {
+  background: #994d00 !important;
+}
+
+body.dark-mode .folder-aboutSiteWindow .folder-icon {
+  background: #4a4a4a !important;
+}
+
+body.dark-mode .folder-aboutSiteWindow .folder-icon:after {
+  background: #2a2a2a !important;
+}
+
 body.dark-mode .folder:hover {
   background-color: rgba(110, 207, 245, 0.15);
 }
@@ -712,6 +753,22 @@ body.dark-mode .window {
 body.dark-mode .window-header {
   background: linear-gradient(to right, #1a2f4a, #16213e);
   border-bottom: 1px solid #3a4a6a;
+}
+
+body.dark-mode .window-header-green {
+  background: #2d5a2d !important;
+}
+
+body.dark-mode .window-header-orange {
+  background: #cc6600 !important;
+}
+
+body.dark-mode .window-header-red {
+  background: #8b0000 !important;
+}
+
+body.dark-mode .window-header-gray {
+  background: #1a1a1a !important;
 }
 
 body.dark-mode .window-content {
