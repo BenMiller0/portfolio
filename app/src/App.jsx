@@ -81,9 +81,12 @@ const App = () => {
         <h2>More Projects</h2>
         <div className="more-projects-grid">
           {moreProjects.map(p => (
-            <div key={p.id} className="folder" onClick={() => openWindow(p.id, p.title, (
-              <ProjectWindowContent project={p} />
-            ), () => openMoreProjectsWindow())}>
+            <div key={p.id} className="folder" onClick={(e) => { 
+              e.stopPropagation(); 
+              openWindow(p.id, p.title, (
+                <ProjectWindowContent project={p} />
+              ), () => openMoreProjectsWindow()); 
+            }}>
               <div className="folder-icon"></div>
               <div className="folder-name">{p.label}</div>
             </div>
