@@ -27,6 +27,8 @@ A personal portfolio website built with **React** and **Vite**, featuring a desk
 - Interactive folder icons for navigation
 - Fullscreen window support
 - Z-index management for window stacking
+- Animated text typing effect for name and school display
+- Smooth window opening animations with scale and fade effects
 
 ---
 

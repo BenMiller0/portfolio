@@ -73,6 +73,38 @@ const App = () => {
   const [openWindows, setOpenWindows] = useState([]);
   const [zIndexCounter, setZIndexCounter] = useState(100);
   const [darkMode, setDarkMode] = useState(false);
+  const [typedName, setTypedName] = useState('');
+  const [typedSchool, setTypedSchool] = useState('');
+  const [showSchool, setShowSchool] = useState(false);
+
+  const fullName = 'Benjamin Miller';
+  const schoolName = 'UC San Diego - Computer Science';
+
+  useEffect(() => {
+    let nameIndex = 0;
+    let schoolIndex = 0;
+
+    const typeNextNameChar = () => {
+      if (nameIndex < fullName.length) {
+        setTypedName(fullName.slice(0, nameIndex + 1));
+        nameIndex++;
+        setTimeout(typeNextNameChar, 50);
+      } else {
+        setShowSchool(true);
+        setTimeout(typeNextSchoolChar, 150);
+      }
+    };
+
+    const typeNextSchoolChar = () => {
+      if (schoolIndex < schoolName.length) {
+        setTypedSchool(schoolName.slice(0, schoolIndex + 1));
+        schoolIndex++;
+        setTimeout(typeNextSchoolChar, 40);
+      }
+    };
+
+    typeNextNameChar();
+  }, []);
 
   useEffect(() => {
     fetch('/projects.json')
@@ -104,7 +136,7 @@ const App = () => {
     const existingIndex = openWindows.findIndex(win => win.id === id);
     if (existingIndex === -1) {
       const position = calculateWindowPosition(openWindows.length);
-      
+
       setOpenWindows([
         ...openWindows,
         {
@@ -129,11 +161,11 @@ const App = () => {
       <h2>More Projects</h2>
       <div className="more-projects-grid">
         {moreProjects.map(p => (
-          <div key={p.id} className="folder" onClick={(e) => { 
-            e.stopPropagation(); 
+          <div key={p.id} className="folder" onClick={(e) => {
+            e.stopPropagation();
             openWindow(p.id, p.title, (
               <ProjectWindowContent project={p} />
-            ), () => openMoreProjectsWindow()); 
+            ), openMoreProjectsWindow);
           }}>
             <div className="folder-icon"></div>
             <div className="folder-name">{p.label}</div>
@@ -234,8 +266,8 @@ const App = () => {
   return (
     <>
       <div className="desktop-background"><div className="triton-logo"></div></div>
-      <div className="name-display">Benjamin Miller</div>
-      <div className="school-display">UC San Diego - Computer Science</div>
+      <div className="name-display">{typedName}</div>
+      {showSchool && <div className="school-display">{typedSchool}</div>}
 
       <div className="desktop">
         <div className="main-icons-container">

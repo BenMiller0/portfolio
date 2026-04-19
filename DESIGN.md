@@ -64,6 +64,9 @@ const [projects, setProjects] = useState([]);           // Project data
 const [openWindows, setOpenWindows] = useState([]);     // Active windows
 const [zIndexCounter, setZIndexCounter] = useState(100); // Z-index management
 const [darkMode, setDarkMode] = useState(false);        // Theme toggle
+const [typedName, setTypedName] = useState('');          // Animated name text
+const [typedSchool, setTypedSchool] = useState('');      // Animated school text
+const [showSchool, setShowSchool] = useState(false);     // School display toggle
 ```
 
 **Key Functions:**
@@ -270,6 +273,20 @@ const DESKTOP_START_Y = 80;
 - Back button for navigation hierarchies
 - Fullscreen toggle for content focus
 - Auto-positioning to prevent overlap
+
+### 7. Animations
+
+**Text Typing Animation:**
+- Name display types out character-by-character on page load (50ms per character)
+- School display types out after name completes (40ms per character)
+- 150ms pause between name and school typing
+- Blinking cursor effect on name display
+
+**Window Opening Animations:**
+- Regular windows: Scale from 0.8 to 1 with translateY(-20px) to 0 (0.3s duration)
+- Fullscreen windows: Scale from 0.95 to 1 (0.25s duration)
+- Cubic-bezier easing (0.34, 1.56, 0.64, 1) for bouncy spring effect
+- CSS keyframe animations defined in styles.css
 
 ## Performance Considerations
 
