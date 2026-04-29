@@ -259,9 +259,9 @@ const App = () => {
   const chunkProjects = (arr, size) =>
     Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size));
 
-  const mainProjects = projects.slice(0, 4);
-  const moreProjects = projects.slice(4);
-  const projectChunks = chunkProjects(mainProjects, 4);
+  const mainProjects = projects.slice(0, 3);
+  const moreProjects = projects.slice(3);
+  const projectChunks = chunkProjects(mainProjects, 3);
 
   return (
     <>

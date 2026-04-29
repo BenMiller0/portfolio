@@ -23,22 +23,22 @@
   },
   {
     "id": "project3",
-    "label": "ML Modeling Theme Park Wait Times",
-    "title": "Predictive Modeling of Theme Park Wait Times",
-    "description": "Built and evaluated linear regression and machine learning models in order to investigate correlation between physical ride characteristics and guest demand, using wait times as proxy for guest demand",
-    "technologies": "Python, Pandas, NumPy, Scikit-Learn",
-    "github": "https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times",
-    "photos": ["ML_theme_park_wait_times_predictions.png"],
-    "imageSize": "medium"
-  },
-  {
-    "id": "project4",
     "label": "Darth Vader Suit Firmware",
     "title": "Darth Vader Suit Firmware",
     "description": "Darth Vader suit firmware built on FreeRTOS. Controls the blinking of each light on his suit making them easily programmable and optimizes CPU usage to conserve power and boost performance. Built for Star Wars Club @ UC San Diego's Screen accurate Darth Vader Suit used for club promotion and film making.",
     "technologies": "C++, FreeRTOS, ESP32, PWM",
     "github": "https://github.com/BenMiller0/darth-vadar-firmware",
     "photos": ["vader_suit.jpg","vader_embedded.jpg"],
+    "imageSize": "medium"
+  },
+  {
+    "id": "project4",
+    "label": "ML Modeling Theme Park Wait Times",
+    "title": "Predictive Modeling of Theme Park Wait Times",
+    "description": "Built and evaluated linear regression and machine learning models in order to investigate correlation between physical ride characteristics and guest demand, using wait times as proxy for guest demand",
+    "technologies": "Python, Pandas, NumPy, Scikit-Learn",
+    "github": "https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times",
+    "photos": ["ML_theme_park_wait_times_predictions.png"],
     "imageSize": "medium"
   },
   {
