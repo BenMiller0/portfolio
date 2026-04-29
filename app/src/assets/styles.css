@@ -155,12 +155,21 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 45px;
+  align-items: flex-start;
 }
 
-.system-icons, .project-icons {
+.system-icons {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.project-icons {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  align-items: flex-start;
 }
 
 .folder {

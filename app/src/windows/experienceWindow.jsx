@@ -2,6 +2,13 @@ import React from 'react';
 
 const ExperienceContent = () => (
   <div className="space-y-6 p-4">
+     <div>
+      <h3 className="font-bold">Electronic Props Designer, Star Wars Club at UCSD</h3>
+      <p className="text-sm text-gray-500">Jun. 2024 – Present</p>
+      <ul className="list-disc list-inside ml-4">
+        <li>Designed embedded systems and firmware for props for film making and on campus promotional props using a real time operating system (RTOS) and microcontrollers resulting in screen accurate prop recreations.</li>
+      </ul>
+    </div>
     <div>
       <h3 className="font-bold">Software Engineering Lead & VP, Themed Entertainment Association at UCSD</h3>
       <p className="text-sm text-gray-500">Jun. 2024 – Present</p>

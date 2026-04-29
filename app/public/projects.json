@@ -33,6 +33,16 @@
   },
   {
     "id": "project4",
+    "label": "Darth Vader Suit Firmware",
+    "title": "Darth Vader Suit Firmware",
+    "description": "Darth Vader suit firmware built on FreeRTOS. Controls the blinking of each light on his suit making them easily programmable and optimizes CPU usage to conserve power and boost performance. Built for Star Wars Club @ UC San Diego's Screen accurate Darth Vader Suit used for club promotion and film making.",
+    "technologies": "C++, FreeRTOS, ESP32, PWM",
+    "github": "https://github.com/BenMiller0/darth-vadar-firmware",
+    "photos": ["vader_suit.jpg","vader_embedded.jpg"],
+    "imageSize": "medium"
+  },
+  {
+    "id": "project5",
     "label": "Campus Events Planner Application",
     "title": "Campus Events Planner Web Application in JavaScript",
     "description": "Developed a functional web application for discovering and organizing campus events\nDeveloped comprehensive CI/CD pipeline with unit, integration, and regression testing",
@@ -42,17 +52,18 @@
     "imageSize": "medium"
   },
   {
-    "id": "project5",
+    "id": "project6",
     "label": "TEA @ UCSD Site",
     "title": "Themed Entertainment Association at UCSD Website",
     "description": "Developed and maintained the Themed Entertainment Association at UCSD's website\nSignificantly boosted the club's digital presence increasing online engagement and visibility",
     "technologies": "Tailwind CSS, HTML, JavaScript, Github Actions",
     "github": "https://github.com/BenMiller0/teaatucsdsite",
     "photos": [],
-    "imageSize": "medium"
+    "imageSize": "medium",
+    "miscLink": {"displayName": "Website", "url": " https://bit.ly/tea_at_ucsd"}
   },
   {
-    "id": "project6",
+    "id": "project7",
     "label": "Multithreaded File Compressor in C++",
     "title": "Multithreaded File Compressor in C++",
     "description": "Multithreaded application for high speed file compression\nOptimized for performance using parallel processing",
