@@ -1001,6 +1001,7 @@ body.dark-mode .doc-icon-image {
     left: 50% !important;
     transform: translateX(-50%);
     top: 100px !important;
+    animation: none !important;
   }
 
   /* Fullscreen override for mobile */

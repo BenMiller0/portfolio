@@ -124,11 +124,17 @@ const Window = ({
     onClose();
   }, [onClose]);
 
-  const windowStyle = isFullscreen ? {} : {
+  const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+  const windowStyle = isFullscreen ? {} : (isMobile ? {
+    left: '50%',
+    transform: 'translateX(-50%)',
+    top: '100px',
+    position: 'absolute'
+  } : {
     left: `${position.x}px`,
     top: `${position.y}px`,
     position: 'absolute'
-  };
+  });
 
   return (
     <div
