@@ -6,7 +6,10 @@ const HEADER_COLOR_MAP = {
   'lightgreen': 'window-header-green',
   'orange': 'window-header-orange',
   '#f2f2f2': 'window-header-gray',
-  '#cc3333': 'window-header-red'
+  '#cc3333': 'window-header-red',
+  '#a78bfa': 'window-header-about',
+  '#fb7185': 'window-header-readme',
+  '#facc15': 'window-header-experience'
 };
 
 const Window = ({ 

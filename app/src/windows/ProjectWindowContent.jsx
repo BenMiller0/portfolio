@@ -29,7 +29,7 @@ const ProjectWindowContent = ({ project }) => {
                 key={index}
                 src={`/project_photos/${photo}`}
                 alt={`${project.title} - Photo ${index + 1}`}
-                className={`project-photo project-photo-${project.imageSize || 'medium'}`}
+                className={`project-photo project-photo-${project.imageSize || 'medium'} project-photo-${photo.replace(/\.[^/.]+$/, '')}`}
               />
             ))}
           </div>

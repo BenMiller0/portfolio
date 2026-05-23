@@ -46,7 +46,7 @@ const ExperienceContent = () => (
 export const experienceWindow = {
   id: 'experienceWindow',
   title: 'Experience',
-  label: 'Experience',
-  color: 'orange',
+  label: 'experience.txt',
+  color: '#facc15',
   component: ExperienceContent
 };

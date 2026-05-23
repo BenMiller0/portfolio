@@ -13,7 +13,7 @@ const ReadmeContent = () => (
 export const aboutSiteWindow = {
   id: 'aboutSiteWindow',
   title: 'README',
-  label: 'README',
-  color: '#f2f2f2',
+  label: 'README.txt',
+  color: '#fb7185',
   component: ReadmeContent
 };

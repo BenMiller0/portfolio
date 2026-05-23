@@ -16,7 +16,7 @@ const AboutContent = () => (
 export const aboutWindow = {
   id: 'aboutWindow',
   title: 'About Me',
-  label: 'About me',
-  color: 'lightgreen',
+  label: 'about_me.txt',
+  color: '#a78bfa',
   component: AboutContent
 };

@@ -14,16 +14,11 @@ html, body {
 
 /* Projects container */
 .projects-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-top: 20px;
+  display: contents;
 }
 
 .project-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: contents;
 }
 
 @keyframes blink {
@@ -89,7 +84,7 @@ html, body {
 /* ===== Branding & Logos ===== */
 .name-display {
   position: fixed;
-  top: 20%;
+  top: 30%;
   left: 0;
   right: 0;
   text-align: center;
@@ -110,7 +105,7 @@ html, body {
 
 .school-display {
   position: fixed;
-  top: calc(20% + 4.5rem);
+  top: calc(30% + 4.5rem);
   left: 0;
   right: 0;
   text-align: center;
@@ -145,24 +140,24 @@ html, body {
 .desktop {
   position: relative;
   height: calc(100vh - 45px);
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   z-index: 2;
 }
 
 .main-icons-container {
-  display: flex;
-  flex-direction: column;
-  gap: 45px;
+  display: grid;
+  grid-template-columns: repeat(5, 100px);
+  grid-auto-rows: 118px;
+  gap: 14px 10px;
   align-items: flex-start;
+  width: max-content;
+  max-width: 540px;
 }
 
 .system-icons {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 20px;
-  align-items: flex-start;
+  display: contents;
 }
 
 .project-icons {
@@ -342,6 +337,53 @@ html, body {
   text-shadow: none;
 }
 
+.window-header-about {
+  background: #a78bfa !important;
+  color: white;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  border-radius: 5px 5px 0 0;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 2px rgba(55, 48, 163, 0.45);
+}
+
+.window-header-readme {
+  background: #fb7185 !important;
+  color: white;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  border-radius: 5px 5px 0 0;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 2px rgba(136, 19, 55, 0.45);
+}
+
+.window-header-experience {
+  background: #facc15 !important;
+  color: #3b2f00;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  border-radius: 5px 5px 0 0;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-shadow: none;
+}
+
+.window-header-experience .fullscreen-button,
+.window-header-experience .close-button {
+  color: #3b2f00;
+}
+
 /* Windows with red headers (resume windows) - larger when not fullscreen */
 .window:not(.fullscreen):has(.window-header-red) {
   width: 900px !important;
@@ -456,12 +498,17 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  align-items: flex-start;
 }
 
 .project-photo {
   border-radius: 8px;
-  border: 2px solid #ccc;
-  flex: 1 1 auto;
+  border: 2px solid #9fb0c3;
+  background: #f8fafc;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+  flex: 0 1 auto;
+  align-self: flex-start;
+  display: block;
   min-width: 200px;
   height: auto;
   max-width: 100%;
@@ -473,6 +520,14 @@ html, body {
 
 .project-photo-medium {
   max-width: 300px;
+}
+
+.project-photo-vader_embedded {
+  max-width: 420px;
+  max-height: 420px;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 8px;
 }
 
 .project-photo-large {
@@ -532,6 +587,17 @@ html, body {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.terminal-doc-icon {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 80;
+  width: 100px;
+  max-width: 100px;
+  padding: 5px;
+  background: transparent;
+}
+
 .doc-icon-image {
   width: 70px;
   height: 80px;
@@ -541,6 +607,29 @@ html, body {
   border-radius: 5px;
   margin-bottom: 5px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.text-file-icon-image {
+  width: 70px;
+  height: 80px;
+  background-image: url('/file-text-icon.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-bottom: 5px;
+  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.text-file-aboutWindow .text-file-icon-image {
+  filter: sepia(1) saturate(4) hue-rotate(218deg) brightness(0.96) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.text-file-aboutSiteWindow .text-file-icon-image {
+  filter: sepia(1) saturate(4.2) hue-rotate(300deg) brightness(1.02) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.text-file-experienceWindow .text-file-icon-image {
+  filter: sepia(1) saturate(5) hue-rotate(318deg) brightness(1.08) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
 }
 
 .github-icon-image {
@@ -561,6 +650,34 @@ html, body {
   background-position: center;
   border-radius: 5px;
   margin-bottom: 5px;
+}
+
+.terminal-icon-image {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(145deg, #1a1a2e, #0d1117);
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', monospace;
+  font-size: 32px;
+  color: #00ff00;
+  margin-bottom: 5px;
+  box-shadow: none;
+  position: relative;
+}
+
+.terminal-icon-image::before {
+  content: '>_';
+}
+
+body.dark-mode .terminal-icon-image {
+  background: linear-gradient(145deg, #0d1117, #161b22);
+  border-color: #6ECFF5;
+  color: #6ECFF5;
+  box-shadow: none;
 }
 
 .doc-icon .folder-name {
@@ -796,6 +913,24 @@ body.dark-mode .window-header-red {
   background: #8b0000 !important;
 }
 
+body.dark-mode .window-header-about {
+  background: #6d4fc2 !important;
+}
+
+body.dark-mode .window-header-readme {
+  background: #b7445a !important;
+}
+
+body.dark-mode .window-header-experience {
+  background: #a88618 !important;
+  color: #fff7d6;
+}
+
+body.dark-mode .window-header-experience .fullscreen-button,
+body.dark-mode .window-header-experience .close-button {
+  color: #fff7d6;
+}
+
 body.dark-mode .window-header-gray {
   background: #1a1a1a !important;
 }
@@ -870,8 +1005,31 @@ body.dark-mode .doc-icon-image {
   transition: filter 0.3s ease;
 }
 
+body.dark-mode .text-file-icon-image {
+  transition: filter 0.3s ease;
+}
+
+body.dark-mode .text-file-aboutWindow .text-file-icon-image {
+  filter: sepia(1) saturate(2.5) hue-rotate(218deg) brightness(0.68) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.45));
+}
+
+body.dark-mode .text-file-aboutSiteWindow .text-file-icon-image {
+  filter: sepia(1) saturate(2.8) hue-rotate(300deg) brightness(0.72) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.45));
+}
+
+body.dark-mode .text-file-experienceWindow .text-file-icon-image {
+  filter: sepia(1) saturate(3.2) hue-rotate(318deg) brightness(0.74) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.45));
+}
+
 /* ===== Mobile-Specific Styles ===== */
 @media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-width: 0;
+  }
+
   /* 1. FORCE ROOT SCROLLING */
   /* This overrides any desktop 'overflow: hidden' locks */
   html, body {
@@ -903,20 +1061,25 @@ body.dark-mode .doc-icon-image {
 
   .name-display {
     position: absolute; /* absolute makes it scroll with the page */
-    top: 50px;
+    top: 32px;
     left: 0;
     width: 100%;
-    font-size: 1.8rem;
+    font-size: clamp(1.9rem, 9vw, 2.6rem);
     padding: 0 10px;
     z-index: 1;
+    letter-spacing: 0;
+    line-height: 1.1;
   }
 
   .school-display {
     position: absolute;
-    top: 90px; /* Below name */
+    top: 78px; /* Below name */
     left: 0;
     width: 100%;
-    font-size: 0.9rem;
+    font-size: clamp(0.75rem, 3.6vw, 1rem);
+    letter-spacing: 2px;
+    line-height: 1.25;
+    padding: 0 16px;
     z-index: 1;
   }
 
@@ -926,37 +1089,62 @@ body.dark-mode .doc-icon-image {
     position: relative;
     height: auto !important; /* override desktop fixed height */
     min-height: 100vh;
-    padding: 10px;
-    padding-top: 150px; /* Push content below the name header */
+    padding: 132px 14px 80px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     overflow: visible; /* Let children expand the container */
     z-index: 2;
   }
 
   /* 5. GRID & ICON ADJUSTMENTS */
   .main-icons-container {
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 420px;
+    gap: 28px;
+    align-items: stretch;
   }
 
-  .system-icons, .project-icons {
-    gap: 15px;
-    justify-content: center;
+  .system-icons {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 12px;
+    justify-items: center;
+    align-items: start;
+    width: 100%;
+  }
+
+  .projects-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px 12px;
+    width: 100%;
+    margin-top: 0;
+    justify-items: center;
   }
 
   .project-row {
-    justify-content: center;
+    display: contents;
+  }
+
+  .project-icons {
     gap: 15px;
+    justify-content: center;
   }
 
   .folder {
-    width: 80px;
-    padding: 2px;
+    width: 100%;
+    max-width: 104px;
+    min-height: 112px;
+    padding: 4px 2px;
+    justify-content: flex-start;
   }
 
   .folder-icon {
-    width: 60px;
-    height: 45px;
+    width: 64px;
+    height: 48px;
   }
 
   .folder-icon:after {
@@ -964,7 +1152,9 @@ body.dark-mode .doc-icon-image {
   }
 
   .folder-name {
-    font-size: 11px;
+    font-size: 12px;
+    line-height: 1.22;
+    max-width: 100%;
   }
 
   /* 6. RESUME ICONS (BOTTOM) */
@@ -973,23 +1163,50 @@ body.dark-mode .doc-icon-image {
     position: relative; /* In flow of document */
     top: auto;
     right: auto;
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 120px));
     justify-content: center;
+    justify-items: center;
     width: 100%;
-    gap: 20px;
-    margin-top: 50px;    /* Space from projects */
-    padding-bottom: 50px; /* Space from bottom of phone screen */
+    gap: 18px;
+    margin-top: 32px;
+    padding-bottom: 24px;
   }
 
-  .doc-icon-image {
-    width: 50px;
+  .doc-icon {
+    width: 100%;
+    max-width: 112px;
+  }
+
+  .doc-icon-image,
+  .text-file-icon-image {
+    width: 52px;
     height: 60px;
   }
 
   .github-icon-image, .linkedin-icon-image {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .terminal-icon-image {
+    width: 66px;
+    height: 66px;
+    font-size: 28px;
+  }
+
+  .terminal-doc-icon {
+    position: static;
+    width: 76px;
+    max-width: 76px;
+    min-height: auto;
+    padding: 4px 2px;
+    background: transparent;
+    backdrop-filter: none;
+  }
+
+  .terminal-doc-icon:hover {
+    background: rgba(255, 255, 255, 0.18);
   }
 
   /* 7. WINDOWS */
@@ -1130,5 +1347,179 @@ body.dark-mode .doc-icon-image {
   .folder:hover,
   .doc-icon:hover {
     background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .terminal {
+    font-size: 13px;
+    min-height: 180px;
+    padding: 12px 10px 18px;
+  }
+
+  .terminal-input-line {
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .terminal-prompt {
+    white-space: nowrap;
+  }
+
+  .window:has(.terminal) .window-content {
+    max-height: 60vh;
+  }
+}
+
+/* ===== Terminal Styles ===== */
+.terminal {
+  background: #000;
+  color: #dcdcdc;
+  font-family: 'Cascadia Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
+  font-size: 16px;
+  line-height: 1.35;
+  padding: 14px 14px 22px;
+  min-height: 230px;
+  max-width: 100%;
+  overflow-y: auto;
+  cursor: text;
+}
+
+.terminal-output {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.terminal-line {
+  min-height: 1.35em;
+}
+
+.terminal-system {
+  color: #8a8a8a;
+  font-size: inherit;
+}
+
+.terminal-output {
+  color: #dcdcdc;
+}
+
+.terminal-error {
+  color: #ff4444;
+}
+
+.terminal-input-line {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 1.35em;
+  max-width: 100%;
+}
+
+.terminal-prompt {
+  flex: 0 0 auto;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.terminal-user-host {
+  color: #16d016;
+}
+
+.terminal-separator,
+.terminal-symbol {
+  color: #dcdcdc;
+}
+
+.terminal-path {
+  color: #4f8cff;
+}
+
+.terminal-command-text {
+  color: #dcdcdc;
+}
+
+input.terminal-input {
+  flex: 1;
+  min-width: 1ch;
+  width: 1ch;
+  background: transparent;
+  border: none;
+  color: #dcdcdc;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  outline: none;
+  caret-color: #dcdcdc;
+  padding: 0 0 0 0.25ch;
+}
+
+.window-content .terminal {
+  background: #000;
+  color: #dcdcdc;
+}
+
+.window:has(.terminal) {
+  width: min(680px, 90vw);
+}
+
+.window:has(.terminal) .window-content {
+  width: 100%;
+  padding: 0;
+  overflow: auto;
+  max-height: 70vh;
+  min-height: 0;
+  background: #000;
+}
+
+.window.fullscreen:has(.terminal) .window-content {
+  height: calc(100vh - 31px);
+}
+
+body.dark-mode .terminal {
+  background: #000;
+  color: #dcdcdc;
+}
+
+body.dark-mode .terminal-system {
+  color: #8a8a8a;
+}
+
+body.dark-mode .terminal-user-host {
+  color: #16d016;
+}
+
+body.dark-mode .terminal-path {
+  color: #4f8cff;
+}
+
+body.dark-mode input.terminal-input {
+  color: #dcdcdc;
+  caret-color: #dcdcdc;
+}
+
+body.dark-mode .folder-terminalWindow .folder-icon {
+  background: #2a2a2a !important;
+}
+
+body.dark-mode .folder-terminalWindow .folder-icon:after {
+  background: #1a1a1a !important;
+}
+
+@media (max-width: 768px) {
+  .terminal {
+    font-size: 13px;
+    min-height: 180px;
+    padding: 12px 10px 18px;
+  }
+
+  .terminal-input-line {
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .terminal-prompt {
+    white-space: nowrap;
+  }
+
+  .window:has(.terminal) .window-content {
+    max-height: 60vh;
   }
 }

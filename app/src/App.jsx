@@ -5,6 +5,7 @@ import ProjectWindowContent from './windows/ProjectWindowContent';
 import { aboutWindow } from './windows/aboutWindow';
 import { aboutSiteWindow } from './windows/readmeWindow';
 import { experienceWindow } from './windows/experienceWindow';
+import { terminalWindow } from './windows/TerminalWindow';
 
 // Constants
 const MOBILE_BREAKPOINT = 768;
@@ -42,7 +43,6 @@ const calculateWindowPosition = (windowCount, isFullscreen = false) => {
     startY = MOBILE_START_Y + (windowCount * WINDOW_OFFSET);
   } else {
     const estimatedWidth = Math.min(window.innerWidth * DESKTOP_WIDTH_PERCENT, DESKTOP_MAX_WIDTH);
-    const estimatedHeight = Math.min(window.innerHeight * DESKTOP_HEIGHT_PERCENT, DESKTOP_MAX_HEIGHT);
     startX = (window.innerWidth - estimatedWidth) / 2 + (windowCount * WINDOW_OFFSET);
     startY = DESKTOP_START_Y + (windowCount * WINDOW_OFFSET);
   }
@@ -273,11 +273,15 @@ const App = () => {
         <div className="main-icons-container">
           <div className="system-icons">
             {Object.entries(windowsInfo).map(([id, win]) => (
-              <div key={id} className={`folder folder-${id}`} onClick={() => openWindow(id, win.title, <win.component />, null, win.color)}>
-                <div className="folder-icon" style={{ '--folder-color': win.color }} />
+              <div key={id} className={`doc-icon text-file-icon text-file-${id}`} onClick={() => openWindow(id, win.title, <win.component />, null, win.color)}>
+                <div className="text-file-icon-image" />
                 <div className="folder-name">{win.label}</div>
               </div>
             ))}
+            <div className="doc-icon terminal-doc-icon" onClick={() => openWindow('terminal', 'Terminal', <terminalWindow.component />, null, terminalWindow.color)}>
+              <div className="terminal-icon-image" />
+              <div className="folder-name">Terminal</div>
+            </div>
             <a href="https://github.com/BenMiller0" target="_blank" rel="noopener noreferrer" className="doc-icon">
               <div className="github-icon-image" />
               <div className="folder-name">GitHub</div>
@@ -314,11 +318,11 @@ const App = () => {
         <div className="resume-icons">
           <div className="doc-icon" onClick={() => openResumeViewer('/hardware_resume.pdf', 'Hardware Resume')}>
             <div className="doc-icon-image" />
-            <div className="folder-name">Hardware Resume</div>
+            <div className="folder-name">Hardware_Resume.pdf</div>
           </div>
           <div className="doc-icon" onClick={() => openResumeViewer('/software_resume.pdf', 'Software Resume')}>
             <div className="doc-icon-image" />
-            <div className="folder-name">Software Resume</div>
+            <div className="folder-name">Software_Resume.pdf</div>
           </div>
         </div>
       </div>
