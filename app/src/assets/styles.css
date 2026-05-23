@@ -267,8 +267,14 @@ html, body {
   border-radius: 0;
 }
 
-.window-header {
-  background: linear-gradient(to right, #2c3e50, #3498db);
+.window-header,
+.window-header-green,
+.window-header-orange,
+.window-header-gray,
+.window-header-red,
+.window-header-about,
+.window-header-readme,
+.window-header-experience {
   color: white;
   padding: 5px 10px;
   display: flex;
@@ -278,104 +284,47 @@ html, body {
   border-radius: 5px 5px 0 0;
   font-weight: bold;
   letter-spacing: 0.5px;
+}
+
+.window-header {
+  background: linear-gradient(to right, #2c3e50, #3498db);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .window-header-green {
   background: lightgreen !important;
-  color: white;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-  border-radius: 5px 5px 0 0;
-  font-weight: bold;
-  letter-spacing: 0.5px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .window-header-orange {
   background: orange !important;
-  color: white;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-  border-radius: 5px 5px 0 0;
-  font-weight: bold;
-  letter-spacing: 0.5px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .window-header-gray {
   background: #333 !important;
   color: #fff;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-  border-radius: 5px 5px 0 0;
-  font-weight: bold;
-  letter-spacing: 0.5px;
   text-shadow: none;
 }
 
 .window-header-red {
   background: #cc3333 !important;
-  color: white;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-  border-radius: 5px 5px 0 0;
-  font-weight: bold;
-  letter-spacing: 0.5px;
   text-shadow: none;
 }
 
 .window-header-about {
   background: #a78bfa !important;
-  color: white;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-  border-radius: 5px 5px 0 0;
-  font-weight: bold;
-  letter-spacing: 0.5px;
   text-shadow: 1px 1px 2px rgba(55, 48, 163, 0.45);
 }
 
 .window-header-readme {
   background: #fb7185 !important;
-  color: white;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-  border-radius: 5px 5px 0 0;
-  font-weight: bold;
-  letter-spacing: 0.5px;
   text-shadow: 1px 1px 2px rgba(136, 19, 55, 0.45);
 }
 
 .window-header-experience {
   background: #facc15 !important;
   color: #3b2f00;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-  border-radius: 5px 5px 0 0;
-  font-weight: bold;
-  letter-spacing: 0.5px;
   text-shadow: none;
 }
 
@@ -492,6 +441,25 @@ html, body {
   line-height: 1.4;
   word-wrap: break-word;
   overflow-wrap: break-word;
+}
+
+.experience-list {
+  display: grid;
+  gap: 20px;
+}
+
+.experience-item h3 {
+  margin-top: 0;
+}
+
+.experience-dates {
+  margin: 4px 0 8px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+body.dark-mode .experience-dates {
+  color: #b6c2d6;
 }
 
 .photo-gallery {
@@ -791,7 +759,11 @@ body.dark-mode .resume-download-btn {
 }
 
 .toggle-icon {
-  font-size: 20px;
+  min-width: 30px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
   z-index: 2;
   transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
@@ -1030,19 +1002,17 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     min-width: 0;
   }
 
-  /* 1. FORCE ROOT SCROLLING */
-  /* This overrides any desktop 'overflow: hidden' locks */
+  /* Root scrolling */
   html, body {
-    overflow-y: auto !important; /* Force vertical scroll */
-    overflow-x: hidden;          /* Prevent horizontal scroll */
-    height: auto !important;     /* Allow body to grow with content */
-    min-height: 100%;            /* Ensure it covers full screen at minimum */
-    position: static !important; /* Remove 'fixed' lock if present */
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    height: auto !important;
+    min-height: 100%;
+    position: static !important;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* 2. KEEP BACKGROUND FIXED */
-  /* The background stays still while you scroll the content over it */
+  /* Fixed background */
   .desktop-background {
     position: fixed;
     top: 0;
@@ -1053,14 +1023,13 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     z-index: 0;
   }
 
-  /* 3. LOGO & BRANDING POSITIONING */
-  /* Change to absolute so they scroll up and away */
+  /* Branding */
   .triton-logo {
     display: none;
   }
 
   .name-display {
-    position: absolute; /* absolute makes it scroll with the page */
+    position: absolute;
     top: 32px;
     left: 0;
     width: 100%;
@@ -1073,7 +1042,7 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
 
   .school-display {
     position: absolute;
-    top: 78px; /* Below name */
+    top: 78px;
     left: 0;
     width: 100%;
     font-size: clamp(0.75rem, 3.6vw, 1rem);
@@ -1083,21 +1052,20 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     z-index: 1;
   }
 
-  /* 4. CONTENT CONTAINER */
-  /* Allow this to grow as tall as needed */
+  /* Content layout */
   .desktop {
     position: relative;
-    height: auto !important; /* override desktop fixed height */
+    height: auto !important;
     min-height: 100vh;
     padding: 132px 14px 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: visible; /* Let children expand the container */
+    overflow: visible;
     z-index: 2;
   }
 
-  /* 5. GRID & ICON ADJUSTMENTS */
+  /* Grids and icons */
   .main-icons-container {
     display: flex;
     flex-direction: column;
@@ -1157,10 +1125,9 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     max-width: 100%;
   }
 
-  /* 6. RESUME ICONS (BOTTOM) */
-  /* These will now sit at the bottom of the scrollable area */
+  /* Resume icons */
   .resume-icons {
-    position: relative; /* In flow of document */
+    position: relative;
     top: auto;
     right: auto;
     display: grid;
@@ -1209,7 +1176,7 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     background: rgba(255, 255, 255, 0.18);
   }
 
-  /* 7. WINDOWS */
+  /* Windows */
   .window {
     width: 95vw !important;
     min-width: unset !important;
@@ -1221,7 +1188,6 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     animation: none !important;
   }
 
-  /* Fullscreen override for mobile */
   .window.fullscreen {
     left: 0 !important;
     transform: none !important;
@@ -1231,7 +1197,6 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     max-height: none !important;
   }
 
-  /* Disable body scrolling when fullscreen window is open on mobile */
   body.fullscreen-window-open,
   html.fullscreen-window-open {
     overflow: hidden !important;
@@ -1265,7 +1230,7 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     padding: 0 8px;
   }
 
-  /* 8. RESUME VIEWER */
+  /* Resume viewer */
   .resume-viewer {
     gap: 10px;
   }
@@ -1291,14 +1256,13 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     text-align: center;
   }
 
-  /* Mobile-specific message for resume viewer */
   .resume-viewer p {
     font-size: 1rem;
     text-align: center;
     margin-bottom: 10px;
   }
 
-  /* 9. PHOTO GALLERY */
+  /* Photo gallery */
   .photo-gallery {
     flex-direction: column;
     gap: 15px;
@@ -1317,7 +1281,7 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     max-width: 100% !important;
   }
 
-  /* 9. DARK MODE TOGGLE */
+  /* Dark mode toggle */
   .dark-mode-toggle {
     bottom: 20px;
     right: 20px;
@@ -1326,7 +1290,8 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
   }
 
   .toggle-icon {
-    font-size: 16px;
+    min-width: 26px;
+    font-size: 9px;
   }
 
   .toggle-track {
@@ -1338,7 +1303,7 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     left: 35px;
   }
 
-  /* 10. IMPROVE TOUCH TARGETS */
+  /* Touch targets */
   .folder,
   .doc-icon {
     padding: 8px;

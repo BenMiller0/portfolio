@@ -2,427 +2,336 @@
 
 ## Overview
 
-This is a personal portfolio website featuring a desktop-inspired interface that showcases projects in embedded systems, AI/ML, and web development. The site provides a nostalgic desktop UI experience with draggable windows, folder navigation, and interactive elements.
+This portfolio is a React/Vite single-page app with a desktop-inspired interface. It presents projects, resumes, experience, social links, and a terminal-style explorer through draggable window components.
 
 **Live Site:** https://benjaminmillerportfolio.onrender.com/
 
-## Architecture
+The current architecture keeps `App.jsx` focused on application orchestration while moving layout math, static registry data, and animation behavior into smaller modules.
 
-### Technology Stack
+## Technology Stack
 
-- **Frontend Framework:** React 19.1.0
-- **Build Tool:** Vite 7.0.0
-- **Styling:** Custom CSS with CSS variables and dark mode support
-- **Data Management:** JSON-based project configuration
-- **Deployment:** Render (static deployment)
+- **Frontend Framework:** React 19
+- **Build Tool:** Vite
+- **Styling:** Custom CSS with dark mode and responsive mobile overrides
+- **Content Data:** `public/projects.json`
+- **Deployment:** Static deployment on Render
 
-### Project Structure
+## Project Structure
 
-```
+```text
 portfolio/
-├── app/
-│   ├── public/
-│   │   ├── projects.json          # Project data configuration
-│   │   ├── project_photos/         # Project image assets
-│   │   ├── hardware_resume.pdf    # Hardware resume
-│   │   ├── software_resume.pdf    # Software resume
-│   │   ├── doc-icon.png           # Document icon
-│   │   ├── github.png             # GitHub icon
-│   │   ├── linkedIn.png           # LinkedIn icon
-│   │   └── favcon.png             # Site favicon
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── Window.jsx         # Draggable window component
-│   │   ├── windows/
-│   │   │   ├── ProjectWindowContent.jsx  # Project detail view
-│   │   │   ├── aboutWindow.jsx          # About me window
-│   │   │   ├── experienceWindow.jsx     # Experience window
-│   │   │   └── readmeWindow.jsx         # Site info window
-│   │   ├── assets/
-│   │   │   └── styles.css         # Global styles and theming
-│   │   ├── App.jsx                # Main application component
-│   │   └── main.jsx               # React entry point
-│   ├── index.html                 # HTML template
-│   ├── package.json               # Dependencies
-│   └── vite.config.js             # Vite configuration
-└── README.md
+|-- README.md
+|-- DESIGN.md
+`-- app/
+    |-- public/
+    |   |-- projects.json
+    |   |-- project_photos/
+    |   |-- hardware_resume.pdf
+    |   |-- software_resume.pdf
+    |   |-- doc-icon.png
+    |   |-- file-text-icon.png
+    |   |-- github.png
+    |   |-- linkedIn.png
+    |   `-- favcon.png
+    `-- src/
+        |-- App.jsx
+        |-- main.jsx
+        |-- assets/
+        |   `-- styles.css
+        |-- components/
+        |   `-- Window.jsx
+        |-- constants/
+        |   `-- windowLayout.js
+        |-- data/
+        |   `-- windowRegistry.jsx
+        |-- hooks/
+        |   `-- useTypewriter.js
+        `-- windows/
+            |-- ProjectWindowContent.jsx
+            |-- TerminalWindow.jsx
+            |-- aboutWindow.jsx
+            |-- experienceWindow.jsx
+            `-- readmeWindow.jsx
 ```
 
-## Component Architecture
+## Module Responsibilities
 
-### App.jsx (Main Component)
+### `src/App.jsx`
 
-The central component that manages:
-- Window state (open/closed, position, z-index, fullscreen mode)
-- Project data fetching from `projects.json`
-- Dark mode state
-- Window lifecycle management (open, close, bring to front, toggle fullscreen)
+`App.jsx` is the application shell. It composes the desktop, icons, project folders, resume icons, dark mode toggle, and active windows.
 
-**Key State:**
-```javascript
-const [projects, setProjects] = useState([]);           // Project data
-const [openWindows, setOpenWindows] = useState([]);     // Active windows
-const [zIndexCounter, setZIndexCounter] = useState(100); // Z-index management
-const [darkMode, setDarkMode] = useState(false);        // Theme toggle
-const [typedName, setTypedName] = useState('');          // Animated name text
-const [typedSchool, setTypedSchool] = useState('');      // Animated school text
-const [showSchool, setShowSchool] = useState(false);     // School display toggle
-```
+It owns:
 
-**Key Functions:**
-- `openWindow()` - Opens new window or brings existing to front
-- `closeWindow()` - Removes window from state
-- `bringToFront()` - Updates z-index for window stacking
-- `updateWindowPosition()` - Handles drag updates
-- `toggleFullscreen()` - Switches between windowed/fullscreen modes
-- `openResumeViewer()` - Specialized window for PDF viewing
+- Loading project data from `/projects.json`
+- Window lifecycle state
+- Window focus and z-index updates
+- Window position updates from drag events
+- Fullscreen toggling
+- Dark mode class toggling
+- Splitting projects into primary projects and the "More Projects" window
 
-### Window.jsx (Reusable Window Component)
+`App.jsx` should stay mostly orchestration-focused. New static icon data should usually go into `data/windowRegistry.jsx`, and new positioning behavior should usually go into `constants/windowLayout.js`.
 
-A draggable, resizable window component with:
-- Mouse and touch event handling for dragging
-- Z-index management for stacking
-- Fullscreen toggle capability
-- Custom header colors via CSS classes
-- Back button support for navigation hierarchies
+### `src/components/Window.jsx`
 
-**Header Color Mapping:**
-- `lightgreen` → `.window-header-green`
-- `orange` → `.window-header-orange`
-- `#f2f2f2` → `.window-header-gray`
-- `#cc3333` → `.window-header-red` (resume windows)
+`Window.jsx` is the reusable window shell.
 
-**Drag Logic:**
-- Desktop: Full drag support via mouse/touch
-- Mobile: Drag disabled (windows centered, fullscreen recommended)
-- Offset calculation maintains relative cursor position
+It owns:
 
-### ProjectWindowContent.jsx
+- Title bar rendering
+- Close, fullscreen, and optional back controls
+- Header color mapping
+- Mouse and touch drag behavior
+- Immediate focus/z-index adjustments during interaction
+- Mobile drag disabling
 
-Displays project details including:
-- Title and description (with bullet point parsing)
-- Technologies used
-- Photo gallery with responsive sizing
-- External links (GitHub, demo videos, project pages)
+The component receives content through `children`, so project windows, static text windows, terminal windows, and resume viewers can all share the same chrome.
 
-**Photo Sizing:**
-- `small` → 100px max width
-- `medium` → 300px max width
-- `large` → 400px max width
-- `xlarge` → 500px max width
+### `src/constants/windowLayout.js`
 
-### Window Content Components
+This module centralizes viewport and positioning rules:
 
-Located in `src/windows/`:
-- **aboutWindow.jsx** - Personal information window
-- **experienceWindow.jsx** - Work/experience history
-- **readmeWindow.jsx** - Site information and usage
+- `MOBILE_BREAKPOINT`
+- `WINDOW_LAYOUT`
+- `isMobileViewport()`
+- `calculateWindowPosition()`
+- `calculateRestorePosition()`
 
-Each exports an object with:
-```javascript
-{
-  title: "Window Title",
-  label: "Icon Label",
-  component: ReactComponent,
-  color: "header-color"
-}
+Keeping these constants here makes it easier to tune desktop/mobile window behavior without digging through the main app component.
+
+### `src/data/windowRegistry.jsx`
+
+This module stores desktop metadata:
+
+- `systemWindows` for About, README, and Experience windows
+- `terminalDesktopWindow` for the terminal icon/window config
+- `socialLinks` for GitHub and LinkedIn icons
+- `resumeLinks` for hardware and software resume icons
+
+When adding a new static desktop icon, prefer updating this registry instead of adding another hard-coded block in `App.jsx`.
+
+### `src/hooks/useTypewriter.js`
+
+Reusable hook for character-by-character text animation.
+
+It accepts:
+
+- `text`
+- `delay`
+- `startDelay`
+
+It returns:
+
+- `value`, the currently typed text
+- `done`, whether typing has completed
+
+The intro name and school text use this hook.
+
+### `src/windows/`
+
+Window content lives here:
+
+- `aboutWindow.jsx` exports the About Me window config
+- `readmeWindow.jsx` exports the site README window config
+- `experienceWindow.jsx` stores experience data as objects and renders the list from data
+- `ProjectWindowContent.jsx` renders JSON-backed project details
+- `TerminalWindow.jsx` implements the terminal-style file explorer
+
+Static windows export config objects with this shape:
+
+```jsx
+export const aboutWindow = {
+  id: 'aboutWindow',
+  title: 'About Me',
+  label: 'about_me.txt',
+  color: '#a78bfa',
+  component: AboutContent
+};
 ```
 
 ## Data Flow
 
-### Project Data Loading
+### Project Loading
 
-1. App component mounts
-2. `useEffect` fetches `/projects.json`
-3. JSON parsed and stored in `projects` state
-4. Projects split into `mainProjects` (first 3) and `moreProjects` (remainder)
-5. Main projects displayed in desktop grid
-6. "More Projects" folder opens secondary window with remaining projects
+1. `App.jsx` mounts.
+2. It fetches `/projects.json`.
+3. Projects are stored in React state.
+4. The first three projects render as primary desktop folders.
+5. Remaining projects render inside the "More Projects" window.
+6. Each project opens `ProjectWindowContent` inside the shared `Window` shell.
 
-### Window Management Flow
+### Window Lifecycle
 
-1. User clicks folder icon
-2. `openWindow()` called with window ID, title, content, and optional color
-3. Check if window already exists (by ID)
-   - If yes: Bring to front (update z-index)
-   - If no: Create new window with calculated position
-4. Window added to `openWindows` array
-5. Window component rendered with state
-6. User interactions update state via callbacks
+1. User clicks an icon or folder.
+2. `openWindow()` checks whether the window ID is already open.
+3. Existing windows are brought to front.
+4. New windows receive a calculated position, z-index, title, content, optional back handler, fullscreen flag, and header color.
+5. `openWindows.map(...)` renders each `Window`.
+6. Drag, close, focus, back, and fullscreen events flow back into `App.jsx` through callbacks.
 
-### Z-Index Management
+### Registry-Driven Icons
 
-- Counter starts at 100
-- Each window focus increments counter
-- `bringToFront()` assigns new highest z-index to focused window
-- Prevents windows from getting stuck behind others
+Static desktop icons are rendered from registry data:
+
+- Text windows come from `systemWindows`
+- Terminal comes from `terminalDesktopWindow`
+- External profile links come from `socialLinks`
+- Resume viewers come from `resumeLinks`
+
+This keeps repeated JSX out of the main component and makes new icons easier to add.
 
 ## Styling System
 
-### CSS Architecture
+### Main CSS File
 
-**File:** `src/assets/styles.css` (1100 lines)
+All styling currently lives in `src/assets/styles.css`.
 
-**Organization:**
-1. Base styles (reset, typography)
-2. Background elements (gradient, grid pattern, logo)
-3. Branding (name display, school display)
-4. Desktop interface (icons, folders)
-5. Window system (headers, content, controls)
-6. Photo galleries
+Primary sections:
+
+1. Base styles
+2. Background and branding
+3. Desktop icons and folders
+4. Window chrome and window content
+5. Project photos
+6. Experience list
 7. Resume viewer
-8. Dark mode styles (comprehensive overrides)
-9. Mobile responsive styles (media query @ 768px)
+8. Dark mode overrides
+9. Mobile overrides
+10. Terminal styles
 
-### Design Tokens
+Window header styles now share a base rule for layout and typography, with color-specific classes only overriding color and text shadow.
 
-**Colors (Light Mode):**
-- Background: `#182B3A` → `#0A4D6E` gradient
-- Accent: `#00A3E0` (UCSD blue)
-- Window background: `rgba(255, 255, 255, 0.95)`
-- Text: `#2c3e50`
+### Responsive Strategy
 
-**Colors (Dark Mode):**
-- Background: `#0f0f2e` → `#082a50` gradient
-- Accent: `#6ECFF5` → `#00A3E0` gradient
-- Window background: `rgba(26, 33, 62, 0.96)`
-- Text: `#f0f0f0`
+Desktop:
 
-**Breakpoints:**
-- Mobile: `< 768px`
-- Desktop: `>= 768px`
-
-### Responsive Design Strategy
-
-**Desktop (>= 768px):**
-- Fixed viewport (no scroll)
-- Windows draggable
+- Fixed viewport
+- Draggable windows
 - Multiple windows visible
-- Resume icons positioned absolute (right side)
+- Resume icons positioned on the right
 
-**Mobile (< 768px):**
-- Scrollable viewport
-- Windows centered, non-draggable
-- Single window focus (fullscreen recommended)
-- Resume icons in flow at bottom
-- Touch-optimized tap targets
+Mobile:
 
-**Mobile Overrides:**
-- `html, body` → `overflow-y: auto`
-- `.desktop-background` → `position: fixed`
-- `.desktop` → `height: auto`, `min-height: 100vh`
-- `.window` → `width: 95vw`, centered
-- Disable scroll when fullscreen window open
+- Scrollable desktop content
+- Windows centered
+- Dragging disabled
+- Fullscreen window mode prevents body scroll
+- Resume icons move into normal document flow
 
-## Key Features
+## Maintenance Guide
 
-### 1. Desktop-Inspired Interface
+### Add A Project
 
-- Folder icons for navigation
-- Draggable windows with title bars
-- Window controls (close, fullscreen, back)
-- Z-index stacking for multiple windows
-- Position calculation with cascading offset
+Update `app/public/projects.json`:
 
-### 2. Responsive Window Positioning
-
-**Mobile:**
-```javascript
-const MOBILE_WIDTH_PERCENT = 0.90;
-const MOBILE_MAX_WIDTH = 500;
-const MOBILE_START_Y = 140;
-```
-
-**Desktop:**
-```javascript
-const DESKTOP_WIDTH_PERCENT = 0.60;
-const DESKTOP_MAX_WIDTH = 600;
-const DESKTOP_HEIGHT_PERCENT = 0.70;
-const DESKTOP_MAX_HEIGHT = 500;
-const DESKTOP_START_Y = 80;
-```
-
-### 3. Dark Mode
-
-- Toggle button in bottom-right corner
-- Smooth CSS transitions (0.5s ease)
-- Comprehensive color scheme overrides
-- Maintains readability and contrast
-- Persists across window states
-
-### 4. Project Showcase
-
-- JSON-driven project configuration
-- Photo galleries with responsive sizing
-- External links (GitHub, demos, project pages)
-- Categorized display (main vs. more projects)
-- Bullet point description parsing
-
-### 5. Resume Viewer
-
-- PDF embedding via iframe
-- Fullscreen mode for better readability
-- Download button for offline access
-- Separate hardware and software resumes
-- Mobile fallback message
-
-### 6. Window Management
-
-- Open/close windows dynamically
-- Prevent duplicate windows (same ID)
-- Back button for navigation hierarchies
-- Fullscreen toggle for content focus
-- Auto-positioning to prevent overlap
-
-### 7. Animations
-
-**Text Typing Animation:**
-- Name display types out character-by-character on page load (50ms per character)
-- School display types out after name completes (40ms per character)
-- 150ms pause between name and school typing
-- Blinking cursor effect on name display
-
-**Window Opening Animations:**
-- Regular windows: Scale from 0.8 to 1 with translateY(-20px) to 0 (0.3s duration)
-- Fullscreen windows: Scale from 0.95 to 1 (0.25s duration)
-- Cubic-bezier easing (0.34, 1.56, 0.64, 1) for bouncy spring effect
-- CSS keyframe animations defined in styles.css
-
-## Performance Considerations
-
-### Optimization Strategies
-
-1. **Lazy Loading:** Projects fetched on mount, not initial bundle
-2. **CSS Variables:** Theme switching via class toggles, not inline styles
-3. **Event Cleanup:** Drag event listeners removed on unmount
-4. **Conditional Rendering:** Windows only rendered when open
-5. **Image Sizing:** Responsive photo classes prevent layout shift
-
-### Bundle Size
-
-- React 19 (modern, tree-shakeable)
-- Vite for optimized production builds
-- No heavy external libraries
-- Custom CSS (no framework overhead)
-
-## Accessibility
-
-### Implemented Features
-
-- Semantic HTML structure
-- ARIA labels on window controls
-- Keyboard-accessible buttons
-- Touch-optimized mobile targets
-- Sufficient color contrast in both themes
-- Text scaling support (clamp functions)
-
-### Considerations
-
-- Window drag is mouse/touch only (keyboard alternative not implemented)
-- Screen reader optimization could be improved
-- Focus management for window cycling could be enhanced
-
-## Deployment
-
-### Build Process
-
-```bash
-npm run build    # Vite production build
-npm run preview  # Preview production build
-```
-
-### Hosting
-
-- Platform: Render
-- Type: Static site
-- Build command: `cd app && npm install && npm run build`
-- Output directory: `app/dist`
-- Environment: Node.js
-
-### Redirects
-
-File: `app/public/_redirects`
-```
-/* /index.html 200
-```
-
-Handles client-side routing for single-page app.
-
-## Future Enhancements
-
-### Potential Improvements
-
-1. **Keyboard Navigation**
-   - Tab through windows
-   - Arrow keys for window positioning
-   - Escape to close windows
-
-2. **State Persistence**
-   - Save window positions to localStorage
-   - Remember dark mode preference
-   - Restore last open windows
-
-3. **Animation Enhancements**
-   - Window open/close animations
-   - Smooth position transitions
-   - Icon hover effects
-
-4. **Content Expansion**
-   - Blog section
-   - Contact form
-   - Skills visualization
-   - Testimonials
-
-5. **Performance**
-   - Image lazy loading
-   - Code splitting for window components
-   - Service worker for offline support
-
-## Maintenance
-
-### Adding New Projects
-
-1. Add entry to `app/public/projects.json`:
 ```json
 {
-  "id": "project7",
-  "label": "Project Label",
+  "id": "project8",
+  "label": "Short Desktop Label",
   "title": "Full Project Title",
-  "description": "Multi-line\ndescription",
-  "technologies": "Tech1, Tech2, Tech3",
+  "description": "First bullet\nSecond bullet",
+  "technologies": "React, Vite, CSS",
   "github": "https://github.com/user/repo",
-  "photos": ["photo1.jpg", "photo2.jpg"],
+  "photos": ["example.png"],
   "imageSize": "medium",
   "miscLink": {
     "displayName": "Demo",
-    "url": "https://demo.com"
+    "url": "https://example.com"
   }
 }
 ```
 
-2. Add photos to `app/public/project_photos/`
+Then add images to `app/public/project_photos/`.
 
-### Adding New Windows
+### Add A Static Window
 
-1. Create component in `src/windows/`
-2. Export configuration object:
-```javascript
-export const newWindow = {
-  title: "Window Title",
-  label: "Icon Label",
-  component: NewWindowComponent,
-  color: "header-color"
+1. Create a new file in `app/src/windows/`.
+2. Export a component and window config object.
+3. Register the config in `app/src/data/windowRegistry.jsx`.
+
+Example:
+
+```jsx
+const ContactContent = () => (
+  <>
+    <h2>Contact</h2>
+    <p>Contact details go here.</p>
+  </>
+);
+
+export const contactWindow = {
+  id: 'contactWindow',
+  title: 'Contact',
+  label: 'contact.txt',
+  color: '#a78bfa',
+  component: ContactContent
 };
 ```
 
-3. Add to `windowsInfo` object in `App.jsx`
+Then:
 
-### Styling Changes
+```jsx
+export const systemWindows = {
+  aboutWindow,
+  aboutSiteWindow,
+  experienceWindow,
+  contactWindow
+};
+```
 
-- Modify `src/assets/styles.css`
-- Dark mode overrides in `.dark-mode` section
-- Mobile overrides in `@media (max-width: 768px)` section
+### Add A Resume Or External Link
 
-## Conclusion
+Update `resumeLinks` or `socialLinks` in `app/src/data/windowRegistry.jsx`.
 
-This portfolio website successfully combines a nostalgic desktop interface with modern web technologies. The component-based architecture allows for easy maintenance and expansion, while the responsive design ensures accessibility across devices. The JSON-driven content management simplifies updates, and the comprehensive styling system provides a polished user experience in both light and dark modes.
+### Tune Window Layout
+
+Update `app/src/constants/windowLayout.js` for:
+
+- Breakpoint changes
+- Default desktop/mobile window sizes
+- Initial y positions
+- Cascading window offset
+- Restore-from-fullscreen position
+
+### Update Experience
+
+Edit the `experiences` array in `app/src/windows/experienceWindow.jsx`. The component renders the list from data, so no repeated JSX blocks are needed.
+
+## Accessibility Notes
+
+Implemented:
+
+- Semantic headings and lists inside windows
+- ARIA labels on close/fullscreen controls
+- Keyboard-accessible button elements
+- Mobile tap target adjustments
+- Dark mode contrast overrides
+
+Possible future improvements:
+
+- Focus trapping inside active fullscreen windows
+- Keyboard shortcuts for close/fullscreen
+- Keyboard window movement
+- Better screen reader announcements when windows open or close
+
+## Deployment
+
+Render static site settings:
+
+- Build command: `cd app && npm install && npm run build`
+- Output directory: `app/dist`
+
+SPA fallback is handled by `app/public/_redirects`:
+
+```text
+/* /index.html 200
+```
+
+## Future Improvements
+
+- Persist dark mode preference with `localStorage`
+- Persist window positions between visits
+- Split very large CSS sections into smaller files if the styling surface grows
+- Add keyboard navigation for active windows
+- Lazy-load larger project images
+- Add lightweight tests for window positioning helpers and project rendering

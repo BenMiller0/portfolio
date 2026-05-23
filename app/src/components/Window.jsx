@@ -1,10 +1,9 @@
-import React, { useRef, useEffect, useCallback } from 'react';
-
-const MOBILE_BREAKPOINT = 768;
+import React, { useCallback, useEffect, useRef } from 'react';
+import { MOBILE_BREAKPOINT } from '../constants/windowLayout';
 
 const HEADER_COLOR_MAP = {
-  'lightgreen': 'window-header-green',
-  'orange': 'window-header-orange',
+  lightgreen: 'window-header-green',
+  orange: 'window-header-orange',
   '#f2f2f2': 'window-header-gray',
   '#cc3333': 'window-header-red',
   '#a78bfa': 'window-header-about',
@@ -12,19 +11,19 @@ const HEADER_COLOR_MAP = {
   '#facc15': 'window-header-experience'
 };
 
-const Window = ({ 
-  id, 
-  title, 
-  children, 
-  onClose, 
-  position, 
-  onDrag, 
-  onFocus, 
-  style, 
-  onBack, 
-  isFullscreen, 
-  onToggleFullscreen, 
-  headerColor 
+const Window = ({
+  id,
+  title,
+  children,
+  onClose,
+  position,
+  onDrag,
+  onFocus,
+  style,
+  onBack,
+  isFullscreen,
+  onToggleFullscreen,
+  headerColor
 }) => {
   const windowRef = useRef(null);
   const isDragging = useRef(false);
@@ -37,24 +36,21 @@ const Window = ({
     }
   }, []);
 
-  const getHeaderClassName = () => HEADER_COLOR_MAP[headerColor] || 'window-header';
-
   const bringToFrontImmediate = useCallback(() => {
     if (!windowRef.current) return;
-    
+
     const windows = document.querySelectorAll('.window');
-    const highestZ = Math.max(...Array.from(windows).map(w => parseInt(w.style.zIndex || 0)));
-    const newZIndex = highestZ + 1;
-    
-    windowRef.current.style.zIndex = newZIndex;
-    currentZIndex.current = newZIndex;
-    
+    const highestZIndex = Math.max(...Array.from(windows).map(win => Number.parseInt(win.style.zIndex || 0, 10)));
+    const nextZIndex = highestZIndex + 1;
+
+    windowRef.current.style.zIndex = nextZIndex;
+    currentZIndex.current = nextZIndex;
     onFocus?.();
   }, [onFocus]);
 
   const startDrag = useCallback((clientX, clientY) => {
     if (!windowRef.current) return;
-    
+
     const rect = windowRef.current.getBoundingClientRect();
     offset.current = { x: clientX - rect.left, y: clientY - rect.top };
     isDragging.current = true;
@@ -62,31 +58,35 @@ const Window = ({
 
   const moveDrag = useCallback((clientX, clientY) => {
     if (!isDragging.current) return;
-    
+
     onDrag(id, { x: clientX - offset.current.x, y: clientY - offset.current.y });
   }, [id, onDrag]);
 
-  const stopDrag = useCallback(() => { isDragging.current = false; }, []);
+  const stopDrag = useCallback(() => {
+    isDragging.current = false;
+  }, []);
 
-  const handleMouseMove = useCallback((e) => moveDrag(e.clientX, e.clientY), [moveDrag]);
-  
+  const handleMouseMove = useCallback((event) => {
+    moveDrag(event.clientX, event.clientY);
+  }, [moveDrag]);
+
   const handleMouseUp = useCallback(() => {
     stopDrag();
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
-  }, [stopDrag, handleMouseMove]);
+  }, [handleMouseMove, stopDrag]);
 
-  const handleMouseDown = useCallback((e) => {
-    if (e.button !== 0 || isFullscreen) return;
-    
+  const handleMouseDown = useCallback((event) => {
+    if (event.button !== 0 || isFullscreen) return;
+
     bringToFrontImmediate();
-    startDrag(e.clientX, e.clientY);
+    startDrag(event.clientX, event.clientY);
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-  }, [isFullscreen, bringToFrontImmediate, startDrag, handleMouseMove, handleMouseUp]);
+  }, [bringToFrontImmediate, handleMouseMove, handleMouseUp, isFullscreen, startDrag]);
 
-  const handleTouchMove = useCallback((e) => {
-    const touch = e.touches[0];
+  const handleTouchMove = useCallback((event) => {
+    const touch = event.touches[0];
     moveDrag(touch.clientX, touch.clientY);
   }, [moveDrag]);
 
@@ -94,41 +94,38 @@ const Window = ({
     stopDrag();
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
-  }, [stopDrag, handleTouchMove]);
+  }, [handleTouchMove, stopDrag]);
 
-  const handleTouchStart = useCallback((e) => {
-    if (isFullscreen) return;
-    
-    const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-    if (isMobile) return;
-    
+  const handleTouchStart = useCallback((event) => {
+    if (isFullscreen || window.innerWidth < MOBILE_BREAKPOINT) return;
+
     bringToFrontImmediate();
-    const touch = e.touches[0];
+    const touch = event.touches[0];
     startDrag(touch.clientX, touch.clientY);
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handleTouchEnd);
-  }, [isFullscreen, bringToFrontImmediate, startDrag, handleTouchMove, handleTouchEnd]);
+  }, [bringToFrontImmediate, handleTouchMove, handleTouchEnd, isFullscreen, startDrag]);
 
-  const stopPropagation = (e) => e.stopPropagation();
+  const stopPropagation = (event) => event.stopPropagation();
 
-  const handleBackClick = useCallback((e) => {
-    stopPropagation(e);
+  const handleBackClick = useCallback((event) => {
+    stopPropagation(event);
     onClose();
     onBack();
-  }, [onClose, onBack]);
+  }, [onBack, onClose]);
 
-  const handleFullscreenClick = useCallback((e) => {
-    stopPropagation(e);
+  const handleFullscreenClick = useCallback((event) => {
+    stopPropagation(event);
     onToggleFullscreen?.();
   }, [onToggleFullscreen]);
 
-  const handleCloseClick = useCallback((e) => {
-    stopPropagation(e);
+  const handleCloseClick = useCallback((event) => {
+    stopPropagation(event);
     onClose();
   }, [onClose]);
 
   const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-  const windowStyle = isFullscreen ? {} : (isMobile ? {
+  const positionStyle = isFullscreen ? {} : (isMobile ? {
     left: '50%',
     transform: 'translateX(-50%)',
     top: '100px',
@@ -146,30 +143,30 @@ const Window = ({
       className={`window ${isFullscreen ? 'fullscreen' : ''}`}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
-      style={windowStyle}
+      style={{ ...positionStyle, ...style }}
     >
-      <div className={getHeaderClassName()}>
+      <div className={HEADER_COLOR_MAP[headerColor] || 'window-header'}>
         {onBack && (
-          <button 
-            className="back-button" 
+          <button
+            className="back-button"
             onClick={handleBackClick}
             onTouchEnd={stopPropagation}
           >
-            ← Back
+            &lt; Back
           </button>
         )}
         <span>{title}</span>
         <div className="window-controls">
-          <button 
-            className="fullscreen-button" 
+          <button
+            className="fullscreen-button"
             onClick={handleFullscreenClick}
             onTouchEnd={stopPropagation}
             aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
           >
-            {isFullscreen ? '⤢' : '⛶'}
+            {isFullscreen ? 'Exit' : 'Full'}
           </button>
-          <button 
-            className="close-button" 
+          <button
+            className="close-button"
             onClick={handleCloseClick}
             onTouchEnd={stopPropagation}
             aria-label="Close window"
