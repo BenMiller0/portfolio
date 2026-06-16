@@ -234,7 +234,7 @@ const App = () => {
         onClick={() => setDarkMode(current => !current)}
         aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
       >
-        <span className="toggle-icon">{darkMode ? 'Sun' : 'Moon'}</span>
+        <span className="toggle-icon"><i className={`fa-solid ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i></span>
         <span className="toggle-track"></span>
       </button>
     </>

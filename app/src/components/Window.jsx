@@ -163,7 +163,7 @@ const Window = ({
             onTouchEnd={stopPropagation}
             aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
           >
-            {isFullscreen ? 'Exit' : 'Full'}
+            <i className={`fa-solid ${isFullscreen ? 'fa-compress' : 'fa-expand'}`}></i>
           </button>
           <button
             className="close-button"
