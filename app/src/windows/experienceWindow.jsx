@@ -2,26 +2,27 @@ import React from 'react';
 
 const experiences = [
   {
-    role: 'Electronic Props Designer, Star Wars Club at UCSD',
-    dates: 'Jun. 2024 - Present',
+    role: 'Software Engineering Intern - Firmware, Western Digital',
+    dates: 'Jun. 2026 - Present, Sep. 2025 - Dec. 2025',
     bullets: [
-      'Designed embedded systems and firmware for filmmaking props and on-campus promotional props using a real-time operating system (RTOS) and microcontrollers, resulting in screen-accurate prop recreations.'
+      'Designed and implemented C++ firmware for hard drive systems in an Agile environment, validated through unit and integration testing to improve firmware reliability.',
+      'Improved system infrastructure by implementing embedded C++ features and enhanced error handling, increasing system stability in production codebase.',
+      'Developed an internal tool for accelerating integration testing with a Python microservice and full-stack application (Flask, SQLite, JavaScript), demonstrated successfully to management.'
+    ]
+  },
+  {
+    role: 'Electronic Props Designer, Star Wars Club at UCSD',
+    dates: 'Mar. 2026 - Present',
+    bullets: [
+      'Designed embedded systems and C++ firmware for props for film making and on campus promotional props using a real time operating system (RTOS) and microcontrollers resulting in screen accurate prop recreations.'
     ]
   },
   {
     role: 'Software Engineering Lead & VP, Themed Entertainment Association at UCSD',
-    dates: 'Jun. 2024 - Present',
+    dates: 'Jun. 2024 - Jun. 2026',
     bullets: [
       "Led software development including launching the association's website (JavaScript, CI/CD) and themed attraction production software (Python, C, C++), enabling reliable themed attraction operations.",
       'Organized and represented UCSD in national engineering team competitions, coordinating interdisciplinary collaboration and ensuring effective teamwork.'
-    ]
-  },
-  {
-    role: 'Software Engineering Intern, Western Digital',
-    dates: 'Sep. 2025 - Dec. 2025',
-    bullets: [
-      'Improved hard drive firmware reliability and infrastructure by developing and testing embedded C++ features.',
-      'Developed an internal tool for accelerating integration testing with a Python microservice and full-stack application (Flask, SQLite, JavaScript), demonstrated successfully to management.'
     ]
   },
   {

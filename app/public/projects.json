@@ -12,6 +12,27 @@
   },
   {
     "id": "project2",
+    "label": "Remote Embedded System Verification",
+    "title": "VIS-SSH-ON - Remote Embedded System Verification System",
+    "description": "Built a remote firmware verification system enabling flashing, observation, and validation of embedded C/C++ on physical hardware, such as microcontrollers, reducing dependence on simulation-based testing. Implemented a hardware-in-the-loop testing framework with computer vision to automatically validate firmware behavior and enable repeatable automated test pipelines.",
+    "technologies": "Python, C/C++, Firmware",
+    "github": "https://github.com/BenMiller0/VIS-SSH-ON",
+    "photos": ["VIS-SSH-ON1.png","VIS-SSH-ON2.png"],
+    "imageSize": "large",
+    "miscLink": {"displayName": "Project Page", "url": "https://benmiller0.github.io/VIS-SSH-ON/"}
+  },
+  {
+    "id": "project3",
+    "label": "Darth Vader Suit Firmware",
+    "title": "Darth Vader Suit Firmware",
+    "description": "Darth Vader suit firmware built on FreeRTOS. Controls the blinking of each light on his suit making them easily programmable and optimizes CPU usage to conserve power and boost performance. Built for Star Wars Club @ UC San Diego's Screen accurate Darth Vader Suit used for club promotion and film making.",
+    "technologies": "C++, FreeRTOS, ESP32, PWM",
+    "github": "https://github.com/BenMiller0/darth-vadar-firmware",
+    "photos": ["vader_suit.jpg","vader_embedded.jpg"],
+    "imageSize": "large"
+  },
+  {
+    "id": "project4",
     "label": "Computer Vision Spell Casting",
     "title": "Computer Vision based spell detection",
     "description": "Built a distributed edge-AI interactive system combining a custom Android app and embedded hardware to detect gesture-based spells using on-device computer vision and speech recognition, triggering real-time physical actuation\nDesigned a multi-device MQTT architecture where mobile inference publishes events to an embedded broker controlling hardware, alongside a Python/Flask dashboard streaming activity and spell detections across the network.",
@@ -22,17 +43,7 @@
     "miscLink": {"displayName": "Project Page", "url": "https://devpost.com/software/muggle-wand-training"}
   },
   {
-    "id": "project3",
-    "label": "Darth Vader Suit Firmware",
-    "title": "Darth Vader Suit Firmware",
-    "description": "Darth Vader suit firmware built on FreeRTOS. Controls the blinking of each light on his suit making them easily programmable and optimizes CPU usage to conserve power and boost performance. Built for Star Wars Club @ UC San Diego's Screen accurate Darth Vader Suit used for club promotion and film making.",
-    "technologies": "C++, FreeRTOS, ESP32, PWM",
-    "github": "https://github.com/BenMiller0/darth-vadar-firmware",
-    "photos": ["vader_suit.jpg","vader_embedded.jpg"],
-    "imageSize": "medium"
-  },
-  {
-    "id": "project4",
+    "id": "project5",
     "label": "ML Modeling Theme Park Wait Times",
     "title": "Predictive Modeling of Theme Park Wait Times",
     "description": "Built and evaluated linear regression and machine learning models in order to investigate correlation between physical ride characteristics and guest demand, using wait times as proxy for guest demand",
@@ -42,7 +53,7 @@
     "imageSize": "medium"
   },
   {
-    "id": "project5",
+    "id": "project6",
     "label": "Campus Events Planner Application",
     "title": "Campus Events Planner Web Application in JavaScript",
     "description": "Developed a functional web application for discovering and organizing campus events\nDeveloped comprehensive CI/CD pipeline with unit, integration, and regression testing",
@@ -52,7 +63,7 @@
     "imageSize": "medium"
   },
   {
-    "id": "project6",
+    "id": "project7",
     "label": "TEA @ UCSD Site",
     "title": "Themed Entertainment Association at UCSD Website",
     "description": "Developed and maintained the Themed Entertainment Association at UCSD's website\nSignificantly boosted the club's digital presence increasing online engagement and visibility",
@@ -63,7 +74,7 @@
     "miscLink": {"displayName": "Website", "url": " https://bit.ly/tea_at_ucsd"}
   },
   {
-    "id": "project7",
+    "id": "project8",
     "label": "Multithreaded File Compressor in C++",
     "title": "Multithreaded File Compressor in C++",
     "description": "Multithreaded application for high speed file compression\nOptimized for performance using parallel processing",

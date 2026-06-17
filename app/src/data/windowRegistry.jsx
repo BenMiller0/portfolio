@@ -31,12 +31,12 @@ export const resumeLinks = [
     id: 'hardware-resume',
     label: 'Hardware_Resume.pdf',
     title: 'Hardware Resume',
-    path: '/hardware_resume.pdf'
+    path: '/resumes/hardware_resume.pdf'
   },
   {
     id: 'software-resume',
     label: 'Software_Resume.pdf',
     title: 'Software Resume',
-    path: '/software_resume.pdf'
+    path: '/resumes/software_resume.pdf'
   }
 ];

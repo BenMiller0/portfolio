@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './assets/styles.css';
 import Window from './components/Window';
 import ProjectWindowContent from './windows/ProjectWindowContent';
@@ -21,6 +21,7 @@ const App = () => {
   const [openWindows, setOpenWindows] = useState([]);
   const [zIndexCounter, setZIndexCounter] = useState(100);
   const [darkMode, setDarkMode] = useState(false);
+  const moreProjectsFullscreenRef = useRef(false);
   const { value: typedName, done: nameTyped } = useTypewriter(PROFILE_NAME, 50);
   const { value: typedSchool } = useTypewriter(SCHOOL_NAME, 40, nameTyped ? 150 : 0);
 
@@ -81,6 +82,9 @@ const App = () => {
   }, [bringToFront, openWindows, zIndexCounter]);
 
   const closeWindow = useCallback((id) => {
+    if (id === 'moreProjects') {
+      moreProjectsFullscreenRef.current = false;
+    }
     setOpenWindows(windows => windows.filter(win => win.id !== id));
   }, []);
 
@@ -91,23 +95,29 @@ const App = () => {
   }, []);
 
   const toggleFullscreen = useCallback((id) => {
-    setOpenWindows(windows => windows.map(win => {
-      if (win.id !== id) return win;
+    setOpenWindows(windows => {
+      const updated = windows.map(win => {
+        if (win.id !== id) return win;
 
-      const isFullscreen = !win.isFullscreen;
-      return {
-        ...win,
-        isFullscreen,
-        position: isFullscreen ? { x: 0, y: 0 } : calculateRestorePosition()
-      };
-    }));
+        const isFullscreen = !win.isFullscreen;
+        if (id === 'moreProjects') {
+          moreProjectsFullscreenRef.current = isFullscreen;
+        }
+        return {
+          ...win,
+          isFullscreen,
+          position: isFullscreen ? { x: 0, y: 0 } : calculateRestorePosition()
+        };
+      });
+      return updated;
+    });
   }, []);
 
   const mainProjects = projects.slice(0, 3);
   const moreProjects = projects.slice(3);
   const projectChunks = useMemo(() => chunkItems(mainProjects, 3), [mainProjects]);
 
-  const openMoreProjectsWindow = useCallback(() => {
+  const openMoreProjectsWindow = useCallback((preserveFullscreen = false) => {
     openWindow(
       'moreProjects',
       'More Projects',
@@ -115,9 +125,14 @@ const App = () => {
         projects={moreProjects}
         openProjectWindow={openWindow}
         reopenMoreProjects={openMoreProjectsWindow}
-      />
+        closeMoreProjects={() => closeWindow('moreProjects')}
+        moreProjectsFullscreenRef={moreProjectsFullscreenRef}
+      />,
+      null,
+      null,
+      preserveFullscreen ? { isFullscreen: moreProjectsFullscreenRef.current } : { isFullscreen: false }
     );
-  }, [moreProjects, openWindow]);
+  }, [moreProjects, openWindow, closeWindow]);
 
   const openResumeViewer = useCallback((pdfPath, title) => {
     openWindow(
@@ -241,7 +256,7 @@ const App = () => {
   );
 };
 
-const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects }) => (
+const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, closeMoreProjects, moreProjectsFullscreenRef }) => (
   <div className="more-projects-window">
     <h2>More Projects</h2>
     <div className="more-projects-grid">
@@ -251,12 +266,23 @@ const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects }
           className="folder"
           onClick={(event) => {
             event.stopPropagation();
+            const wasFullscreen = moreProjectsFullscreenRef.current;
             openProjectWindow(
               project.id,
               project.title,
               <ProjectWindowContent project={project} />,
-              reopenMoreProjects
+              () => {
+                const projectWindow = document.querySelector('.window.fullscreen');
+                const isProjectFullscreen = projectWindow !== null;
+                if (isProjectFullscreen) {
+                  moreProjectsFullscreenRef.current = true;
+                }
+                reopenMoreProjects(true);
+              },
+              null,
+              { isFullscreen: wasFullscreen }
             );
+            setTimeout(() => closeMoreProjects(), 50);
           }}
         >
           <div className="folder-icon"></div>

@@ -10,12 +10,13 @@ export const useTypewriter = (text, delay = 50, startDelay = 0) => {
 
     let index = 0;
     let timerId;
+    let typingTimerId;
 
     const typeNextCharacter = () => {
       if (index < text.length) {
         setValue(text.slice(0, index + 1));
         index += 1;
-        timerId = window.setTimeout(typeNextCharacter, delay);
+        typingTimerId = window.setTimeout(typeNextCharacter, delay);
       } else {
         setDone(true);
       }
@@ -23,7 +24,10 @@ export const useTypewriter = (text, delay = 50, startDelay = 0) => {
 
     timerId = window.setTimeout(typeNextCharacter, startDelay);
 
-    return () => window.clearTimeout(timerId);
+    return () => {
+      window.clearTimeout(timerId);
+      window.clearTimeout(typingTimerId);
+    };
   }, [delay, startDelay, text]);
 
   return { value, done };
