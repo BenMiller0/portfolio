@@ -38,12 +38,12 @@ const projects = [
     miscLink: { displayName: 'Demo Video', url: 'https://www.youtube.com/watch?v=8_HPtF_c1NU' }
   },
   {
-    title: 'Computer Vision Spell Casting',
-    description: 'Built a distributed edge-AI interactive system combining a custom Android app and embedded hardware to detect gesture-based spells using computer vision and speech recognition.',
-    technologies: 'Python, AI/ML, Computer Vision, Arduino UNO Q, Linux, Microcontroller',
-    github: 'https://github.com/BenMiller0/computer_vision_spell_casting',
-    photos: ['wand_spell_caster.jpg', 'full_wand_system.jpg'],
-    miscLink: { displayName: 'Project Page', url: 'https://devpost.com/software/muggle-wand-training' }
+    title: 'Remote Embedded System Verification',
+    description: 'Built a remote firmware verification system enabling flashing, observation, and validation of embedded C/C++ on physical hardware, such as microcontrollers, reducing dependence on simulation-based testing.',
+    technologies: 'Python, C/C++, Firmware',
+    github: 'https://github.com/BenMiller0/VIS-SSH-ON',
+    photos: ['VIS-SSH-ON1.png', 'VIS-SSH-ON2.png'],
+    miscLink: { displayName: 'Project Page', url: 'https://benmiller0.github.io/VIS-SSH-ON/' }
   },
   {
     title: 'Darth Vader Suit Firmware',
@@ -51,6 +51,14 @@ const projects = [
     technologies: 'C++, FreeRTOS, ESP32, PWM',
     github: 'https://github.com/BenMiller0/darth-vadar-firmware',
     photos: ['vader_suit.jpg', 'vader_embedded.jpg']
+  },
+  {
+    title: 'Computer Vision Spell Casting',
+    description: 'Built a distributed edge-AI interactive system combining a custom Android app and embedded hardware to detect gesture-based spells using computer vision and speech recognition.',
+    technologies: 'Python, AI/ML, Computer Vision, Arduino UNO Q, Linux, Microcontroller',
+    github: 'https://github.com/BenMiller0/computer_vision_spell_casting',
+    photos: ['wand_spell_caster.jpg', 'full_wand_system.jpg'],
+    miscLink: { displayName: 'Project Page', url: 'https://devpost.com/software/muggle-wand-training' }
   },
   {
     title: 'ML Modeling Theme Park Wait Times',
@@ -85,15 +93,15 @@ const createFileSystem = () => ({
   '~': {
     type: 'dir',
     children: {
-      'about_me.txt': {
+      'About.txt': {
         type: 'file',
         content: 'Benjamin Miller\nUC San Diego - Computer Science\nEmbedded Systems & Software Engineer'
       },
-      'README.txt': {
+      'About_Site.txt': {
         type: 'file',
         content: 'This portfolio is designed to look and feel like a desktop environment, showcasing projects in embedded systems, AI/ML, and app/web app development.'
       },
-      'experience.txt': {
+      'Experience.txt': {
         type: 'file',
         content: [
           'Electronic Props Designer, Star Wars Club at UCSD',
@@ -103,11 +111,10 @@ const createFileSystem = () => ({
           'Resident Advisor, COSMOS UC San Diego'
         ].join('\n')
       },
-      'Terminal.app': { type: 'file', content: 'Portfolio terminal window' },
       'GitHub.url': { type: 'file', content: 'https://github.com/BenMiller0' },
       'LinkedIn.url': { type: 'file', content: 'https://linkedin.com/in/benjamin-miller-ucsd' },
-      'Hardware_Resume.pdf': { type: 'file', content: '/hardware_resume.pdf' },
-      'Software_Resume.pdf': { type: 'file', content: '/software_resume.pdf' },
+      'Hardware_Resume.pdf': { type: 'file', content: '/resumes/hardware_resume.pdf' },
+      'Software_Resume.pdf': { type: 'file', content: '/resumes/software_resume.pdf' },
       [projects[0].title]: createProjectDirectory(projects[0]),
       [projects[1].title]: createProjectDirectory(projects[1]),
       [projects[2].title]: createProjectDirectory(projects[2]),
@@ -148,13 +155,16 @@ const TerminalContent = () => {
   const [input, setInput] = useState('');
   const [currentPath, setCurrentPath] = useState('~');
   const [output, setOutput] = useState([
-    { type: 'system', text: 'Portfolio Terminal v1.0' },
+    { type: 'system', text: 'Portfolio Terminal v2.0' },
     { type: 'system', text: 'Type "help" for available commands.' }
   ]);
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [environment, setEnvironment] = useState({ HOME: '~', USER: 'ben', HOST: 'portfolio' });
+  const [aliases, setAliases] = useState({ ll: 'ls -la', la: 'ls -a', l: 'ls -l' });
   const inputRef = useRef(null);
   const terminalRef = useRef(null);
+  const outputRef = useRef(null);
   const fileSystemRef = useRef(createFileSystem());
 
   const resolvePath = (target = currentPath) => {
@@ -235,20 +245,89 @@ const TerminalContent = () => {
     </>
   );
 
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + sizes[i];
+  };
+
+  const formatPermissions = (node) => {
+    const type = node.type === 'dir' ? 'd' : '-';
+    const perms = node.type === 'dir' ? 'rwxr-xr-x' : 'rw-r--r--';
+    return type + perms;
+  };
+
+  const formatDate = () => {
+    const now = new Date();
+    return now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getFileColor = (name, node) => {
+    if (node.type === 'dir') return 'terminal-dir';
+    if (name.endsWith('.url')) return 'terminal-link';
+    if (name.endsWith('.md')) return 'terminal-markdown';
+    if (name.endsWith('.txt')) return 'terminal-text';
+    if (name.endsWith('.pdf')) return 'terminal-pdf';
+    return 'terminal-file';
+  };
+
+  const expandWildcards = (pattern, currentDir) => {
+    if (!pattern.includes('*') && !pattern.includes('?')) return [pattern];
+    
+    const regexString = pattern
+      .replace(/\./g, '\\.')
+      .replace(/\*/g, '.*')
+      .replace(/\?/g, '.')
+      .toLowerCase();
+    
+    const regex = new RegExp(`^${regexString}$`);
+    return Object.keys(currentDir).filter(name => regex.test(name.toLowerCase()));
+  };
+
   const commands = {
     help: () => ({
       type: 'output',
-      text: 'Available commands:\n  ls - List directory contents\n  cd <dir> - Change directory\n  pwd - Print working directory\n  cat <file> - Display file contents\n  open <file> - Open a URL or PDF path\n  echo <text> - Print text\n  clear - Clear terminal\n  date - Show current date/time\n  help - Show this help message'
+      text: 'Available commands:\n  ls [-la] - List directory contents\n  cd <dir> - Change directory\n  pwd - Print working directory\n  cat <file> - Display file contents\n  open <file> - Open a URL or PDF path\n  echo <text> - Print text\n  clear - Clear terminal\n  date - Show current date/time\n  mkdir <dir> - Create directory\n  rmdir <dir> - Remove empty directory\n  touch <file> - Create empty file\n  rm <file> - Remove file\n  cp <src> <dst> - Copy file\n  mv <src> <dst> - Move/rename file\n  grep <pattern> <file> - Search in file\n  head [-n] <file> - Show first lines\n  tail [-n] <file> - Show last lines\n  wc <file> - Count lines/words/chars\n  man <cmd> - Show command help\n  env - Show environment variables\n  export <key>=<val> - Set environment variable\n  alias [name[=value]] - Show or create aliases\n  unalias <name> - Remove alias\n  help - Show this help message'
     }),
-    ls: () => {
+    ls: (args) => {
+      const showAll = args.includes('-a') || args.includes('-la');
+      const showLong = args.includes('-l') || args.includes('-la');
       const currentDir = getCurrentDirectory();
-      const items = Object.keys(currentDir).map(name => {
+      
+      let items = Object.keys(currentDir);
+      if (!showAll) {
+        items = items.filter(name => !name.startsWith('.'));
+      }
+      
+      if (showLong) {
+        const lines = items.map(name => {
+          const item = currentDir[name];
+          const perms = formatPermissions(item);
+          const size = item.type === 'dir' ? '4096' : formatFileSize(item.content?.length || 0);
+          const date = formatDate();
+          const displayName = item.type === 'dir' ? `${name}/` : name;
+          const colorClass = getFileColor(name, item);
+          return `${perms} 1 ${environment.USER} ${environment.USER} ${size.padStart(8)} ${date} <span class="${colorClass}">${displayName}</span>`;
+        });
+        return {
+          type: 'output',
+          text: lines.length > 0 ? lines.join('\n') : '(empty directory)',
+          html: true
+        };
+      }
+      
+      const simpleItems = items.map(name => {
         const item = currentDir[name];
-        return item.type === 'dir' ? `${name}/` : name;
+        const displayName = item.type === 'dir' ? `${name}/` : name;
+        const colorClass = getFileColor(name, item);
+        return `<span class="${colorClass}">${displayName}</span>`;
       });
       return {
         type: 'output',
-        text: items.length > 0 ? items.join('\n') : '(empty directory)'
+        text: simpleItems.length > 0 ? simpleItems.join('\n') : '(empty directory)',
+        html: true
       };
     },
     pwd: () => ({
@@ -272,12 +351,30 @@ const TerminalContent = () => {
         return { type: 'error', text: 'cat: missing file operand' };
       }
       const currentDir = getCurrentDirectory();
-      const file = fileName.includes('/') ? getNode(fileName) : currentDir[fileName];
-      const resolvedFile = file || findEntry(currentDir, fileName);
-      if (resolvedFile && resolvedFile.type === 'file') {
-        return { type: 'output', text: resolvedFile.content };
+      const expanded = expandWildcards(fileName, currentDir);
+      
+      if (expanded.length === 1 && expanded[0] === fileName) {
+        const file = fileName.includes('/') ? getNode(fileName) : currentDir[fileName];
+        const resolvedFile = file || findEntry(currentDir, fileName);
+        if (resolvedFile && resolvedFile.type === 'file') {
+          return { type: 'output', text: resolvedFile.content };
+        }
+        return { type: 'error', text: `cat: ${fileName}: No such file` };
       }
-      return { type: 'error', text: `cat: ${fileName}: No such file` };
+      
+      const contents = [];
+      for (const name of expanded) {
+        const file = currentDir[name];
+        if (file && file.type === 'file') {
+          contents.push(`=== ${name} ===`);
+          contents.push(file.content);
+        }
+      }
+      
+      if (contents.length === 0) {
+        return { type: 'error', text: `cat: no matching files` };
+      }
+      return { type: 'output', text: contents.join('\n') };
     },
     open: (args) => {
       const fileName = getPathArg(args);
@@ -302,6 +399,341 @@ const TerminalContent = () => {
     }),
     clear: () => ({ type: 'clear', text: '' }),
     date: () => ({ type: 'output', text: new Date().toString() }),
+    mkdir: (args) => {
+      const dirName = getPathArg(args);
+      if (!dirName) {
+        return { type: 'error', text: 'mkdir: missing operand' };
+      }
+      const currentDir = getCurrentDirectory();
+      if (currentDir[dirName]) {
+        return { type: 'error', text: `mkdir: cannot create directory '${dirName}': File exists` };
+      }
+      currentDir[dirName] = { type: 'dir', children: {} };
+      return { type: 'output', text: '' };
+    },
+    rmdir: (args) => {
+      const dirName = getPathArg(args);
+      if (!dirName) {
+        return { type: 'error', text: 'rmdir: missing operand' };
+      }
+      const currentDir = getCurrentDirectory();
+      const dir = currentDir[dirName] || findEntry(currentDir, dirName);
+      if (!dir) {
+        return { type: 'error', text: `rmdir: failed to remove '${dirName}': No such directory` };
+      }
+      if (dir.type !== 'dir') {
+        return { type: 'error', text: `rmdir: failed to remove '${dirName}': Not a directory` };
+      }
+      if (Object.keys(dir.children).length > 0) {
+        return { type: 'error', text: `rmdir: failed to remove '${dirName}': Directory not empty` };
+      }
+      delete currentDir[dirName];
+      return { type: 'output', text: '' };
+    },
+    touch: (args) => {
+      const fileName = getPathArg(args);
+      if (!fileName) {
+        return { type: 'error', text: 'touch: missing file operand' };
+      }
+      const currentDir = getCurrentDirectory();
+      if (!currentDir[fileName]) {
+        currentDir[fileName] = { type: 'file', content: '' };
+      }
+      return { type: 'output', text: '' };
+    },
+    rm: (args) => {
+      const fileName = getPathArg(args);
+      if (!fileName) {
+        return { type: 'error', text: 'rm: missing operand' };
+      }
+      const currentDir = getCurrentDirectory();
+      const expanded = expandWildcards(fileName, currentDir);
+      
+      if (expanded.length === 1 && expanded[0] === fileName) {
+        const file = currentDir[fileName] || findEntry(currentDir, fileName);
+        if (!file) {
+          return { type: 'error', text: `rm: cannot remove '${fileName}': No such file` };
+        }
+        if (file.type === 'dir') {
+          return { type: 'error', text: `rm: cannot remove '${fileName}': Is a directory (use rmdir)` };
+        }
+        delete currentDir[fileName];
+        return { type: 'output', text: '' };
+      }
+      
+      let removedCount = 0;
+      for (const name of expanded) {
+        const file = currentDir[name];
+        if (file && file.type !== 'dir') {
+          delete currentDir[name];
+          removedCount++;
+        }
+      }
+      
+      if (removedCount === 0) {
+        return { type: 'error', text: `rm: no matching files` };
+      }
+      return { type: 'output', text: '' };
+    },
+    cp: (args) => {
+      if (args.length < 2) {
+        return { type: 'error', text: 'cp: missing operand' };
+      }
+      const [src, dst] = args;
+      const currentDir = getCurrentDirectory();
+      const expanded = expandWildcards(src, currentDir);
+      
+      if (expanded.length === 1 && expanded[0] === src) {
+        const srcFile = currentDir[src] || findEntry(currentDir, src);
+        if (!srcFile) {
+          return { type: 'error', text: `cp: cannot stat '${src}': No such file` };
+        }
+        if (srcFile.type === 'dir') {
+          return { type: 'error', text: `cp: -r not specified; omitting directory '${src}'` };
+        }
+        currentDir[dst] = { type: 'file', content: srcFile.content };
+        return { type: 'output', text: '' };
+      }
+      
+      let copiedCount = 0;
+      for (const name of expanded) {
+        const srcFile = currentDir[name];
+        if (srcFile && srcFile.type !== 'dir') {
+          const dstName = dst.endsWith('/') ? dst + name : dst;
+          currentDir[dstName] = { type: 'file', content: srcFile.content };
+          copiedCount++;
+        }
+      }
+      
+      if (copiedCount === 0) {
+        return { type: 'error', text: `cp: no matching files` };
+      }
+      return { type: 'output', text: '' };
+    },
+    mv: (args) => {
+      if (args.length < 2) {
+        return { type: 'error', text: 'mv: missing operand' };
+      }
+      const [src, dst] = args;
+      const currentDir = getCurrentDirectory();
+      const expanded = expandWildcards(src, currentDir);
+      
+      if (expanded.length === 1 && expanded[0] === src) {
+        const srcFile = currentDir[src] || findEntry(currentDir, src);
+        if (!srcFile) {
+          return { type: 'error', text: `mv: cannot stat '${src}': No such file` };
+        }
+        currentDir[dst] = srcFile;
+        delete currentDir[src];
+        return { type: 'output', text: '' };
+      }
+      
+      let movedCount = 0;
+      for (const name of expanded) {
+        const srcFile = currentDir[name];
+        if (srcFile) {
+          const dstName = dst.endsWith('/') ? dst + name : dst;
+          currentDir[dstName] = srcFile;
+          delete currentDir[name];
+          movedCount++;
+        }
+      }
+      
+      if (movedCount === 0) {
+        return { type: 'error', text: `mv: no matching files` };
+      }
+      return { type: 'output', text: '' };
+    },
+    grep: (args) => {
+      if (args.length < 2) {
+        return { type: 'error', text: 'grep: missing pattern and file operand' };
+      }
+      const [pattern, fileName] = args;
+      const currentDir = getCurrentDirectory();
+      const expanded = expandWildcards(fileName, currentDir);
+      
+      if (expanded.length === 1 && expanded[0] === fileName) {
+        const file = currentDir[fileName] || findEntry(currentDir, fileName);
+        if (!file || file.type !== 'file') {
+          return { type: 'error', text: `grep: ${fileName}: No such file` };
+        }
+        const lines = file.content.split('\n');
+        const matches = lines.filter(line => line.toLowerCase().includes(pattern.toLowerCase()));
+        if (matches.length === 0) {
+          return { type: 'output', text: '' };
+        }
+        return {
+          type: 'output',
+          text: matches.join('\n')
+        };
+      }
+      
+      const allMatches = [];
+      for (const name of expanded) {
+        const file = currentDir[name];
+        if (file && file.type === 'file') {
+          const lines = file.content.split('\n');
+          const matches = lines.filter(line => line.toLowerCase().includes(pattern.toLowerCase()));
+          if (matches.length > 0) {
+            allMatches.push(`${name}:${matches.join('\n' + name + ':')}`);
+          }
+        }
+      }
+      
+      if (allMatches.length === 0) {
+        return { type: 'output', text: '' };
+      }
+      return {
+        type: 'output',
+        text: allMatches.join('\n')
+      };
+    },
+    head: (args) => {
+      let lines = 10;
+      let fileName;
+      if (args[0]?.startsWith('-n')) {
+        lines = parseInt(args[0].slice(2)) || 10;
+        fileName = args[1];
+      } else {
+        fileName = args[0];
+      }
+      if (!fileName) {
+        return { type: 'error', text: 'head: missing file operand' };
+      }
+      const currentDir = getCurrentDirectory();
+      const file = currentDir[fileName] || findEntry(currentDir, fileName);
+      if (!file || file.type !== 'file') {
+        return { type: 'error', text: `head: ${fileName}: No such file` };
+      }
+      const fileLines = file.content.split('\n');
+      const headLines = fileLines.slice(0, lines);
+      return {
+        type: 'output',
+        text: headLines.join('\n')
+      };
+    },
+    tail: (args) => {
+      let lines = 10;
+      let fileName;
+      if (args[0]?.startsWith('-n')) {
+        lines = parseInt(args[0].slice(2)) || 10;
+        fileName = args[1];
+      } else {
+        fileName = args[0];
+      }
+      if (!fileName) {
+        return { type: 'error', text: 'tail: missing file operand' };
+      }
+      const currentDir = getCurrentDirectory();
+      const file = currentDir[fileName] || findEntry(currentDir, fileName);
+      if (!file || file.type !== 'file') {
+        return { type: 'error', text: `tail: ${fileName}: No such file` };
+      }
+      const fileLines = file.content.split('\n');
+      const tailLines = fileLines.slice(-lines);
+      return {
+        type: 'output',
+        text: tailLines.join('\n')
+      };
+    },
+    wc: (args) => {
+      const fileName = getPathArg(args);
+      if (!fileName) {
+        return { type: 'error', text: 'wc: missing file operand' };
+      }
+      const currentDir = getCurrentDirectory();
+      const file = currentDir[fileName] || findEntry(currentDir, fileName);
+      if (!file || file.type !== 'file') {
+        return { type: 'error', text: `wc: ${fileName}: No such file` };
+      }
+      const content = file.content;
+      const lineCount = content.split('\n').length;
+      const wordCount = content.trim().split(/\s+/).filter(w => w).length;
+      const charCount = content.length;
+      return {
+        type: 'output',
+        text: `  ${lineCount}  ${wordCount}  ${charCount} ${fileName}`
+      };
+    },
+    man: (args) => {
+      const cmdName = getPathArg(args);
+      if (!cmdName) {
+        return { type: 'error', text: 'What manual page do you want?' };
+      }
+      const manPages = {
+        ls: 'LS(1)\n\nNAME\n    ls - list directory contents\n\nSYNOPSIS\n    ls [-la]\n\nDESCRIPTION\n    List information about files and directories.\n    -l  use a long listing format\n    -a  do not ignore entries starting with .',
+        cd: 'CD(1)\n\nNAME\n    cd - change directory\n\nSYNOPSIS\n    cd [dir]\n\nDESCRIPTION\n    Change the current directory to DIR.',
+        cat: 'CAT(1)\n\nNAME\n    cat - concatenate files and print\n\nSYNOPSIS\n    cat [file]\n\nDESCRIPTION\n    Concatenate FILE(s) to standard output.',
+        grep: 'GREP(1)\n\nNAME\n    grep - print lines matching a pattern\n\nSYNOPSIS\n    grep [pattern] [file]\n\nDESCRIPTION\n    Search for PATTERN in FILE.',
+        mkdir: 'MKDIR(1)\n\nNAME\n    mkdir - make directories\n\nSYNOPSIS\n    mkdir [directory]\n\nDESCRIPTION\n    Create the DIRECTORY(ies), if they do not already exist.',
+        rm: 'RM(1)\n\nNAME\n    rm - remove files or directories\n\nSYNOPSIS\n    rm [file]\n\nDESCRIPTION\n    Remove (unlink) the FILE(s).',
+        cp: 'CP(1)\n\nNAME\n    cp - copy files and directories\n\nSYNOPSIS\n    cp [source] [destination]\n\nDESCRIPTION\n    Copy SOURCE to DEST.',
+        mv: 'MV(1)\n\nNAME\n    mv - move (rename) files\n\nSYNOPSIS\n    mv [source] [destination]\n\nDESCRIPTION\n    Rename SOURCE to DEST.',
+        head: 'HEAD(1)\n\nNAME\n    head - output the first part of files\n\nSYNOPSIS\n    head [-n N] [file]\n\nDESCRIPTION\n    Print the first N lines (default 10).',
+        tail: 'TAIL(1)\n\nNAME\n    tail - output the last part of files\n\nSYNOPSIS\n    tail [-n N] [file]\n\nDESCRIPTION\n    Print the last N lines (default 10).',
+        wc: 'WC(1)\n\nNAME\n    wc - print newline, word, and byte counts\n\nSYNOPSIS\n    wc [file]\n\nDESCRIPTION\n    Print newline, word, and byte counts for FILE.',
+        env: 'ENV(1)\n\nNAME\n    env - display environment variables\n\nSYNOPSIS\n    env\n\nDESCRIPTION\n    Display the current environment variables.',
+        export: 'EXPORT(1)\n\nNAME\n    export - set environment variable\n\nSYNOPSIS\n    export KEY=VALUE\n\nDESCRIPTION\n    Set an environment variable.',
+      };
+      const manPage = manPages[cmdName];
+      if (!manPage) {
+        return { type: 'error', text: `No manual entry for ${cmdName}` };
+      }
+      return { type: 'output', text: manPage };
+    },
+    env: () => {
+      const envVars = Object.entries(environment).map(([key, val]) => `${key}=${val}`);
+      return {
+        type: 'output',
+        text: envVars.join('\n')
+      };
+    },
+    export: (args) => {
+      const arg = getPathArg(args);
+      if (!arg || !arg.includes('=')) {
+        return { type: 'error', text: 'export: invalid format. Use: export KEY=VALUE' };
+      }
+      const [key, ...valParts] = arg.split('=');
+      const value = valParts.join('=');
+      setEnvironment(prev => ({ ...prev, [key]: value }));
+      return { type: 'output', text: '' };
+    },
+    alias: (args) => {
+      if (args.length === 0) {
+        const aliasList = Object.entries(aliases).map(([name, cmd]) => `alias ${name}='${cmd}'`);
+        return {
+          type: 'output',
+          text: aliasList.length > 0 ? aliasList.join('\n') : 'No aliases defined'
+        };
+      }
+      const arg = getPathArg(args);
+      if (!arg.includes('=')) {
+        const existingAlias = aliases[arg];
+        if (existingAlias) {
+          return { type: 'output', text: `alias ${arg}='${existingAlias}'` };
+        }
+        return { type: 'error', text: `alias: ${arg}: not found` };
+      }
+      const [name, ...cmdParts] = arg.split('=');
+      const command = cmdParts.join('=');
+      setAliases(prev => ({ ...prev, [name]: command }));
+      return { type: 'output', text: '' };
+    },
+    unalias: (args) => {
+      const aliasName = getPathArg(args);
+      if (!aliasName) {
+        return { type: 'error', text: 'unalias: missing operand' };
+      }
+      if (!aliases[aliasName]) {
+        return { type: 'error', text: `unalias: ${aliasName}: not found` };
+      }
+      setAliases(prev => {
+        const newAliases = { ...prev };
+        delete newAliases[aliasName];
+        return newAliases;
+      });
+      return { type: 'output', text: '' };
+    },
   };
 
   const getCommonPrefix = (values) => {
@@ -358,27 +790,56 @@ const TerminalContent = () => {
 
     if (argPart === undefined) {
       const commandMatches = commandNames.filter(command => command.startsWith(commandPart));
-      if (commandMatches.length === 0) return;
+      const aliasMatches = Object.keys(aliases).filter(alias => alias.startsWith(commandPart));
+      const allMatches = [...new Set([...commandMatches, ...aliasMatches])];
+      
+      if (allMatches.length === 0) return;
 
-      const completedCommand = commandMatches.length === 1
-        ? `${commandMatches[0]} `
-        : getCommonPrefix(commandMatches);
-
-      setInput(`${completedCommand}${afterCursor}`);
+      if (allMatches.length === 1) {
+        setInput(`${allMatches[0]} ${afterCursor}`);
+      } else {
+        const completedCommand = getCommonPrefix(allMatches);
+        if (completedCommand !== commandPart) {
+          setInput(`${completedCommand}${afterCursor}`);
+        } else {
+          setOutput([...output, { type: 'system', text: allMatches.join('  ') }]);
+        }
+      }
       return;
     }
 
-    if (!['cd', 'cat', 'open'].includes(commandPart)) return;
+    if (!['cd', 'cat', 'open', 'rm', 'cp', 'mv', 'grep', 'head', 'tail', 'wc', 'mkdir', 'rmdir', 'touch'].includes(commandPart)) return;
 
     const completedPath = completePath(argPart, commandPart === 'cd');
-    if (!completedPath) return;
+    if (!completedPath) {
+      const parentMatch = argPart.includes('/') 
+        ? getPathMatch(argPart.slice(0, argPart.lastIndexOf('/'))) 
+        : getPathMatch(currentPath);
+      
+      if (parentMatch && parentMatch.entry.type === 'dir') {
+        const partial = argPart.includes('/') 
+          ? argPart.slice(argPart.lastIndexOf('/') + 1) 
+          : argPart;
+        const matches = Object.keys(parentMatch.node)
+          .filter(name => name.toLowerCase().startsWith(partial.toLowerCase()));
+        
+        if (matches.length > 1) {
+          const prefix = argPart.includes('/') ? argPart.slice(0, argPart.lastIndexOf('/') + 1) : '';
+          setOutput([...output, { type: 'system', text: matches.map(m => prefix + m).join('  ') }]);
+        }
+      }
+      return;
+    }
 
     setInput(`${commandPart} ${completedPath}${afterCursor}`);
   };
 
   useEffect(() => {
     if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+      const windowContent = terminalRef.current.closest('.window-content');
+      if (windowContent) {
+        windowContent.scrollTop = windowContent.scrollHeight;
+      }
     }
   }, [output]);
 
@@ -396,8 +857,16 @@ const TerminalContent = () => {
         setHistoryIndex(-1);
 
         const parts = parseCommand(trimmedInput);
-        const cmd = parts[0];
-        const args = parts.slice(1);
+        let cmd = parts[0];
+        let args = parts.slice(1);
+        
+        // Resolve alias
+        if (aliases[cmd] && !['alias', 'unalias'].includes(cmd)) {
+          const aliasParts = parseCommand(aliases[cmd]);
+          cmd = aliasParts[0];
+          args = [...aliasParts.slice(1), ...args];
+        }
+        
         const commandFunc = commands[cmd];
 
         let newOutput = [...output, { type: 'command', path: currentPath, text: trimmedInput }];
@@ -446,7 +915,7 @@ const TerminalContent = () => {
 
   return (
     <div className="terminal" onClick={handleClick} ref={terminalRef}>
-      <div className="terminal-output">
+      <div className="terminal-output" ref={outputRef}>
         {output.map((line, index) => (
           <div key={index} className={`terminal-line terminal-${line.type}`}>
             {line.type === 'command' ? (
@@ -454,7 +923,11 @@ const TerminalContent = () => {
                 {renderPrompt(line.path)}
                 <span className="terminal-command-text"> {line.text}</span>
               </>
-            ) : line.text}
+            ) : line.html ? (
+              <span dangerouslySetInnerHTML={{ __html: line.text }} />
+            ) : (
+              line.text
+            )}
           </div>
         ))}
       </div>

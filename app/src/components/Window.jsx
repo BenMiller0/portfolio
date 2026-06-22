@@ -26,6 +26,7 @@ const Window = ({
   headerColor
 }) => {
   const windowRef = useRef(null);
+  const windowContentRef = useRef(null);
   const isDragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
   const currentZIndex = useRef(style?.zIndex || 100);
@@ -175,7 +176,7 @@ const Window = ({
           </button>
         </div>
       </div>
-      <div className="window-content">
+      <div className="window-content" ref={windowContentRef} onFocus={bringToFrontImmediate}>
         {children}
       </div>
     </div>
