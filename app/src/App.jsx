@@ -51,11 +51,14 @@ const App = () => {
   }, [openWindows]);
 
   const bringToFront = useCallback((id) => {
-    setOpenWindows(windows => windows.map(win =>
-      win.id === id ? { ...win, zIndex: zIndexCounter } : win
-    ));
-    setZIndexCounter(current => current + 1);
-  }, [zIndexCounter]);
+    setOpenWindows(windows => {
+      const maxZIndex = Math.max(...windows.map(win => win.zIndex), 100);
+      return windows.map(win =>
+        win.id === id ? { ...win, zIndex: maxZIndex + 1 } : win
+      );
+    });
+    setZIndexCounter(current => Math.max(current, Math.max(...openWindows.map(win => win.zIndex), 100) + 1));
+  }, [openWindows]);
 
   const openWindow = useCallback((id, title, content, onBack = null, color = null, options = {}) => {
     const windowExists = openWindows.some(win => win.id === id);
@@ -65,21 +68,24 @@ const App = () => {
       return;
     }
 
-    setOpenWindows(windows => [
-      ...windows,
-      {
-        id,
-        title,
-        content,
-        position: options.position ?? calculateWindowPosition(windows.length, options.isFullscreen),
-        zIndex: zIndexCounter,
-        onBack,
-        isFullscreen: options.isFullscreen ?? false,
-        color
-      }
-    ]);
-    setZIndexCounter(current => current + 1);
-  }, [bringToFront, openWindows, zIndexCounter]);
+    setOpenWindows(windows => {
+      const maxZIndex = Math.max(...windows.map(win => win.zIndex), 100);
+      return [
+        ...windows,
+        {
+          id,
+          title,
+          content,
+          position: options.position ?? calculateWindowPosition(windows.length, options.isFullscreen),
+          zIndex: maxZIndex + 1,
+          onBack,
+          isFullscreen: options.isFullscreen ?? false,
+          color
+        }
+      ];
+    });
+    setZIndexCounter(current => Math.max(current, Math.max(...openWindows.map(win => win.zIndex), 100) + 1));
+  }, [bringToFront, openWindows]);
 
   const closeWindow = useCallback((id) => {
     if (id === 'moreProjects') {
@@ -132,9 +138,7 @@ const App = () => {
       null,
       preserveFullscreen ? { isFullscreen: moreProjectsFullscreenRef.current } : { isFullscreen: false }
     );
-    // Bring to front after the window is rendered
-    setTimeout(() => bringToFront('moreProjects'), 10);
-  }, [moreProjects, openWindow, closeWindow, bringToFront]);
+  }, [moreProjects, openWindow, closeWindow]);
 
   const openResumeViewer = useCallback((pdfPath, title) => {
     openWindow(
