@@ -176,7 +176,7 @@ const Window = ({
           </button>
         </div>
       </div>
-      <div className="window-content" ref={windowContentRef} onFocus={bringToFrontImmediate}>
+      <div className="window-content" ref={windowContentRef}>
         {children}
       </div>
     </div>

@@ -160,8 +160,6 @@ const TerminalContent = () => {
   ]);
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
-  const [environment, setEnvironment] = useState({ HOME: '~', USER: 'ben', HOST: 'portfolio' });
-  const [aliases, setAliases] = useState({ ll: 'ls -la', la: 'ls -a', l: 'ls -l' });
   const inputRef = useRef(null);
   const terminalRef = useRef(null);
   const outputRef = useRef(null);
@@ -245,25 +243,6 @@ const TerminalContent = () => {
     </>
   );
 
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + sizes[i];
-  };
-
-  const formatPermissions = (node) => {
-    const type = node.type === 'dir' ? 'd' : '-';
-    const perms = node.type === 'dir' ? 'rwxr-xr-x' : 'rw-r--r--';
-    return type + perms;
-  };
-
-  const formatDate = () => {
-    const now = new Date();
-    return now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-  };
-
   const getFileColor = (name, node) => {
     if (node.type === 'dir') return 'terminal-dir';
     if (name.endsWith('.url')) return 'terminal-link';
@@ -289,34 +268,11 @@ const TerminalContent = () => {
   const commands = {
     help: () => ({
       type: 'output',
-      text: 'Available commands:\n  ls [-la] - List directory contents\n  cd <dir> - Change directory\n  pwd - Print working directory\n  cat <file> - Display file contents\n  open <file> - Open a URL or PDF path\n  echo <text> - Print text\n  clear - Clear terminal\n  date - Show current date/time\n  mkdir <dir> - Create directory\n  rmdir <dir> - Remove empty directory\n  touch <file> - Create empty file\n  rm <file> - Remove file\n  cp <src> <dst> - Copy file\n  mv <src> <dst> - Move/rename file\n  grep <pattern> <file> - Search in file\n  head [-n] <file> - Show first lines\n  tail [-n] <file> - Show last lines\n  wc <file> - Count lines/words/chars\n  man <cmd> - Show command help\n  env - Show environment variables\n  export <key>=<val> - Set environment variable\n  alias [name[=value]] - Show or create aliases\n  unalias <name> - Remove alias\n  help - Show this help message'
+      text: 'Available commands:\n  ls - List directory contents\n  cd <dir> - Change directory\n  pwd - Print working directory\n  cat <file> - Display file contents\n  open <file> - Open a URL or PDF path\n  echo <text> - Print text\n  clear - Clear terminal\n  date - Show current date/time\n  grep <pattern> <file> - Search in file\n  head [-n] <file> - Show first lines\n  tail [-n] <file> - Show last lines\n  wc <file> - Count lines/words/chars\n  man <cmd> - Show command help\n  help - Show this help message'
     }),
-    ls: (args) => {
-      const showAll = args.includes('-a') || args.includes('-la');
-      const showLong = args.includes('-l') || args.includes('-la');
+    ls: () => {
       const currentDir = getCurrentDirectory();
-      
-      let items = Object.keys(currentDir);
-      if (!showAll) {
-        items = items.filter(name => !name.startsWith('.'));
-      }
-      
-      if (showLong) {
-        const lines = items.map(name => {
-          const item = currentDir[name];
-          const perms = formatPermissions(item);
-          const size = item.type === 'dir' ? '4096' : formatFileSize(item.content?.length || 0);
-          const date = formatDate();
-          const displayName = item.type === 'dir' ? `${name}/` : name;
-          const colorClass = getFileColor(name, item);
-          return `${perms} 1 ${environment.USER} ${environment.USER} ${size.padStart(8)} ${date} <span class="${colorClass}">${displayName}</span>`;
-        });
-        return {
-          type: 'output',
-          text: lines.length > 0 ? lines.join('\n') : '(empty directory)',
-          html: true
-        };
-      }
+      const items = Object.keys(currentDir).filter(name => !name.startsWith('.'));
       
       const simpleItems = items.map(name => {
         const item = currentDir[name];
@@ -399,151 +355,6 @@ const TerminalContent = () => {
     }),
     clear: () => ({ type: 'clear', text: '' }),
     date: () => ({ type: 'output', text: new Date().toString() }),
-    mkdir: (args) => {
-      const dirName = getPathArg(args);
-      if (!dirName) {
-        return { type: 'error', text: 'mkdir: missing operand' };
-      }
-      const currentDir = getCurrentDirectory();
-      if (currentDir[dirName]) {
-        return { type: 'error', text: `mkdir: cannot create directory '${dirName}': File exists` };
-      }
-      currentDir[dirName] = { type: 'dir', children: {} };
-      return { type: 'output', text: '' };
-    },
-    rmdir: (args) => {
-      const dirName = getPathArg(args);
-      if (!dirName) {
-        return { type: 'error', text: 'rmdir: missing operand' };
-      }
-      const currentDir = getCurrentDirectory();
-      const dir = currentDir[dirName] || findEntry(currentDir, dirName);
-      if (!dir) {
-        return { type: 'error', text: `rmdir: failed to remove '${dirName}': No such directory` };
-      }
-      if (dir.type !== 'dir') {
-        return { type: 'error', text: `rmdir: failed to remove '${dirName}': Not a directory` };
-      }
-      if (Object.keys(dir.children).length > 0) {
-        return { type: 'error', text: `rmdir: failed to remove '${dirName}': Directory not empty` };
-      }
-      delete currentDir[dirName];
-      return { type: 'output', text: '' };
-    },
-    touch: (args) => {
-      const fileName = getPathArg(args);
-      if (!fileName) {
-        return { type: 'error', text: 'touch: missing file operand' };
-      }
-      const currentDir = getCurrentDirectory();
-      if (!currentDir[fileName]) {
-        currentDir[fileName] = { type: 'file', content: '' };
-      }
-      return { type: 'output', text: '' };
-    },
-    rm: (args) => {
-      const fileName = getPathArg(args);
-      if (!fileName) {
-        return { type: 'error', text: 'rm: missing operand' };
-      }
-      const currentDir = getCurrentDirectory();
-      const expanded = expandWildcards(fileName, currentDir);
-      
-      if (expanded.length === 1 && expanded[0] === fileName) {
-        const file = currentDir[fileName] || findEntry(currentDir, fileName);
-        if (!file) {
-          return { type: 'error', text: `rm: cannot remove '${fileName}': No such file` };
-        }
-        if (file.type === 'dir') {
-          return { type: 'error', text: `rm: cannot remove '${fileName}': Is a directory (use rmdir)` };
-        }
-        delete currentDir[fileName];
-        return { type: 'output', text: '' };
-      }
-      
-      let removedCount = 0;
-      for (const name of expanded) {
-        const file = currentDir[name];
-        if (file && file.type !== 'dir') {
-          delete currentDir[name];
-          removedCount++;
-        }
-      }
-      
-      if (removedCount === 0) {
-        return { type: 'error', text: `rm: no matching files` };
-      }
-      return { type: 'output', text: '' };
-    },
-    cp: (args) => {
-      if (args.length < 2) {
-        return { type: 'error', text: 'cp: missing operand' };
-      }
-      const [src, dst] = args;
-      const currentDir = getCurrentDirectory();
-      const expanded = expandWildcards(src, currentDir);
-      
-      if (expanded.length === 1 && expanded[0] === src) {
-        const srcFile = currentDir[src] || findEntry(currentDir, src);
-        if (!srcFile) {
-          return { type: 'error', text: `cp: cannot stat '${src}': No such file` };
-        }
-        if (srcFile.type === 'dir') {
-          return { type: 'error', text: `cp: -r not specified; omitting directory '${src}'` };
-        }
-        currentDir[dst] = { type: 'file', content: srcFile.content };
-        return { type: 'output', text: '' };
-      }
-      
-      let copiedCount = 0;
-      for (const name of expanded) {
-        const srcFile = currentDir[name];
-        if (srcFile && srcFile.type !== 'dir') {
-          const dstName = dst.endsWith('/') ? dst + name : dst;
-          currentDir[dstName] = { type: 'file', content: srcFile.content };
-          copiedCount++;
-        }
-      }
-      
-      if (copiedCount === 0) {
-        return { type: 'error', text: `cp: no matching files` };
-      }
-      return { type: 'output', text: '' };
-    },
-    mv: (args) => {
-      if (args.length < 2) {
-        return { type: 'error', text: 'mv: missing operand' };
-      }
-      const [src, dst] = args;
-      const currentDir = getCurrentDirectory();
-      const expanded = expandWildcards(src, currentDir);
-      
-      if (expanded.length === 1 && expanded[0] === src) {
-        const srcFile = currentDir[src] || findEntry(currentDir, src);
-        if (!srcFile) {
-          return { type: 'error', text: `mv: cannot stat '${src}': No such file` };
-        }
-        currentDir[dst] = srcFile;
-        delete currentDir[src];
-        return { type: 'output', text: '' };
-      }
-      
-      let movedCount = 0;
-      for (const name of expanded) {
-        const srcFile = currentDir[name];
-        if (srcFile) {
-          const dstName = dst.endsWith('/') ? dst + name : dst;
-          currentDir[dstName] = srcFile;
-          delete currentDir[name];
-          movedCount++;
-        }
-      }
-      
-      if (movedCount === 0) {
-        return { type: 'error', text: `mv: no matching files` };
-      }
-      return { type: 'output', text: '' };
-    },
     grep: (args) => {
       if (args.length < 2) {
         return { type: 'error', text: 'grep: missing pattern and file operand' };
@@ -665,74 +476,15 @@ const TerminalContent = () => {
         cd: 'CD(1)\n\nNAME\n    cd - change directory\n\nSYNOPSIS\n    cd [dir]\n\nDESCRIPTION\n    Change the current directory to DIR.',
         cat: 'CAT(1)\n\nNAME\n    cat - concatenate files and print\n\nSYNOPSIS\n    cat [file]\n\nDESCRIPTION\n    Concatenate FILE(s) to standard output.',
         grep: 'GREP(1)\n\nNAME\n    grep - print lines matching a pattern\n\nSYNOPSIS\n    grep [pattern] [file]\n\nDESCRIPTION\n    Search for PATTERN in FILE.',
-        mkdir: 'MKDIR(1)\n\nNAME\n    mkdir - make directories\n\nSYNOPSIS\n    mkdir [directory]\n\nDESCRIPTION\n    Create the DIRECTORY(ies), if they do not already exist.',
-        rm: 'RM(1)\n\nNAME\n    rm - remove files or directories\n\nSYNOPSIS\n    rm [file]\n\nDESCRIPTION\n    Remove (unlink) the FILE(s).',
-        cp: 'CP(1)\n\nNAME\n    cp - copy files and directories\n\nSYNOPSIS\n    cp [source] [destination]\n\nDESCRIPTION\n    Copy SOURCE to DEST.',
-        mv: 'MV(1)\n\nNAME\n    mv - move (rename) files\n\nSYNOPSIS\n    mv [source] [destination]\n\nDESCRIPTION\n    Rename SOURCE to DEST.',
         head: 'HEAD(1)\n\nNAME\n    head - output the first part of files\n\nSYNOPSIS\n    head [-n N] [file]\n\nDESCRIPTION\n    Print the first N lines (default 10).',
         tail: 'TAIL(1)\n\nNAME\n    tail - output the last part of files\n\nSYNOPSIS\n    tail [-n N] [file]\n\nDESCRIPTION\n    Print the last N lines (default 10).',
         wc: 'WC(1)\n\nNAME\n    wc - print newline, word, and byte counts\n\nSYNOPSIS\n    wc [file]\n\nDESCRIPTION\n    Print newline, word, and byte counts for FILE.',
-        env: 'ENV(1)\n\nNAME\n    env - display environment variables\n\nSYNOPSIS\n    env\n\nDESCRIPTION\n    Display the current environment variables.',
-        export: 'EXPORT(1)\n\nNAME\n    export - set environment variable\n\nSYNOPSIS\n    export KEY=VALUE\n\nDESCRIPTION\n    Set an environment variable.',
       };
       const manPage = manPages[cmdName];
       if (!manPage) {
         return { type: 'error', text: `No manual entry for ${cmdName}` };
       }
       return { type: 'output', text: manPage };
-    },
-    env: () => {
-      const envVars = Object.entries(environment).map(([key, val]) => `${key}=${val}`);
-      return {
-        type: 'output',
-        text: envVars.join('\n')
-      };
-    },
-    export: (args) => {
-      const arg = getPathArg(args);
-      if (!arg || !arg.includes('=')) {
-        return { type: 'error', text: 'export: invalid format. Use: export KEY=VALUE' };
-      }
-      const [key, ...valParts] = arg.split('=');
-      const value = valParts.join('=');
-      setEnvironment(prev => ({ ...prev, [key]: value }));
-      return { type: 'output', text: '' };
-    },
-    alias: (args) => {
-      if (args.length === 0) {
-        const aliasList = Object.entries(aliases).map(([name, cmd]) => `alias ${name}='${cmd}'`);
-        return {
-          type: 'output',
-          text: aliasList.length > 0 ? aliasList.join('\n') : 'No aliases defined'
-        };
-      }
-      const arg = getPathArg(args);
-      if (!arg.includes('=')) {
-        const existingAlias = aliases[arg];
-        if (existingAlias) {
-          return { type: 'output', text: `alias ${arg}='${existingAlias}'` };
-        }
-        return { type: 'error', text: `alias: ${arg}: not found` };
-      }
-      const [name, ...cmdParts] = arg.split('=');
-      const command = cmdParts.join('=');
-      setAliases(prev => ({ ...prev, [name]: command }));
-      return { type: 'output', text: '' };
-    },
-    unalias: (args) => {
-      const aliasName = getPathArg(args);
-      if (!aliasName) {
-        return { type: 'error', text: 'unalias: missing operand' };
-      }
-      if (!aliases[aliasName]) {
-        return { type: 'error', text: `unalias: ${aliasName}: not found` };
-      }
-      setAliases(prev => {
-        const newAliases = { ...prev };
-        delete newAliases[aliasName];
-        return newAliases;
-      });
-      return { type: 'output', text: '' };
     },
   };
 
@@ -789,9 +541,7 @@ const TerminalContent = () => {
     const commandNames = Object.keys(commands);
 
     if (argPart === undefined) {
-      const commandMatches = commandNames.filter(command => command.startsWith(commandPart));
-      const aliasMatches = Object.keys(aliases).filter(alias => alias.startsWith(commandPart));
-      const allMatches = [...new Set([...commandMatches, ...aliasMatches])];
+      const allMatches = commandNames.filter(command => command.startsWith(commandPart));
       
       if (allMatches.length === 0) return;
 
@@ -808,7 +558,7 @@ const TerminalContent = () => {
       return;
     }
 
-    if (!['cd', 'cat', 'open', 'rm', 'cp', 'mv', 'grep', 'head', 'tail', 'wc', 'mkdir', 'rmdir', 'touch'].includes(commandPart)) return;
+    if (!['cd', 'cat', 'open', 'grep', 'head', 'tail', 'wc'].includes(commandPart)) return;
 
     const completedPath = completePath(argPart, commandPart === 'cd');
     if (!completedPath) {
@@ -857,15 +607,8 @@ const TerminalContent = () => {
         setHistoryIndex(-1);
 
         const parts = parseCommand(trimmedInput);
-        let cmd = parts[0];
-        let args = parts.slice(1);
-        
-        // Resolve alias
-        if (aliases[cmd] && !['alias', 'unalias'].includes(cmd)) {
-          const aliasParts = parseCommand(aliases[cmd]);
-          cmd = aliasParts[0];
-          args = [...aliasParts.slice(1), ...args];
-        }
+        const cmd = parts[0];
+        const args = parts.slice(1);
         
         const commandFunc = commands[cmd];
 

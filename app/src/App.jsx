@@ -132,7 +132,9 @@ const App = () => {
       null,
       preserveFullscreen ? { isFullscreen: moreProjectsFullscreenRef.current } : { isFullscreen: false }
     );
-  }, [moreProjects, openWindow, closeWindow]);
+    // Bring to front after the window is rendered
+    setTimeout(() => bringToFront('moreProjects'), 10);
+  }, [moreProjects, openWindow, closeWindow, bringToFront]);
 
   const openResumeViewer = useCallback((pdfPath, title) => {
     openWindow(
