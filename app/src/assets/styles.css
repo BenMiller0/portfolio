@@ -31,6 +31,29 @@ html, body {
   100% { opacity: 0.3; transform: scale(1.1); }
 }
 
+@keyframes crosshairMove {
+  0% {
+    top: 10%;
+    left: 10%;
+  }
+  25% {
+    top: 10%;
+    left: 80%;
+  }
+  50% {
+    top: 80%;
+    left: 80%;
+  }
+  75% {
+    top: 80%;
+    left: 10%;
+  }
+  100% {
+    top: 10%;
+    left: 10%;
+  }
+}
+
 @keyframes windowOpen {
   0% {
     opacity: 0;
@@ -90,6 +113,24 @@ html, body {
     linear-gradient(90deg, rgba(0, 163, 224, 0.1) 1px, transparent 1px);
   background-size: 30px 30px;
   opacity: 0.3;
+}
+
+.crosshair-horizontal {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 163, 224, 0.15);
+  pointer-events: none;
+}
+
+.crosshair-vertical {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 1px;
+  background: rgba(0, 163, 224, 0.15);
+  pointer-events: none;
 }
 
 /* ===== Branding & Logos ===== */
@@ -776,16 +817,20 @@ body.dark-mode .resume-download-btn {
 
 .toggle-icon {
   min-width: 30px;
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 700;
-  line-height: 1;
+  line-height: 35px;
   text-align: center;
   z-index: 2;
-  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), color 0.3s ease;
+  color: #2c3e50;
+  text-shadow: none;
 }
 
 .dark-mode-toggle.dark .toggle-icon {
   transform: translateX(25px);
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 .toggle-track {

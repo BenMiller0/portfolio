@@ -21,6 +21,7 @@ const App = () => {
   const [openWindows, setOpenWindows] = useState([]);
   const [zIndexCounter, setZIndexCounter] = useState(100);
   const [darkMode, setDarkMode] = useState(false);
+  const [crosshairPos, setCrosshairPos] = useState({ x: 50, y: 50 });
   const moreProjectsFullscreenRef = useRef(false);
   const { value: typedName, done: nameTyped } = useTypewriter(PROFILE_NAME, 50);
   const { value: typedSchool } = useTypewriter(SCHOOL_NAME, 40, nameTyped ? 150 : 0);
@@ -49,6 +50,35 @@ const App = () => {
     document.body.classList.toggle('fullscreen-window-open', hasFullscreen);
     document.documentElement.classList.toggle('fullscreen-window-open', hasFullscreen);
   }, [openWindows]);
+
+  useEffect(() => {
+    const velocityRef = { x: 0.05, y: 0.04 };
+    let intervalId;
+
+    const animate = () => {
+      setCrosshairPos(prev => {
+        let newX = prev.x + velocityRef.x;
+        let newY = prev.y + velocityRef.y;
+
+        if (newX <= 5 || newX >= 95) {
+          velocityRef.x = -velocityRef.x;
+          newX = Math.max(5, Math.min(95, newX));
+        }
+        if (newY <= 5 || newY >= 95) {
+          velocityRef.y = -velocityRef.y;
+          newY = Math.max(5, Math.min(95, newY));
+        }
+
+        return { x: newX, y: newY };
+      });
+    };
+
+    intervalId = setInterval(animate, 50);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   const bringToFront = useCallback((id) => {
     setOpenWindows(windows => {
@@ -153,7 +183,11 @@ const App = () => {
 
   return (
     <>
-      <div className="desktop-background"><div className="triton-logo"></div></div>
+      <div className="desktop-background">
+        <div className="triton-logo"></div>
+        <div className="crosshair-horizontal" style={{ top: `${crosshairPos.y}%` }}></div>
+        <div className="crosshair-vertical" style={{ left: `${crosshairPos.x}%` }}></div>
+      </div>
       <div className="name-display">{typedName}</div>
       {nameTyped && <div className="school-display">{typedSchool}</div>}
 
