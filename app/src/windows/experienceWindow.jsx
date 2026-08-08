@@ -5,7 +5,10 @@ const experiences = [
     role: 'Software Engineering Intern - Firmware, Western Digital',
     dates: 'Jun. 2026 - Present, Sep. 2025 - Dec. 2025',
     bullets: [
-      'Designed and implemented C++ firmware for hard drive systems in an Agile environment, validated through unit and integration testing to improve firmware reliability.',
+      'Developed and debugged embedded C++ firmware within a multi-threaded codebase, implementing and validating system behaviors through unit and integration testing.',
+      'Investigated firmware bugs involving asynchronous power offs, error handling, and system state transitions, identifying root causes through debugging tools and code-level analysis.',
+      'Contributed to the development of firmware for next generation HAMR (Heat-Assisted Magnetic Recording) storage devices to improve device reliability and performance.',
+      'Leveraged Agentic AI tools and MCP (model context protocol) integrations to automate development workflows resulting in higher efficiency.',
       'Improved system infrastructure by implementing embedded C++ features and enhanced error handling, increasing system stability in production codebase.',
       'Developed an internal tool for accelerating integration testing with a Python microservice and full-stack application (Flask, SQLite, JavaScript), demonstrated successfully to management.'
     ]

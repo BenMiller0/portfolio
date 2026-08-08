@@ -28,68 +28,7 @@ const createProjectDirectory = ({ title, description, technologies, github, phot
   }
 });
 
-const projects = [
-  {
-    title: 'Interactive Robotic Figure in C/C++',
-    description: 'Achieved real-time audio-to-motion translation for an interactive robotic figure through an embedded C++ audio processing pipeline that synchronizes voice actor speech with robotic mouth movement via I2C communication.',
-    technologies: 'C, C++, I2C, Multi-Threading, Servo Motors',
-    github: 'https://github.com/BenMiller0/teaAnimatronic',
-    photos: ['Taro.png'],
-    miscLink: { displayName: 'Demo Video', url: 'https://www.youtube.com/watch?v=8_HPtF_c1NU' }
-  },
-  {
-    title: 'Remote Embedded System Verification',
-    description: 'Built a remote firmware verification system enabling flashing, observation, and validation of embedded C/C++ on physical hardware, such as microcontrollers, reducing dependence on simulation-based testing.',
-    technologies: 'Python, C/C++, Firmware',
-    github: 'https://github.com/BenMiller0/VIS-SSH-ON',
-    photos: ['VIS-SSH-ON1.png', 'VIS-SSH-ON2.png'],
-    miscLink: { displayName: 'Project Page', url: 'https://benmiller0.github.io/VIS-SSH-ON/' }
-  },
-  {
-    title: 'Darth Vader Suit Firmware',
-    description: 'Darth Vader suit firmware built on FreeRTOS. Controls programmable blinking lights on a screen-accurate suit used by Star Wars Club at UC San Diego.',
-    technologies: 'C++, FreeRTOS, ESP32, PWM',
-    github: 'https://github.com/BenMiller0/darth-vadar-firmware',
-    photos: ['vader_suit.jpg', 'vader_embedded.jpg']
-  },
-  {
-    title: 'Computer Vision Spell Casting',
-    description: 'Built a distributed edge-AI interactive system combining a custom Android app and embedded hardware to detect gesture-based spells using computer vision and speech recognition.',
-    technologies: 'Python, AI/ML, Computer Vision, Arduino UNO Q, Linux, Microcontroller',
-    github: 'https://github.com/BenMiller0/computer_vision_spell_casting',
-    photos: ['wand_spell_caster.jpg', 'full_wand_system.jpg'],
-    miscLink: { displayName: 'Project Page', url: 'https://devpost.com/software/muggle-wand-training' }
-  },
-  {
-    title: 'ML Modeling Theme Park Wait Times',
-    description: 'Built and evaluated linear regression and machine learning models to investigate correlation between physical ride characteristics and guest demand.',
-    technologies: 'Python, Pandas, NumPy, Scikit-Learn',
-    github: 'https://github.com/BenMiller0/Predictive-Modeling-of-Theme-Park-Wait-Times',
-    photos: ['ML_theme_park_wait_times_predictions.png']
-  },
-  {
-    title: 'Campus Events Planner Application',
-    description: 'Developed a web application for discovering and organizing campus events with a CI/CD pipeline and automated testing.',
-    technologies: 'JavaScript, HTML, CSS, Jest, CI/CD',
-    github: 'https://github.com/cse110-sp25-group11/card-game',
-    photos: ['campus_events_planner.png']
-  },
-  {
-    title: 'TEA @ UCSD Site',
-    description: "Developed and maintained the Themed Entertainment Association at UCSD's website, increasing online engagement and visibility.",
-    technologies: 'Tailwind CSS, HTML, JavaScript, Github Actions',
-    github: 'https://github.com/BenMiller0/teaatucsdsite',
-    miscLink: { displayName: 'Website', url: 'https://bit.ly/tea_at_ucsd' }
-  },
-  {
-    title: 'Multithreaded File Compressor in C++',
-    description: 'Multithreaded application for high-speed file compression, optimized for performance using parallel processing.',
-    technologies: 'C++, Multi-Threading, Makefile',
-    github: 'https://github.com/BenMiller0/multiThreadedCompressor'
-  }
-];
-
-const createFileSystem = () => ({
+const createFileSystem = (projects) => ({
   '~': {
     type: 'dir',
     children: {
@@ -115,16 +54,18 @@ const createFileSystem = () => ({
       'LinkedIn.url': { type: 'file', content: 'https://linkedin.com/in/benjamin-miller-ucsd' },
       'Hardware_Resume.pdf': { type: 'file', content: '/resumes/hardware_resume.pdf' },
       'Software_Resume.pdf': { type: 'file', content: '/resumes/software_resume.pdf' },
-      [projects[0].title]: createProjectDirectory(projects[0]),
-      [projects[1].title]: createProjectDirectory(projects[1]),
-      [projects[2].title]: createProjectDirectory(projects[2]),
-      'More Projects': {
-        type: 'dir',
-        children: projects.slice(3).reduce((children, project) => ({
-          ...children,
-          [project.title]: createProjectDirectory(project)
-        }), {})
-      }
+      ...(projects[0] ? { [projects[0].title]: createProjectDirectory(projects[0]) } : {}),
+      ...(projects[1] ? { [projects[1].title]: createProjectDirectory(projects[1]) } : {}),
+      ...(projects[2] ? { [projects[2].title]: createProjectDirectory(projects[2]) } : {}),
+      ...(projects.length > 3 ? {
+        'More Projects': {
+          type: 'dir',
+          children: projects.slice(3).reduce((children, project) => ({
+            ...children,
+            [project.title]: createProjectDirectory(project)
+          }), {})
+        }
+      } : {})
     }
   }
 });
@@ -151,7 +92,7 @@ const findEntryMatch = (directory, name) => {
 
 const findEntry = (directory, name) => findEntryMatch(directory, name)?.node || null;
 
-const TerminalContent = () => {
+const TerminalContent = ({ projects = [] }) => {
   const [input, setInput] = useState('');
   const [currentPath, setCurrentPath] = useState('~');
   const [output, setOutput] = useState([
@@ -163,7 +104,7 @@ const TerminalContent = () => {
   const inputRef = useRef(null);
   const terminalRef = useRef(null);
   const outputRef = useRef(null);
-  const fileSystemRef = useRef(createFileSystem());
+  const fileSystemRef = useRef(createFileSystem(projects));
 
   const resolvePath = (target = currentPath) => {
     if (!target || target === '~') return '~';
@@ -691,10 +632,10 @@ const TerminalContent = () => {
   );
 };
 
-export const terminalWindow = {
+export const terminalWindow = (projects) => ({
   id: 'terminalWindow',
   title: 'Terminal',
   label: 'Terminal',
   color: '#333',
-  component: TerminalContent
-};
+  component: () => <TerminalContent projects={projects} />
+});

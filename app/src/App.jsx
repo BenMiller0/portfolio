@@ -3,7 +3,7 @@ import './assets/styles.css';
 import Window from './components/Window';
 import ProjectWindowContent from './windows/ProjectWindowContent';
 import { calculateRestorePosition, calculateWindowPosition, isMobileViewport } from './constants/windowLayout';
-import { resumeLinks, socialLinks, systemWindows, terminalDesktopWindow } from './data/windowRegistry';
+import { resumeLinks, socialLinks, systemWindows, getTerminalDesktopWindow } from './data/windowRegistry';
 import { useTypewriter } from './hooks/useTypewriter';
 
 const PROFILE_NAME = 'Benjamin Miller';
@@ -152,6 +152,7 @@ const App = () => {
   const mainProjects = projects.slice(0, 3);
   const moreProjects = projects.slice(3);
   const projectChunks = useMemo(() => chunkItems(mainProjects, 3), [mainProjects]);
+  const terminalDesktopWindow = useMemo(() => getTerminalDesktopWindow(projects), [projects]);
 
   const openMoreProjectsWindow = useCallback((preserveFullscreen = false) => {
     openWindow(

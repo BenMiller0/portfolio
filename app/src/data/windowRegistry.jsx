@@ -9,7 +9,7 @@ export const systemWindows = {
   experienceWindow
 };
 
-export const terminalDesktopWindow = terminalWindow;
+export const getTerminalDesktopWindow = (projects) => terminalWindow(projects);
 
 export const socialLinks = [
   {
