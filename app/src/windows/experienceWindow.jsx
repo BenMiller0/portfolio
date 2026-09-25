@@ -3,7 +3,7 @@ import React from 'react';
 const experiences = [
   {
     role: 'Software Engineering Intern - Firmware, Western Digital',
-    dates: 'Jun. 2026 - Present, Sep. 2025 - Dec. 2025',
+    dates: 'Sep. 2025 - Dec. 2025, Jun. 2026 - Sep. 2026',
     bullets: [
       'Developed and debugged embedded C++ firmware within a multi-threaded codebase, implementing and validating system behaviors through unit and integration testing.',
       'Investigated firmware bugs involving asynchronous power offs, error handling, and system state transitions, identifying root causes through debugging tools and code-level analysis.',
