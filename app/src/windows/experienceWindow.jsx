@@ -2,7 +2,7 @@ import React from 'react';
 
 const experiences = [
   {
-    role: 'Software Engineering Intern - Firmware, Western Digital',
+    role: 'Embedded Software Engineering Intern, Western Digital',
     dates: 'Sep. 2025 - Dec. 2025, Jun. 2026 - Sep. 2026',
     bullets: [
       'Developed and debugged embedded C++ firmware within a multi-threaded codebase, implementing and validating system behaviors through unit and integration testing.',

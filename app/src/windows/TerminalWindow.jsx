@@ -52,8 +52,8 @@ const createFileSystem = (projects) => ({
       },
       'GitHub.url': { type: 'file', content: 'https://github.com/BenMiller0' },
       'LinkedIn.url': { type: 'file', content: 'https://linkedin.com/in/benjamin-miller-ucsd' },
-      'Hardware_Resume.pdf': { type: 'file', content: '/resumes/hardware_resume.pdf' },
-      'Software_Resume.pdf': { type: 'file', content: '/resumes/software_resume.pdf' },
+      'Hardware_Resume.pdf': { type: 'file', content: '/resumes/Resume_Benjamin_Miller.pdf' },
+      'Software_Resume.pdf': { type: 'file', content: '/resumes/Resume-Benjamin-Miller.pdf' },
       ...(projects[0] ? { [projects[0].title]: createProjectDirectory(projects[0]) } : {}),
       ...(projects[1] ? { [projects[1].title]: createProjectDirectory(projects[1]) } : {}),
       ...(projects[2] ? { [projects[2].title]: createProjectDirectory(projects[2]) } : {}),
@@ -76,6 +76,17 @@ const parseCommand = (commandText) => {
 };
 
 const getPathArg = (args) => args.join(' ').replace(/\/+$/, '');
+
+const isOpenablePath = (path) => {
+  if (path.startsWith('/')) return true;
+
+  try {
+    const url = new URL(path);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
 
 const findEntryMatch = (directory, name) => {
   if (directory[name]) return { key: name, node: directory[name] };
@@ -214,17 +225,19 @@ const TerminalContent = ({ projects = [] }) => {
     ls: () => {
       const currentDir = getCurrentDirectory();
       const items = Object.keys(currentDir).filter(name => !name.startsWith('.'));
-      
-      const simpleItems = items.map(name => {
+
+      const entries = items.map(name => {
         const item = currentDir[name];
-        const displayName = item.type === 'dir' ? `${name}/` : name;
-        const colorClass = getFileColor(name, item);
-        return `<span class="${colorClass}">${displayName}</span>`;
+        return {
+          text: item.type === 'dir' ? `${name}/` : name,
+          className: getFileColor(name, item)
+        };
       });
+
       return {
         type: 'output',
-        text: simpleItems.length > 0 ? simpleItems.join('\n') : '(empty directory)',
-        html: true
+        text: entries.length > 0 ? '' : '(empty directory)',
+        entries
       };
     },
     pwd: () => ({
@@ -284,7 +297,7 @@ const TerminalContent = ({ projects = [] }) => {
       if (!resolvedFile || resolvedFile.type !== 'file') {
         return { type: 'error', text: `open: ${fileName}: No such file` };
       }
-      if (/^(https?:\/\/|\/)/.test(resolvedFile.content)) {
+      if (isOpenablePath(resolvedFile.content)) {
         window.open(resolvedFile.content, '_blank', 'noopener,noreferrer');
         return { type: 'output', text: `Opened ${resolvedFile.content}` };
       }
@@ -607,8 +620,13 @@ const TerminalContent = ({ projects = [] }) => {
                 {renderPrompt(line.path)}
                 <span className="terminal-command-text"> {line.text}</span>
               </>
-            ) : line.html ? (
-              <span dangerouslySetInnerHTML={{ __html: line.text }} />
+            ) : line.entries ? (
+              line.entries.map(entry => (
+                <React.Fragment key={entry.text}>
+                  <span className={entry.className}>{entry.text}</span>
+                  {'\n'}
+                </React.Fragment>
+              ))
             ) : (
               line.text
             )}

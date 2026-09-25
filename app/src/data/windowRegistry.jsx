@@ -29,14 +29,14 @@ export const socialLinks = [
 export const resumeLinks = [
   {
     id: 'hardware-resume',
-    label: 'Hardware_Resume.pdf',
+    label: 'Resume_Benjamin_Miller.pdf',
     title: 'Hardware Resume',
-    path: '/resumes/hardware_resume.pdf'
+    path: '/resumes/Resume_Benjamin_Miller.pdf'
   },
   {
     id: 'software-resume',
-    label: 'Software_Resume.pdf',
+    label: 'Resume-Benjamin-Miller.pdf',
     title: 'Software Resume',
-    path: '/resumes/software_resume.pdf'
+    path: '/resumes/Resume-Benjamin-Miller.pdf'
   }
 ];

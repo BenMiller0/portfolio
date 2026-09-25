@@ -50,7 +50,7 @@ portfolio/
     |   |-- doc-icon.png
     |   |-- favcon.png
     |   |-- github.png
-    |   |-- hardware_resume.pdf
+    |   |-- Resume_Benjamin_Miller.pdf
     |   |-- linkedIn.png
     |   |-- project_photos/
     |   |-- projects.json

@@ -26,7 +26,7 @@ portfolio/
     |-- public/
     |   |-- projects.json
     |   |-- project_photos/
-    |   |-- hardware_resume.pdf
+    |   |-- Resume_Benjamin_Miller.pdf
     |   |-- software_resume.pdf
     |   |-- doc-icon.png
     |   |-- file-text-icon.png

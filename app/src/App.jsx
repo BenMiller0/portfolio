@@ -19,7 +19,6 @@ const createResumeWindowId = (title) => title.replace(/\s+/g, '').toLowerCase();
 const App = () => {
   const [projects, setProjects] = useState([]);
   const [openWindows, setOpenWindows] = useState([]);
-  const [zIndexCounter, setZIndexCounter] = useState(100);
   const [darkMode, setDarkMode] = useState(false);
   const [crosshairPos, setCrosshairPos] = useState({ x: 50, y: 50 });
   const moreProjectsFullscreenRef = useRef(false);
@@ -30,9 +29,12 @@ const App = () => {
     let cancelled = false;
 
     fetch('/projects.json')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then(data => {
-        if (!cancelled) setProjects(data);
+        if (!cancelled) setProjects(Array.isArray(data) ? data : []);
       })
       .catch(err => console.error('Failed to load projects:', err));
 
@@ -87,19 +89,19 @@ const App = () => {
         win.id === id ? { ...win, zIndex: maxZIndex + 1 } : win
       );
     });
-    setZIndexCounter(current => Math.max(current, Math.max(...openWindows.map(win => win.zIndex), 100) + 1));
-  }, [openWindows]);
+  }, []);
 
   const openWindow = useCallback((id, title, content, onBack = null, color = null, options = {}) => {
-    const windowExists = openWindows.some(win => win.id === id);
-
-    if (windowExists) {
-      bringToFront(id);
-      return;
-    }
-
     setOpenWindows(windows => {
       const maxZIndex = Math.max(...windows.map(win => win.zIndex), 100);
+      const windowExists = windows.some(win => win.id === id);
+
+      if (windowExists) {
+        return windows.map(win =>
+          win.id === id ? { ...win, zIndex: maxZIndex + 1 } : win
+        );
+      }
+
       return [
         ...windows,
         {
@@ -114,8 +116,7 @@ const App = () => {
         }
       ];
     });
-    setZIndexCounter(current => Math.max(current, Math.max(...openWindows.map(win => win.zIndex), 100) + 1));
-  }, [bringToFront, openWindows]);
+  }, []);
 
   const closeWindow = useCallback((id) => {
     if (id === 'moreProjects') {
@@ -195,16 +196,20 @@ const App = () => {
       <div className="desktop">
         <div className="main-icons-container">
           <div className="system-icons">
-            {Object.entries(systemWindows).map(([id, win]) => (
-              <div
-                key={id}
-                className={`doc-icon text-file-icon text-file-${id}`}
-                onClick={() => openWindow(id, win.title, <win.component />, null, win.color)}
-              >
-                <div className="text-file-icon-image" />
-                <div className="folder-name">{win.label}</div>
-              </div>
-            ))}
+            {Object.entries(systemWindows).map(([id, win]) => {
+              const openSystemWindow = () => openWindow(id, win.title, <win.component />, null, win.color);
+
+              return (
+                <div
+                  key={id}
+                  className={`doc-icon text-file-icon text-file-${id}`}
+                  onClick={openSystemWindow}
+                >
+                  <div className="text-file-icon-image" />
+                  <div className="folder-name">{win.label}</div>
+                </div>
+              );
+            })}
             <div
               className="doc-icon terminal-doc-icon"
               onClick={() => openWindow(
@@ -229,25 +234,32 @@ const App = () => {
           <div className="projects-container">
             {projectChunks.map((chunk, chunkIndex) => (
               <div key={chunkIndex} className="project-row">
-                {chunk.map(project => (
-                  <div
-                    key={project.id}
-                    className="folder"
-                    onClick={() => openWindow(
-                      project.id,
-                      project.title,
-                      <ProjectWindowContent project={project} />
-                    )}
-                  >
-                    <div className="folder-icon"></div>
-                    <div className="folder-name">{project.label}</div>
-                  </div>
-                ))}
+                {chunk.map(project => {
+                  const openProject = () => openWindow(
+                    project.id,
+                    project.title,
+                    <ProjectWindowContent project={project} />
+                  );
+
+                  return (
+                    <div
+                      key={project.id}
+                      className="folder"
+                      onClick={openProject}
+                    >
+                      <div className="folder-icon"></div>
+                      <div className="folder-name">{project.label}</div>
+                    </div>
+                  );
+                })}
               </div>
             ))}
             {moreProjects.length > 0 && (
               <div className="project-row">
-                <div className="folder" onClick={openMoreProjectsWindow}>
+                <div
+                  className="folder"
+                  onClick={() => openMoreProjectsWindow()}
+                >
                   <div className="folder-icon" />
                   <div className="folder-name">More Projects</div>
                 </div>
@@ -257,12 +269,20 @@ const App = () => {
         </div>
 
         <div className="resume-icons">
-          {resumeLinks.map(resume => (
-            <div key={resume.id} className="doc-icon" onClick={() => openResumeViewer(resume.path, resume.title)}>
-              <div className="doc-icon-image" />
-              <div className="folder-name">{resume.label}</div>
-            </div>
-          ))}
+          {resumeLinks.map(resume => {
+            const openResume = () => openResumeViewer(resume.path, resume.title);
+
+            return (
+              <div
+                key={resume.id}
+                className="doc-icon"
+                onClick={openResume}
+              >
+                <div className="doc-icon-image" />
+                <div className="folder-name">{resume.label}</div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -301,35 +321,39 @@ const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, 
   <div className="more-projects-window">
     <h2>More Projects</h2>
     <div className="more-projects-grid">
-      {projects.map(project => (
-        <div
-          key={project.id}
-          className="folder"
-          onClick={(event) => {
-            event.stopPropagation();
-            const wasFullscreen = moreProjectsFullscreenRef.current;
-            openProjectWindow(
-              project.id,
-              project.title,
-              <ProjectWindowContent project={project} />,
-              () => {
-                const projectWindow = document.querySelector('.window.fullscreen');
-                const isProjectFullscreen = projectWindow !== null;
-                if (isProjectFullscreen) {
-                  moreProjectsFullscreenRef.current = true;
-                }
-                reopenMoreProjects(true);
-              },
-              null,
-              { isFullscreen: wasFullscreen }
-            );
-            setTimeout(() => closeMoreProjects(), 50);
-          }}
-        >
-          <div className="folder-icon"></div>
-          <div className="folder-name">{project.label}</div>
-        </div>
-      ))}
+      {projects.map(project => {
+        const openProject = (event) => {
+          event?.stopPropagation();
+          const wasFullscreen = moreProjectsFullscreenRef.current;
+          openProjectWindow(
+            project.id,
+            project.title,
+            <ProjectWindowContent project={project} />,
+            () => {
+              const projectWindow = document.querySelector('.window.fullscreen');
+              const isProjectFullscreen = projectWindow !== null;
+              if (isProjectFullscreen) {
+                moreProjectsFullscreenRef.current = true;
+              }
+              reopenMoreProjects(true);
+            },
+            null,
+            { isFullscreen: wasFullscreen }
+          );
+          setTimeout(() => closeMoreProjects(), 50);
+        };
+
+        return (
+          <div
+            key={project.id}
+            className="folder"
+            onClick={openProject}
+          >
+            <div className="folder-icon"></div>
+            <div className="folder-name">{project.label}</div>
+          </div>
+        );
+      })}
     </div>
   </div>
 );

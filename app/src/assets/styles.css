@@ -6,6 +6,11 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+*:not(input):not(textarea) {
+  cursor: default;
+  caret-color: transparent;
+}
+
 html, body {
   height: 100vh;
   overflow: hidden;
@@ -465,6 +470,7 @@ html, body {
   max-height: calc(80vh - 50px);
   background: white;
   color: #2c3e50;
+  cursor: default;
   user-select: text;
   overflow-y: auto;
 }
@@ -1459,7 +1465,7 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
   padding: 8px 12px 12px;
   min-height: 100%;
   max-width: 100%;
-  cursor: text;
+  cursor: default;
   border-radius: 0;
 }
 
@@ -1565,9 +1571,25 @@ input.terminal-input {
   line-height: inherit;
   outline: none;
   caret-color: #ffffff;
+  cursor: text;
   padding: 0 0 0 0.25ch;
 }
 
+input,
+textarea {
+  cursor: text;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 .window-content .terminal {
   background: #0c0c0c;

@@ -87,6 +87,7 @@ const Window = ({
   }, [bringToFrontImmediate, handleMouseMove, handleMouseUp, isFullscreen, startDrag]);
 
   const handleTouchMove = useCallback((event) => {
+    event.preventDefault();
     const touch = event.touches[0];
     moveDrag(touch.clientX, touch.clientY);
   }, [moveDrag]);
@@ -106,6 +107,13 @@ const Window = ({
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handleTouchEnd);
   }, [bringToFrontImmediate, handleTouchMove, handleTouchEnd, isFullscreen, startDrag]);
+
+  useEffect(() => () => {
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
+  }, [handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
   const stopPropagation = (event) => event.stopPropagation();
 
@@ -150,6 +158,7 @@ const Window = ({
         {onBack && (
           <button
             className="back-button"
+            type="button"
             onClick={handleBackClick}
             onTouchEnd={stopPropagation}
           >
@@ -160,6 +169,7 @@ const Window = ({
         <div className="window-controls">
           <button
             className="fullscreen-button"
+            type="button"
             onClick={handleFullscreenClick}
             onTouchEnd={stopPropagation}
             aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
@@ -168,6 +178,7 @@ const Window = ({
           </button>
           <button
             className="close-button"
+            type="button"
             onClick={handleCloseClick}
             onTouchEnd={stopPropagation}
             aria-label="Close window"
