@@ -37,10 +37,10 @@ const experiences = [
     ]
   },
   {
-    role: 'Resident Advisor, COSMOS UC San Diego',
+    role: 'Resident Advisor, Jacobs School of Engineering  ',
     dates: 'Jul. 2024 - Aug. 2024',
     bullets: [
-      'Provided guidance and mentorship for the Video Game Programming and Game AI Design group, empowering students through personalized support and advice.'
+      'Mentored students in the COSMOS engineering summer program’s Video Game Programming and AI Design group, providing guidance, support, and advice throughout the program.'
     ]
   }
 ];
