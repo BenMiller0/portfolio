@@ -117,6 +117,10 @@ const TerminalContent = ({ projects = [] }) => {
   const outputRef = useRef(null);
   const fileSystemRef = useRef(createFileSystem(projects));
 
+  useEffect(() => {
+    fileSystemRef.current = createFileSystem(projects);
+  }, [projects]);
+
   const resolvePath = (target = currentPath) => {
     if (!target || target === '~') return '~';
 
@@ -220,14 +224,21 @@ const TerminalContent = ({ projects = [] }) => {
   const commands = {
     help: () => ({
       type: 'output',
-      text: 'Available commands:\n  ls - List directory contents\n  cd <dir> - Change directory\n  pwd - Print working directory\n  cat <file> - Display file contents\n  open <file> - Open a URL or PDF path\n  echo <text> - Print text\n  clear - Clear terminal\n  date - Show current date/time\n  grep <pattern> <file> - Search in file\n  head [-n] <file> - Show first lines\n  tail [-n] <file> - Show last lines\n  wc <file> - Count lines/words/chars\n  man <cmd> - Show command help\n  help - Show this help message'
+      text: 'Commands\n  ls [path]          List files and folders\n  cd <directory>     Change directory\n  pwd                Show the current path\n  cat <file>         Read a file\n  open <file>        Open a link or PDF\n  projects           List every project\n  about              Read About.txt\n  resume             List available resumes\n  whoami             A short introduction\n  echo <text>        Print text\n  clear              Clear the terminal\n  date               Show the date and time\n  grep <term> <file> Search a file\n  head/tail <file>   Preview a file\n  wc <file>          Count file contents\n  man <command>      Explain a command\n\nTab completes paths. ↑ and ↓ recall commands.'
     }),
-    ls: () => {
-      const currentDir = getCurrentDirectory();
-      const items = Object.keys(currentDir).filter(name => !name.startsWith('.'));
+    ls: (args) => {
+      const targetPath = getPathArg(args);
+      const targetMatch = targetPath ? getPathMatch(targetPath) : getPathMatch(currentPath);
+
+      if (!targetMatch || targetMatch.entry.type !== 'dir') {
+        return { type: 'error', text: `ls: ${targetPath}: No such directory` };
+      }
+
+      const directory = targetMatch.node;
+      const items = Object.keys(directory).filter(name => !name.startsWith('.'));
 
       const entries = items.map(name => {
-        const item = currentDir[name];
+        const item = directory[name];
         return {
           text: item.type === 'dir' ? `${name}/` : name,
           className: getFileColor(name, item)
@@ -243,6 +254,30 @@ const TerminalContent = ({ projects = [] }) => {
     pwd: () => ({
       type: 'output',
       text: currentPath
+    }),
+    projects: () => ({
+      type: 'output',
+      text: projects.length ? '' : 'No projects are available right now.',
+      entries: projects.map((project, index) => ({
+        text: `${String(index + 1).padStart(2, '0')}  ${project.title}`,
+        className: 'terminal-project'
+      }))
+    }),
+    about: () => ({
+      type: 'output',
+      text: fileSystemRef.current['~'].children['About.txt'].content
+    }),
+    resume: () => ({
+      type: 'output',
+      text: '',
+      entries: [
+        { text: 'Hardware_Resume.pdf', className: 'terminal-pdf' },
+        { text: 'Software_Resume.pdf', className: 'terminal-pdf' }
+      ]
+    }),
+    whoami: () => ({
+      type: 'output',
+      text: 'Benjamin Miller — embedded systems, robotics, and product engineering.'
     }),
     cd: (args) => {
       const target = getPathArg(args) || '~';
@@ -433,6 +468,10 @@ const TerminalContent = ({ projects = [] }) => {
         head: 'HEAD(1)\n\nNAME\n    head - output the first part of files\n\nSYNOPSIS\n    head [-n N] [file]\n\nDESCRIPTION\n    Print the first N lines (default 10).',
         tail: 'TAIL(1)\n\nNAME\n    tail - output the last part of files\n\nSYNOPSIS\n    tail [-n N] [file]\n\nDESCRIPTION\n    Print the last N lines (default 10).',
         wc: 'WC(1)\n\nNAME\n    wc - print newline, word, and byte counts\n\nSYNOPSIS\n    wc [file]\n\nDESCRIPTION\n    Print newline, word, and byte counts for FILE.',
+        projects: 'PROJECTS(1)\n\nNAME\n    projects - list every project in this portfolio',
+        about: 'ABOUT(1)\n\nNAME\n    about - display the contents of About.txt',
+        resume: 'RESUME(1)\n\nNAME\n    resume - list the available resume files',
+        whoami: 'WHOAMI(1)\n\nNAME\n    whoami - display a short introduction',
       };
       const manPage = manPages[cmdName];
       if (!manPage) {
@@ -540,10 +579,7 @@ const TerminalContent = ({ projects = [] }) => {
 
   useEffect(() => {
     if (terminalRef.current) {
-      const windowContent = terminalRef.current.closest('.window-content');
-      if (windowContent) {
-        windowContent.scrollTop = windowContent.scrollHeight;
-      }
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [output]);
 
@@ -551,39 +587,48 @@ const TerminalContent = ({ projects = [] }) => {
     inputRef.current?.focus();
   }, []);
 
+  const executeCommand = (commandText) => {
+    const trimmedInput = commandText.trim();
+    if (!trimmedInput) return;
+
+    const parts = parseCommand(trimmedInput);
+    const typedCommand = parts[0];
+    const commandName = typedCommand.toLowerCase();
+    const args = parts.slice(1);
+
+    setCommandHistory((history) => [...history, trimmedInput]);
+    setHistoryIndex(-1);
+    setInput('');
+
+    const commandFunc = commands[commandName];
+    const result = commandFunc
+      ? commandFunc(args)
+      : { type: 'error', text: `${typedCommand}: command not found. Type "help" for commands.` };
+
+    if (result?.type === 'clear') {
+      setOutput([]);
+      return;
+    }
+
+    setOutput((lines) => {
+      const nextOutput = [
+        ...lines,
+        { type: 'command', path: currentPath, text: trimmedInput }
+      ];
+
+      if (result && (result.text || result.entries)) {
+        nextOutput.push(result);
+      }
+
+      return nextOutput;
+    });
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Tab') {
       handleTabCompletion(e);
     } else if (e.key === 'Enter') {
-      const trimmedInput = input.trim();
-      if (trimmedInput) {
-        setCommandHistory([...commandHistory, trimmedInput]);
-        setHistoryIndex(-1);
-
-        const parts = parseCommand(trimmedInput);
-        const cmd = parts[0];
-        const args = parts.slice(1);
-        
-        const commandFunc = commands[cmd];
-
-        let newOutput = [...output, { type: 'command', path: currentPath, text: trimmedInput }];
-
-        if (commandFunc) {
-          const result = commandFunc(args);
-          if (result) {
-            if (result.type === 'clear') {
-              setOutput([]);
-            } else {
-              newOutput = result.text ? [...newOutput, result] : newOutput;
-              setOutput(newOutput);
-            }
-          }
-        } else {
-          newOutput = [...newOutput, { type: 'error', text: `Command not found: ${cmd}` }];
-          setOutput(newOutput);
-        }
-      }
-      setInput('');
+      executeCommand(input);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (commandHistory.length > 0) {

@@ -158,7 +158,6 @@ const Window = ({
               ‹
             </button>
           )}
-          <span className="window-file-mark" aria-hidden="true" />
           <span className="window-title" id={titleId}>{title}</span>
         </div>
         <div className="window-controls" onDoubleClick={(event) => event.stopPropagation()}>

@@ -82,8 +82,9 @@ const App = () => {
 
   useEffect(() => {
     const hasFullscreen = openWindows.some(win => win.isFullscreen);
-    document.body.classList.toggle('fullscreen-window-open', hasFullscreen);
-    document.documentElement.classList.toggle('fullscreen-window-open', hasFullscreen);
+    const shouldLockPage = hasFullscreen || (isMobileViewport() && openWindows.length > 0);
+    document.body.classList.toggle('fullscreen-window-open', shouldLockPage);
+    document.documentElement.classList.toggle('fullscreen-window-open', shouldLockPage);
   }, [openWindows]);
 
   const bringToFront = useCallback((id) => {
@@ -227,7 +228,7 @@ const App = () => {
                   onClick={openSystemWindow}
                 >
                   <div className="text-file-icon-image" />
-                  <div className="folder-name">{win.label}</div>
+                  <div className="folder-name" data-mobile-label={win.title}>{win.label}</div>
                 </button>
               );
             })}
@@ -246,7 +247,14 @@ const App = () => {
               <div className="folder-name">Terminal</div>
             </button>
             {socialLinks.map(link => (
-              <a key={link.id} href={link.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" className="doc-icon">
+              <a
+                key={link.id}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                referrerPolicy="no-referrer"
+                className={`doc-icon social-doc-icon social-${link.id}`}
+              >
                 <div className={link.iconClassName} />
                 <div className="folder-name">{link.label}</div>
               </a>
@@ -327,7 +335,7 @@ const App = () => {
                 onClick={openResume}
               >
                 <div className="doc-icon-image" />
-                <div className="folder-name">{resume.label}</div>
+                <div className="folder-name" data-mobile-label={resume.title}>{resume.label}</div>
               </button>
             );
           })}
