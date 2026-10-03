@@ -21,14 +21,16 @@ See [DESIGN.md](./DESIGN.md) for detailed architecture and maintenance notes.
 
 - Desktop-inspired interface with draggable windows
 - Responsive desktop and mobile layouts
-- Dark mode toggle
+- Persistent light/dark theme
 - Project showcase with photo galleries and external links
-- Interactive folder/document icons
+- Keyboard-accessible folder and document icons
 - Fullscreen window support
 - Window stacking with z-index management
+- Escape-to-close and viewport-constrained dragging
 - Animated typewriter intro
 - Interactive terminal window
 - Resume PDF viewers
+- Project loading, empty, retry, and image-fallback states
 
 ---
 

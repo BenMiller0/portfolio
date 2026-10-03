@@ -63,10 +63,12 @@ portfolio/
 It owns:
 
 - Loading project data from `/projects.json`
+- Validating project records and exposing loading, empty, and retry states through desktop icons
 - Window lifecycle state
 - Window focus and z-index updates
 - Window position updates from drag events
 - Fullscreen toggling
+- Persistent theme preference and Escape-to-close behavior
 - Dark mode class toggling
 - Splitting projects into primary projects and the "More Projects" window
 
@@ -81,8 +83,8 @@ It owns:
 - Title bar rendering
 - Close, fullscreen, and optional back controls
 - Header color mapping
-- Mouse and touch drag behavior
-- Immediate focus/z-index adjustments during interaction
+- Pointer-based title-bar dragging constrained to the viewport
+- Focus restoration and fullscreen focus containment
 - Mobile drag disabling
 
 The component receives content through `children`, so project windows, static text windows, terminal windows, and resume viewers can all share the same chrome.
@@ -302,17 +304,18 @@ Edit the `experiences` array in `app/src/windows/experienceWindow.jsx`. The comp
 Implemented:
 
 - Semantic headings and lists inside windows
-- ARIA labels on close/fullscreen controls
-- Keyboard-accessible button elements
+- Labeled dialog windows and controls
+- Keyboard-accessible desktop icons
+- Escape-to-close, focus restoration, and fullscreen focus containment
 - Mobile tap target adjustments
 - Dark mode contrast overrides
+- Reduced-motion support
+- Screen-reader window-state announcements
 
 Possible future improvements:
 
-- Focus trapping inside active fullscreen windows
-- Keyboard shortcuts for close/fullscreen
 - Keyboard window movement
-- Better screen reader announcements when windows open or close
+- Automated browser accessibility regression checks
 
 ## Deployment
 
@@ -329,9 +332,7 @@ SPA fallback is handled by `app/public/_redirects`:
 
 ## Future Improvements
 
-- Persist dark mode preference with `localStorage`
 - Persist window positions between visits
 - Split very large CSS sections into smaller files if the styling surface grows
-- Add keyboard navigation for active windows
-- Lazy-load larger project images
+- Add keyboard window movement
 - Add lightweight tests for window positioning helpers and project rendering

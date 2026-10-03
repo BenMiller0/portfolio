@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const getSafeExternalUrl = (value) => {
   try {
@@ -29,37 +29,62 @@ const ProjectWindowContent = ({ project }) => {
     <>
       <h2>{project.title}</h2>
       {renderBulletPoints(project.description)}
-      <h3>Technologies Used:</h3>
+      <h3>Technologies</h3>
       <p>{project.technologies}</p>
+
+      {(project.miscLink?.displayName && miscUrl) || githubUrl ? (
+        <div className="project-actions" aria-label="Project links">
+          {project.miscLink?.displayName && miscUrl && (
+            <a className="project-action-link project-action-primary" href={miscUrl} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">
+              {project.miscLink.displayName}
+            </a>
+          )}
+          {githubUrl && (
+            <a className="project-action-link" href={githubUrl} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">
+              GitHub
+            </a>
+          )}
+        </div>
+      ) : null}
       
       {project.photos && project.photos.length > 0 && (
         <>
-          <h3>Project Photos:</h3>
+          <h3>Gallery</h3>
           <div className="photo-gallery">
             {project.photos.map((photo, index) => (
-              <img 
-                key={index}
-                src={`/project_photos/${photo}`}
-                alt={`${project.title} - Photo ${index + 1}`}
-                className={`project-photo project-photo-${project.imageSize || 'medium'} project-photo-${photo.replace(/\.[^/.]+$/, '')}`}
-                loading="lazy"
-                decoding="async"
+              <ProjectImage
+                key={photo}
+                photo={photo}
+                projectTitle={project.title}
+                index={index}
+                total={project.photos.length}
+                imageSize={project.imageSize}
               />
             ))}
           </div>
         </>
       )}
       
-      {project.miscLink?.displayName && miscUrl && (
-        <h3>
-          <a href={miscUrl} target="_blank" rel="noopener noreferrer">
-            {project.miscLink.displayName}
-          </a>
-        </h3>
-      )}
-      
-      {githubUrl && <h3><a href={githubUrl} target="_blank" rel="noopener noreferrer">GitHub</a></h3>}
     </>
+  );
+};
+
+const ProjectImage = ({ photo, projectTitle, index, total, imageSize }) => {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return <div className="project-photo-fallback">Image unavailable</div>;
+  }
+
+  return (
+    <img
+      src={`/project_photos/${encodeURIComponent(photo)}`}
+      alt={`${projectTitle}, view ${index + 1} of ${total}`}
+      className={`project-photo project-photo-${imageSize || 'medium'} project-photo-${photo.replace(/\.[^/.]+$/, '')}`}
+      loading="lazy"
+      decoding="async"
+      onError={() => setFailed(true)}
+    />
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useId, useRef } from 'react';
 import { MOBILE_BREAKPOINT } from '../constants/windowLayout';
 
 const HEADER_COLOR_MAP = {
@@ -8,7 +8,8 @@ const HEADER_COLOR_MAP = {
   '#cc3333': 'window-header-red',
   '#a78bfa': 'window-header-about',
   '#fb7185': 'window-header-readme',
-  '#facc15': 'window-header-experience'
+  '#facc15': 'window-header-experience',
+  '#333': 'window-header-gray'
 };
 
 const Window = ({
@@ -26,171 +27,163 @@ const Window = ({
   headerColor
 }) => {
   const windowRef = useRef(null);
-  const windowContentRef = useRef(null);
-  const isDragging = useRef(false);
-  const offset = useRef({ x: 0, y: 0 });
-  const currentZIndex = useRef(style?.zIndex || 100);
+  const titlebarRef = useRef(null);
+  const dragState = useRef(null);
+  const previousFocusRef = useRef(null);
+  const titleId = useId();
 
   useEffect(() => {
-    if (windowRef.current) {
-      windowRef.current.style.zIndex = currentZIndex.current;
-    }
+    previousFocusRef.current = document.activeElement;
+    windowRef.current?.focus({ preventScroll: true });
+    const previousFocus = previousFocusRef.current;
+
+    return () => {
+      if (previousFocus instanceof HTMLElement && document.contains(previousFocus)) {
+        previousFocus.focus({ preventScroll: true });
+      }
+    };
   }, []);
 
-  const bringToFrontImmediate = useCallback(() => {
-    if (!windowRef.current) return;
+  const startDrag = useCallback((event) => {
+    if (
+      isFullscreen ||
+      event.button !== 0 ||
+      event.target.closest('button') ||
+      window.innerWidth < MOBILE_BREAKPOINT
+    ) return;
 
-    const windows = document.querySelectorAll('.window');
-    const highestZIndex = Math.max(...Array.from(windows).map(win => Number.parseInt(win.style.zIndex || 0, 10)));
-    const nextZIndex = highestZIndex + 1;
+    const rect = windowRef.current?.getBoundingClientRect();
+    if (!rect) return;
 
-    windowRef.current.style.zIndex = nextZIndex;
-    currentZIndex.current = nextZIndex;
+    event.stopPropagation();
     onFocus?.();
-  }, [onFocus]);
+    dragState.current = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      width: rect.width,
+      height: rect.height
+    };
+    titlebarRef.current?.setPointerCapture(event.pointerId);
+    windowRef.current?.classList.add('is-dragging');
+  }, [isFullscreen, onFocus]);
 
-  const startDrag = useCallback((clientX, clientY) => {
-    if (!windowRef.current) return;
+  const moveDrag = useCallback((event) => {
+    if (!dragState.current || dragState.current.pointerId !== event.pointerId) return;
 
-    const rect = windowRef.current.getBoundingClientRect();
-    offset.current = { x: clientX - rect.left, y: clientY - rect.top };
-    isDragging.current = true;
-  }, []);
-
-  const moveDrag = useCallback((clientX, clientY) => {
-    if (!isDragging.current) return;
-
-    onDrag(id, { x: clientX - offset.current.x, y: clientY - offset.current.y });
+    const margin = 10;
+    const maxX = Math.max(margin, window.innerWidth - dragState.current.width - margin);
+    const maxY = Math.max(margin, window.innerHeight - dragState.current.height - margin);
+    onDrag(id, {
+      x: Math.min(maxX, Math.max(margin, event.clientX - dragState.current.offsetX)),
+      y: Math.min(maxY, Math.max(margin, event.clientY - dragState.current.offsetY))
+    });
   }, [id, onDrag]);
 
-  const stopDrag = useCallback(() => {
-    isDragging.current = false;
+  const stopDrag = useCallback((event) => {
+    if (!dragState.current || dragState.current.pointerId !== event.pointerId) return;
+    if (titlebarRef.current?.hasPointerCapture(event.pointerId)) {
+      titlebarRef.current.releasePointerCapture(event.pointerId);
+    }
+    dragState.current = null;
+    windowRef.current?.classList.remove('is-dragging');
   }, []);
 
-  const handleMouseMove = useCallback((event) => {
-    moveDrag(event.clientX, event.clientY);
-  }, [moveDrag]);
-
-  const handleMouseUp = useCallback(() => {
-    stopDrag();
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-  }, [handleMouseMove, stopDrag]);
-
-  const handleMouseDown = useCallback((event) => {
-    if (event.button !== 0 || isFullscreen) return;
-
-    bringToFrontImmediate();
-    startDrag(event.clientX, event.clientY);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }, [bringToFrontImmediate, handleMouseMove, handleMouseUp, isFullscreen, startDrag]);
-
-  const handleTouchMove = useCallback((event) => {
-    event.preventDefault();
-    const touch = event.touches[0];
-    moveDrag(touch.clientX, touch.clientY);
-  }, [moveDrag]);
-
-  const handleTouchEnd = useCallback(() => {
-    stopDrag();
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
-  }, [handleTouchMove, stopDrag]);
-
-  const handleTouchStart = useCallback((event) => {
-    if (isFullscreen || window.innerWidth < MOBILE_BREAKPOINT) return;
-
-    bringToFrontImmediate();
-    const touch = event.touches[0];
-    startDrag(touch.clientX, touch.clientY);
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd);
-  }, [bringToFrontImmediate, handleTouchMove, handleTouchEnd, isFullscreen, startDrag]);
-
-  useEffect(() => () => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
-  }, [handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
-
-  const stopPropagation = (event) => event.stopPropagation();
-
-  const handleBackClick = useCallback((event) => {
-    stopPropagation(event);
+  const handleBack = (event) => {
+    event.stopPropagation();
     onClose();
-    onBack();
-  }, [onBack, onClose]);
+    onBack?.();
+  };
 
-  const handleFullscreenClick = useCallback((event) => {
-    stopPropagation(event);
-    onToggleFullscreen?.();
-  }, [onToggleFullscreen]);
-
-  const handleCloseClick = useCallback((event) => {
-    stopPropagation(event);
-    onClose();
-  }, [onClose]);
+  const handleKeyDown = (event) => {
+    if (!isFullscreen || event.key !== 'Tab') return;
+    const focusable = Array.from(windowRef.current?.querySelectorAll(
+      'button:not([disabled]), a[href], input:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
+    ) ?? []);
+    if (focusable.length === 0) {
+      event.preventDefault();
+      windowRef.current?.focus();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
 
   const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
   const positionStyle = isFullscreen ? {} : (isMobile ? {
     left: '50%',
     transform: 'translateX(-50%)',
-    top: '100px',
-    position: 'absolute'
+    top: '72px',
+    position: 'fixed'
   } : {
     left: `${position.x}px`,
     top: `${position.y}px`,
     position: 'absolute'
   });
 
+  const headerClass = HEADER_COLOR_MAP[headerColor] || 'window-header';
+
   return (
-    <div
+    <section
       ref={windowRef}
       data-window-id={id}
       className={`window ${isFullscreen ? 'fullscreen' : ''}`}
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
       style={{ ...positionStyle, ...style }}
+      role="dialog"
+      aria-modal={isFullscreen ? 'true' : undefined}
+      aria-labelledby={titleId}
+      tabIndex={-1}
+      onPointerDown={onFocus}
+      onKeyDown={handleKeyDown}
     >
-      <div className={HEADER_COLOR_MAP[headerColor] || 'window-header'}>
-        {onBack && (
-          <button
-            className="back-button"
-            type="button"
-            onClick={handleBackClick}
-            onTouchEnd={stopPropagation}
-          >
-            &lt; Back
-          </button>
-        )}
-        <span>{title}</span>
-        <div className="window-controls">
+      <div
+        ref={titlebarRef}
+        className={`window-titlebar ${headerClass}`}
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={stopDrag}
+        onPointerCancel={stopDrag}
+        onDoubleClick={onToggleFullscreen}
+      >
+        <div className="window-title-group">
+          {onBack && (
+            <button className="back-button" type="button" onClick={handleBack} aria-label="Back">
+              ‹
+            </button>
+          )}
+          <span className="window-file-mark" aria-hidden="true" />
+          <span className="window-title" id={titleId}>{title}</span>
+        </div>
+        <div className="window-controls" onDoubleClick={(event) => event.stopPropagation()}>
           <button
             className="fullscreen-button"
             type="button"
-            onClick={handleFullscreenClick}
-            onTouchEnd={stopPropagation}
-            aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            onClick={(event) => { event.stopPropagation(); onToggleFullscreen?.(); }}
+            aria-label={isFullscreen ? 'Restore window' : 'Enter fullscreen'}
+            title={isFullscreen ? 'Restore' : 'Fullscreen'}
           >
-            <i className={`fa-solid ${isFullscreen ? 'fa-compress' : 'fa-expand'}`}></i>
+            <span aria-hidden="true">{isFullscreen ? '❐' : '□'}</span>
           </button>
           <button
             className="close-button"
             type="button"
-            onClick={handleCloseClick}
-            onTouchEnd={stopPropagation}
-            aria-label="Close window"
+            onClick={(event) => { event.stopPropagation(); onClose(); }}
+            aria-label={`Close ${title}`}
+            title="Close"
           >
-            &times;
+            <span aria-hidden="true">×</span>
           </button>
         </div>
       </div>
-      <div className="window-content" ref={windowContentRef}>
-        {children}
-      </div>
-    </div>
+      <div className="window-content">{children}</div>
+    </section>
   );
 };
 

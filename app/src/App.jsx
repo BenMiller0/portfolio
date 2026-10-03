@@ -9,6 +9,23 @@ import { useTypewriter } from './hooks/useTypewriter';
 const PROFILE_NAME = 'Benjamin Miller';
 const SCHOOL_NAME = 'UC San Diego - Computer Science';
 
+const getInitialDarkMode = () => {
+  try {
+    const savedTheme = window.localStorage.getItem('portfolio-theme');
+    if (savedTheme === 'dark') return true;
+    if (savedTheme === 'light') return false;
+  } catch {
+    // Storage is optional.
+  }
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+};
+
+const isProjectRecord = project =>
+  project &&
+  typeof project.id === 'string' &&
+  typeof project.label === 'string' &&
+  typeof project.title === 'string';
+
 const chunkItems = (items, size) =>
   Array.from({ length: Math.ceil(items.length / size) }, (_, index) =>
     items.slice(index * size, index * size + size)
@@ -18,15 +35,18 @@ const createResumeWindowId = (title) => title.replace(/\s+/g, '').toLowerCase();
 
 const App = () => {
   const [projects, setProjects] = useState([]);
+  const [projectStatus, setProjectStatus] = useState('loading');
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [openWindows, setOpenWindows] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
-  const [crosshairPos, setCrosshairPos] = useState({ x: 50, y: 50 });
+  const [darkMode, setDarkMode] = useState(getInitialDarkMode);
+  const [announcement, setAnnouncement] = useState('');
   const moreProjectsFullscreenRef = useRef(false);
   const { value: typedName, done: nameTyped } = useTypewriter(PROFILE_NAME, 50);
   const { value: typedSchool } = useTypewriter(SCHOOL_NAME, 40, nameTyped ? 150 : 0);
 
   useEffect(() => {
     let cancelled = false;
+    setProjectStatus('loading');
 
     fetch('/projects.json')
       .then(res => {
@@ -34,17 +54,30 @@ const App = () => {
         return res.json();
       })
       .then(data => {
-        if (!cancelled) setProjects(Array.isArray(data) ? data : []);
+        if (cancelled) return;
+        if (!Array.isArray(data)) throw new Error('Project data is not a list');
+        const validProjects = data.filter(isProjectRecord);
+        setProjects(validProjects);
+        setProjectStatus(validProjects.length ? 'ready' : 'empty');
       })
-      .catch(err => console.error('Failed to load projects:', err));
+      .catch(err => {
+        if (cancelled) return;
+        console.error('Failed to load projects:', err);
+        setProjectStatus('error');
+      });
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [loadAttempt]);
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', darkMode);
+    try {
+      window.localStorage.setItem('portfolio-theme', darkMode ? 'dark' : 'light');
+    } catch {
+      // Theme persistence is an enhancement.
+    }
   }, [darkMode]);
 
   useEffect(() => {
@@ -52,35 +85,6 @@ const App = () => {
     document.body.classList.toggle('fullscreen-window-open', hasFullscreen);
     document.documentElement.classList.toggle('fullscreen-window-open', hasFullscreen);
   }, [openWindows]);
-
-  useEffect(() => {
-    const velocityRef = { x: 0.05, y: 0.04 };
-    let intervalId;
-
-    const animate = () => {
-      setCrosshairPos(prev => {
-        let newX = prev.x + velocityRef.x;
-        let newY = prev.y + velocityRef.y;
-
-        if (newX <= 5 || newX >= 95) {
-          velocityRef.x = -velocityRef.x;
-          newX = Math.max(5, Math.min(95, newX));
-        }
-        if (newY <= 5 || newY >= 95) {
-          velocityRef.y = -velocityRef.y;
-          newY = Math.max(5, Math.min(95, newY));
-        }
-
-        return { x: newX, y: newY };
-      });
-    };
-
-    intervalId = setInterval(animate, 50);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
 
   const bringToFront = useCallback((id) => {
     setOpenWindows(windows => {
@@ -92,6 +96,7 @@ const App = () => {
   }, []);
 
   const openWindow = useCallback((id, title, content, onBack = null, color = null, options = {}) => {
+    setAnnouncement(`${title} opened.`);
     setOpenWindows(windows => {
       const maxZIndex = Math.max(...windows.map(win => win.zIndex), 100);
       const windowExists = windows.some(win => win.id === id);
@@ -122,6 +127,7 @@ const App = () => {
     if (id === 'moreProjects') {
       moreProjectsFullscreenRef.current = false;
     }
+    setAnnouncement('Window closed.');
     setOpenWindows(windows => windows.filter(win => win.id !== id));
   }, []);
 
@@ -132,6 +138,7 @@ const App = () => {
   }, []);
 
   const toggleFullscreen = useCallback((id) => {
+    setAnnouncement('Window size changed.');
     setOpenWindows(windows => {
       const updated = windows.map(win => {
         if (win.id !== id) return win;
@@ -149,6 +156,19 @@ const App = () => {
       return updated;
     });
   }, []);
+
+  useEffect(() => {
+    const handleEscape = event => {
+      if (event.key !== 'Escape' || openWindows.length === 0) return;
+      const frontWindow = openWindows.reduce((front, win) =>
+        win.zIndex > front.zIndex ? win : front
+      );
+      closeWindow(frontWindow.id);
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [closeWindow, openWindows]);
 
   const mainProjects = projects.slice(0, 3);
   const moreProjects = projects.slice(3);
@@ -187,8 +207,8 @@ const App = () => {
     <>
       <div className="desktop-background">
         <div className="triton-logo"></div>
-        <div className="crosshair-horizontal" style={{ top: `${crosshairPos.y}%` }}></div>
-        <div className="crosshair-vertical" style={{ left: `${crosshairPos.x}%` }}></div>
+        <div className="crosshair-horizontal"></div>
+        <div className="crosshair-vertical"></div>
       </div>
       <div className="name-display">{typedName}</div>
       {nameTyped && <div className="school-display">{typedSchool}</div>}
@@ -200,17 +220,19 @@ const App = () => {
               const openSystemWindow = () => openWindow(id, win.title, <win.component />, null, win.color);
 
               return (
-                <div
+                <button
+                  type="button"
                   key={id}
                   className={`doc-icon text-file-icon text-file-${id}`}
                   onClick={openSystemWindow}
                 >
                   <div className="text-file-icon-image" />
                   <div className="folder-name">{win.label}</div>
-                </div>
+                </button>
               );
             })}
-            <div
+            <button
+              type="button"
               className="doc-icon terminal-doc-icon"
               onClick={() => openWindow(
                 'terminal',
@@ -222,9 +244,9 @@ const App = () => {
             >
               <div className="terminal-icon-image" />
               <div className="folder-name">Terminal</div>
-            </div>
+            </button>
             {socialLinks.map(link => (
-              <a key={link.id} href={link.href} target="_blank" rel="noopener noreferrer" className="doc-icon">
+              <a key={link.id} href={link.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" className="doc-icon">
                 <div className={link.iconClassName} />
                 <div className="folder-name">{link.label}</div>
               </a>
@@ -232,6 +254,29 @@ const App = () => {
           </div>
 
           <div className="projects-container">
+            {projectStatus === 'loading' && [1, 2, 3].map(index => (
+              <div key={index} className="folder folder-loading" aria-hidden="true">
+                <div className="folder-icon"></div>
+                <div className="folder-name">&nbsp;</div>
+              </div>
+            ))}
+            {projectStatus === 'error' && (
+              <button
+                type="button"
+                className="doc-icon project-state-icon project-error-icon"
+                onClick={() => setLoadAttempt(attempt => attempt + 1)}
+                aria-label="Retry loading projects"
+              >
+                <div className="text-file-icon-image" />
+                <div className="folder-name">projects_error.txt</div>
+              </button>
+            )}
+            {projectStatus === 'empty' && (
+              <div className="doc-icon project-state-icon" aria-label="No projects available">
+                <div className="text-file-icon-image" />
+                <div className="folder-name">projects_empty.txt</div>
+              </div>
+            )}
             {projectChunks.map((chunk, chunkIndex) => (
               <div key={chunkIndex} className="project-row">
                 {chunk.map(project => {
@@ -242,27 +287,29 @@ const App = () => {
                   );
 
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={project.id}
                       className="folder"
                       onClick={openProject}
                     >
                       <div className="folder-icon"></div>
                       <div className="folder-name">{project.label}</div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
             ))}
             {moreProjects.length > 0 && (
               <div className="project-row">
-                <div
+                <button
+                  type="button"
                   className="folder"
                   onClick={() => openMoreProjectsWindow()}
                 >
                   <div className="folder-icon" />
                   <div className="folder-name">More Projects</div>
-                </div>
+                </button>
               </div>
             )}
           </div>
@@ -273,14 +320,15 @@ const App = () => {
             const openResume = () => openResumeViewer(resume.path, resume.title);
 
             return (
-              <div
+              <button
+                type="button"
                 key={resume.id}
                 className="doc-icon"
                 onClick={openResume}
               >
                 <div className="doc-icon-image" />
                 <div className="folder-name">{resume.label}</div>
-              </div>
+              </button>
             );
           })}
         </div>
@@ -310,9 +358,10 @@ const App = () => {
         onClick={() => setDarkMode(current => !current)}
         aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
       >
-        <span className="toggle-icon"><i className={`fa-solid ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i></span>
+        <span className="toggle-icon" aria-hidden="true">{darkMode ? '☀' : '☾'}</span>
         <span className="toggle-track"></span>
       </button>
+      <div className="sr-only" aria-live="polite">{announcement}</div>
     </>
   );
 };
@@ -344,14 +393,15 @@ const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, 
         };
 
         return (
-          <div
+          <button
+            type="button"
             key={project.id}
             className="folder"
             onClick={openProject}
           >
             <div className="folder-icon"></div>
             <div className="folder-name">{project.label}</div>
-          </div>
+          </button>
         );
       })}
     </div>
