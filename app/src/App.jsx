@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './assets/styles.css';
+import ProjectIcon from './components/ProjectIcon';
 import Window from './components/Window';
 import ProjectWindowContent from './windows/ProjectWindowContent';
 import { calculateRestorePosition, calculateWindowPosition, isMobileViewport } from './constants/windowLayout';
@@ -32,103 +33,18 @@ const chunkItems = (items, size) =>
   );
 
 const createResumeWindowId = (title) => title.replace(/\s+/g, '').toLowerCase();
-const VADER_IDLE_DELAY_MS = 10_000;
-const VADER_IDLE_JITTER_MS = 5_000;
-const VADER_AUTO_PLAY_MS = 10_000;
+const MAIN_PROJECT_IDS = ['project1', 'project3', 'project4'];
 
-const ProjectFolderIcon = ({ projectId }) => {
-  if (projectId !== 'project3') {
-    return <div className="folder-icon" />;
-  }
-
-  return (
-    <div className="folder-icon folder-icon-vader" aria-hidden="true">
-      <svg className="vader-figure" viewBox="0 0 80 62" focusable="false">
-        <path className="vader-cape" d="M3 62 9 43c2-7 10-12 22-15h18c12 3 20 8 22 15l6 19Z" />
-        <path className="vader-cape-fold" d="m10 62 7-21 12-9-7 30Zm60 0-7-21-12-9 7 30Z" />
-
-        <path className="vader-helmet-shell" d="M20 31 24 18C24 7 31 1 40 1s16 6 16 17l4 13-8-4-2 8-6-5-2 8h-4l-2-8-6 5-2-8Z" />
-        <path className="vader-dome" d="M26 19C26 8 32 3 40 3s14 5 14 16l-5-5-9-4-9 4Z" />
-        <path className="vader-face" d="m27 19 5-6 8-3 8 3 5 6-3 10-6 8h-8l-6-8Z" />
-        <path className="vader-cheek vader-cheek-left" d="m28 26 8-2-2 8-5-3Z" />
-        <path className="vader-cheek vader-cheek-right" d="m52 26-8-2 2 8 5-3Z" />
-        <path className="vader-brow" d="m28 18 10-3 2 2 2-2 10 3-2 3-8-2-2 2-2-2-8 2Z" />
-        <path className="vader-eye" d="m29 20 9-2-2 5-7 1Z" />
-        <path className="vader-eye" d="m51 20-9-2 2 5 7 1Z" />
-        <path className="vader-nose" d="m40 18 4 11-4 4-4-4Z" />
-        <path className="vader-respirator" d="m34 29 6 4 6-4 3 7-5 5h-8l-5-5Z" />
-        <path className="vader-grille" d="M35 33h10M36 36h8M38 31v8m4-8v8" />
-        <path className="vader-helmet-highlight" d="M31 8c3-4 8-5 12-4m-15 9-3 10" />
-
-        <path className="vader-armor" d="M18 62V42l13-10 5 7h8l5-7 13 10v20Z" />
-        <path className="vader-armor-line" d="m20 43 13-8m27 8-13-8M25 62l4-23m26 23-4-23" />
-
-        <g className="vader-chest-box">
-          <path d="m31 42 2-3h14l2 3v13H31Z" />
-          <path className="vader-panel-edge" d="M33 43h14v10H33Z" />
-          <rect className="vader-switch vader-switch-red" x="34.5" y="44.5" width="3" height="3" rx=".5" />
-          <rect className="vader-switch vader-switch-blue" x="42.5" y="44.5" width="3" height="3" rx=".5" />
-          <rect className="vader-switch vader-switch-amber" x="34.5" y="49" width="3" height="2.5" rx=".5" />
-          <rect className="vader-switch vader-switch-white" x="42.5" y="49" width="3" height="2.5" rx=".5" />
-          <path className="vader-panel-bars" d="M39 44.5v7m2-7v7" />
-        </g>
-
-        <g className="vader-belt-unit">
-          <path className="vader-belt-strap" d="M18 55h44v6H18Z" />
-          <path className="vader-belt-box" d="M20 54h10v8H20Zm30 0h10v8H50Z" />
-          <path className="vader-buckle" d="M35 54h10v8H35Z" />
-          <circle className="vader-belt-light vader-belt-light-red" cx="23" cy="57" r="1.2" />
-          <circle className="vader-belt-light vader-belt-light-green" cx="27" cy="57" r="1.2" />
-          <circle className="vader-belt-light vader-belt-light-blue" cx="53" cy="57" r="1.2" />
-          <circle className="vader-belt-light vader-belt-light-amber" cx="57" cy="57" r="1.2" />
-          <path className="vader-buckle-detail" d="M37 56h6v4h-6Z" />
-        </g>
-      </svg>
-    </div>
-  );
-};
-
-const ProjectFolderButton = ({ project, onClick }) => {
+const ProjectIconButton = ({ project, onClick }) => {
   const isVader = project.id === 'project3';
-  const [isInteracting, setIsInteracting] = useState(false);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
-  const [idleCycle, setIdleCycle] = useState(0);
-
-  useEffect(() => {
-    if (!isVader || isInteracting) return undefined;
-
-    let playTimer;
-    const randomizedIdleDelay = VADER_IDLE_DELAY_MS + Math.random() * VADER_IDLE_JITTER_MS;
-    const idleTimer = window.setTimeout(() => {
-      setIsAutoPlaying(true);
-      playTimer = window.setTimeout(() => {
-        setIsAutoPlaying(false);
-        setIdleCycle(cycle => cycle + 1);
-      }, VADER_AUTO_PLAY_MS);
-    }, randomizedIdleDelay);
-
-    return () => {
-      window.clearTimeout(idleTimer);
-      window.clearTimeout(playTimer);
-    };
-  }, [idleCycle, isInteracting, isVader]);
-
-  const beginInteraction = () => {
-    setIsInteracting(true);
-    setIsAutoPlaying(false);
-  };
 
   return (
     <button
       type="button"
-      className={`folder${isVader ? ' folder-vader' : ''}${isAutoPlaying ? ' vader-auto-playing' : ''}`}
+      className={`folder project-icon-button project-icon-button-${project.id}${isVader ? ' folder-vader' : ''}`}
       onClick={onClick}
-      onPointerEnter={isVader ? beginInteraction : undefined}
-      onPointerLeave={isVader ? () => setIsInteracting(false) : undefined}
-      onFocus={isVader ? beginInteraction : undefined}
-      onBlur={isVader ? () => setIsInteracting(false) : undefined}
     >
-      <ProjectFolderIcon projectId={project.id} />
+      <ProjectIcon projectId={project.id} />
       <div className="folder-name">{project.label}</div>
     </button>
   );
@@ -272,8 +188,11 @@ const App = () => {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [closeWindow, openWindows]);
 
-  const mainProjects = projects.slice(0, 3);
-  const moreProjects = projects.slice(3);
+  const mainProjects = useMemo(() => MAIN_PROJECT_IDS
+    .map(id => projects.find(project => project.id === id))
+    .filter(Boolean), [projects]);
+  const moreProjects = useMemo(() => projects
+    .filter(project => !MAIN_PROJECT_IDS.includes(project.id)), [projects]);
   const projectChunks = useMemo(() => chunkItems(mainProjects, 3), [mainProjects]);
   const terminalDesktopWindow = useMemo(() => getTerminalDesktopWindow(projects), [projects]);
 
@@ -363,9 +282,9 @@ const App = () => {
           </div>
 
           <div className="projects-container">
-            {projectStatus === 'loading' && [1, 2, 3].map(index => (
-              <div key={index} className="folder folder-loading" aria-hidden="true">
-                <div className="folder-icon"></div>
+            {projectStatus === 'loading' && MAIN_PROJECT_IDS.map(projectId => (
+              <div key={projectId} className="folder folder-loading" aria-hidden="true">
+                <div className="project-visual project-visual-loading" />
                 <div className="folder-name">&nbsp;</div>
               </div>
             ))}
@@ -396,7 +315,7 @@ const App = () => {
                   );
 
                   return (
-                    <ProjectFolderButton
+                    <ProjectIconButton
                       key={project.id}
                       project={project}
                       onClick={openProject}
@@ -509,7 +428,7 @@ const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, 
         };
 
         return (
-          <ProjectFolderButton
+          <ProjectIconButton
             key={project.id}
             project={project}
             onClick={openProject}
