@@ -3,29 +3,23 @@ import React, { useState, useEffect, useRef } from 'react';
 const USER = 'ben';
 const HOST = 'portfolio';
 
-const createProjectDirectory = ({ title, description, technologies, github, photos = [], miscLink }) => ({
-  type: 'dir',
-  children: {
-    'README.md': {
-      type: 'file',
-      content: [
-        title,
-        '',
-        description,
-        '',
-        `Technologies: ${technologies}`
-      ].join('\n')
-    },
-    'github.url': { type: 'file', content: github },
-    ...(miscLink ? { [`${miscLink.displayName}.url`]: { type: 'file', content: miscLink.url.trim() } } : {}),
-    photos: {
-      type: 'dir',
-      children: photos.reduce((files, photo) => ({
-        ...files,
-        [photo]: { type: 'file', content: `/project_photos/${photo}` }
-      }), {})
-    }
-  }
+const toProjectFileName = (title) => `${title
+  .replace(/[^a-zA-Z0-9]+/g, '_')
+  .replace(/^_+|_+$/g, '')}.proj`;
+
+const createProjectFile = ({ title, description, technologies, github, photos = [], miscLink }) => ({
+  type: 'file',
+  content: [
+    title,
+    '─'.repeat(Math.min(title.length, 48)),
+    '',
+    description,
+    '',
+    `Technologies: ${technologies}`,
+    github ? `GitHub: ${github}` : null,
+    miscLink ? `${miscLink.displayName}: ${miscLink.url.trim()}` : null,
+    photos.length ? `Photos: ${photos.join(', ')}` : null
+  ].filter(line => line !== null).join('\n')
 });
 
 const createFileSystem = (projects) => ({
@@ -54,18 +48,10 @@ const createFileSystem = (projects) => ({
       'LinkedIn.url': { type: 'file', content: 'https://linkedin.com/in/benjamin-miller-ucsd' },
       'Hardware_Resume.pdf': { type: 'file', content: '/resumes/Resume_Benjamin_Miller.pdf' },
       'Software_Resume.pdf': { type: 'file', content: '/resumes/Resume-Benjamin-Miller.pdf' },
-      ...(projects[0] ? { [projects[0].title]: createProjectDirectory(projects[0]) } : {}),
-      ...(projects[1] ? { [projects[1].title]: createProjectDirectory(projects[1]) } : {}),
-      ...(projects[2] ? { [projects[2].title]: createProjectDirectory(projects[2]) } : {}),
-      ...(projects.length > 3 ? {
-        'More Projects': {
-          type: 'dir',
-          children: projects.slice(3).reduce((children, project) => ({
-            ...children,
-            [project.title]: createProjectDirectory(project)
-          }), {})
-        }
-      } : {})
+      ...projects.reduce((files, project) => ({
+        ...files,
+        [toProjectFileName(project.title)]: createProjectFile(project)
+      }), {})
     }
   }
 });
@@ -75,7 +61,44 @@ const parseCommand = (commandText) => {
   return Array.from(matches, match => match[1] ?? match[2] ?? match[3]);
 };
 
-const getPathArg = (args) => args.join(' ').replace(/\/+$/, '');
+const getPathArg = (args) => {
+  const joined = args.join(' ');
+  return joined === '/' ? '/' : joined.replace(/\/+$/, '');
+};
+
+const globToRegExp = (pattern) => {
+  const escaped = pattern
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    .replace(/\*/g, '.*')
+    .replace(/\?/g, '.');
+
+  return new RegExp(`^${escaped}$`, 'i');
+};
+
+const parseLinePreviewArgs = (args) => {
+  let lineCount = 10;
+  let fileArgIndex = 0;
+
+  if (args[0] === '-n') {
+    lineCount = Number(args[1]);
+    fileArgIndex = 2;
+  } else if (/^-n\d+$/.test(args[0] || '')) {
+    lineCount = Number(args[0].slice(2));
+    fileArgIndex = 1;
+  } else if (/^-\d+$/.test(args[0] || '')) {
+    lineCount = Number(args[0].slice(1));
+    fileArgIndex = 1;
+  }
+
+  if (!Number.isSafeInteger(lineCount) || lineCount < 0) {
+    return { error: 'invalid number of lines' };
+  }
+
+  return {
+    lineCount,
+    fileName: getPathArg(args.slice(fileArgIndex))
+  };
+};
 
 const isOpenablePath = (path) => {
   if (path.startsWith('/')) return true;
@@ -107,8 +130,7 @@ const TerminalContent = ({ projects = [] }) => {
   const [input, setInput] = useState('');
   const [currentPath, setCurrentPath] = useState('~');
   const [output, setOutput] = useState([
-    { type: 'system', text: 'Portfolio Terminal v2.0' },
-    { type: 'system', text: 'Type "help" for available commands.' }
+    { type: 'system', text: 'Type "help" for a list of commands.' }
   ]);
   const [commandHistory, setCommandHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -122,11 +144,13 @@ const TerminalContent = ({ projects = [] }) => {
   }, [projects]);
 
   const resolvePath = (target = currentPath) => {
-    if (!target || target === '~') return '~';
+    if (!target || target === '~' || target === '/') return '~';
 
     const rawPath = target.startsWith('~')
       ? target
-      : `${currentPath}/${target}`;
+      : target.startsWith('/')
+        ? `~${target}`
+        : `${currentPath}/${target}`;
 
     const parts = rawPath.split('/').filter(Boolean);
     const resolved = [];
@@ -188,6 +212,12 @@ const TerminalContent = ({ projects = [] }) => {
 
   const getCurrentDirectory = () => getNode(currentPath) || {};
 
+  const getFileEntry = (fileName) => {
+    if (!fileName) return null;
+    if (fileName.includes('/')) return getPathMatch(fileName)?.entry || null;
+    return findEntry(getCurrentDirectory(), fileName);
+  };
+
   const getPromptText = () => `${USER}@${HOST}:${currentPath}$`;
 
   const renderPrompt = (path = currentPath) => (
@@ -205,42 +235,64 @@ const TerminalContent = ({ projects = [] }) => {
     if (name.endsWith('.md')) return 'terminal-markdown';
     if (name.endsWith('.txt')) return 'terminal-text';
     if (name.endsWith('.pdf')) return 'terminal-pdf';
+    if (name.endsWith('.proj')) return 'terminal-project';
     return 'terminal-file';
   };
 
   const expandWildcards = (pattern, currentDir) => {
     if (!pattern.includes('*') && !pattern.includes('?')) return [pattern];
-    
-    const regexString = pattern
-      .replace(/\./g, '\\.')
-      .replace(/\*/g, '.*')
-      .replace(/\?/g, '.')
-      .toLowerCase();
-    
-    const regex = new RegExp(`^${regexString}$`);
+
+    const regex = globToRegExp(pattern);
     return Object.keys(currentDir).filter(name => regex.test(name.toLowerCase()));
   };
 
   const commands = {
     help: () => ({
       type: 'output',
-      text: 'Commands\n  ls [path]          List files and folders\n  cd <directory>     Change directory\n  pwd                Show the current path\n  cat <file>         Read a file\n  open <file>        Open a link or PDF\n  projects           List every project\n  about              Read About.txt\n  resume             List available resumes\n  whoami             A short introduction\n  echo <text>        Print text\n  clear              Clear the terminal\n  date               Show the date and time\n  grep <term> <file> Search a file\n  head/tail <file>   Preview a file\n  wc <file>          Count file contents\n  man <command>      Explain a command\n\nTab completes paths. ↑ and ↓ recall commands.'
+      text: 'Commands\n  ls [-al] [path]    List files and folders\n  cd <directory>     Change directory\n  pwd                Show the current path\n  cat <file>         Read a file\n  open <file>        Open a link or PDF\n  projects           List every .proj file\n  about              Read About.txt\n  resume             List available resumes\n  whoami             A short introduction\n  echo <text>        Print text\n  clear              Clear the terminal\n  date               Show the date and time\n  grep <term> <file> Search a file\n  head/tail [-n N]   Preview a file\n  wc <file>          Count file contents\n  man <command>      Explain a command\n\nTab completes paths. ↑ and ↓ recall commands.'
     }),
     ls: (args) => {
-      const targetPath = getPathArg(args);
+      const optionArgs = args.filter(arg => arg.startsWith('-') && arg !== '-');
+      const invalidOption = optionArgs.find(option => !/^-([al]+)$/.test(option));
+      if (invalidOption) {
+        return { type: 'error', text: `ls: invalid option -- '${invalidOption.slice(1)}'` };
+      }
+
+      const flags = optionArgs.join('').replace(/-/g, '');
+      const showHidden = flags.includes('a');
+      const longFormat = flags.includes('l');
+      const targetPath = getPathArg(args.filter(arg => !optionArgs.includes(arg)));
       const targetMatch = targetPath ? getPathMatch(targetPath) : getPathMatch(currentPath);
 
-      if (!targetMatch || targetMatch.entry.type !== 'dir') {
-        return { type: 'error', text: `ls: ${targetPath}: No such directory` };
+      if (!targetMatch) {
+        return { type: 'error', text: `ls: ${targetPath}: No such file or directory` };
+      }
+
+      if (targetMatch.entry.type === 'file') {
+        const name = targetMatch.path.split('/').pop();
+        const byteCount = new TextEncoder().encode(targetMatch.entry.content || '').length;
+        return {
+          type: 'output',
+          text: '',
+          entries: [{
+            text: longFormat ? `-rw-r--r--  ${String(byteCount).padStart(6)}  ${name}` : name,
+            className: getFileColor(name, targetMatch.entry)
+          }]
+        };
       }
 
       const directory = targetMatch.node;
-      const items = Object.keys(directory).filter(name => !name.startsWith('.'));
+      const items = Object.keys(directory).filter(name => showHidden || !name.startsWith('.'));
 
       const entries = items.map(name => {
         const item = directory[name];
+        const displayName = item.type === 'dir' ? `${name}/` : name;
+        const size = item.type === 'dir'
+          ? Object.keys(item.children).length
+          : new TextEncoder().encode(item.content || '').length;
+        const mode = item.type === 'dir' ? 'drwxr-xr-x' : '-rw-r--r--';
         return {
-          text: item.type === 'dir' ? `${name}/` : name,
+          text: longFormat ? `${mode}  ${String(size).padStart(6)}  ${displayName}` : displayName,
           className: getFileColor(name, item)
         };
       });
@@ -259,7 +311,7 @@ const TerminalContent = ({ projects = [] }) => {
       type: 'output',
       text: projects.length ? '' : 'No projects are available right now.',
       entries: projects.map((project, index) => ({
-        text: `${String(index + 1).padStart(2, '0')}  ${project.title}`,
+        text: `${String(index + 1).padStart(2, '0')}  ${toProjectFileName(project.title)}`,
         className: 'terminal-project'
       }))
     }),
@@ -288,7 +340,9 @@ const TerminalContent = ({ projects = [] }) => {
         return { type: 'output', text: '' };
       }
 
-      return { type: 'error', text: `cd: ${target}: No such directory` };
+      return targetMatch
+        ? { type: 'error', text: `cd: ${target}: Not a directory` }
+        : { type: 'error', text: `cd: ${target}: No such file or directory` };
     },
     cat: (args) => {
       const fileName = getPathArg(args);
@@ -299,12 +353,13 @@ const TerminalContent = ({ projects = [] }) => {
       const expanded = expandWildcards(fileName, currentDir);
       
       if (expanded.length === 1 && expanded[0] === fileName) {
-        const file = fileName.includes('/') ? getNode(fileName) : currentDir[fileName];
-        const resolvedFile = file || findEntry(currentDir, fileName);
+        const resolvedFile = getFileEntry(fileName);
         if (resolvedFile && resolvedFile.type === 'file') {
           return { type: 'output', text: resolvedFile.content };
         }
-        return { type: 'error', text: `cat: ${fileName}: No such file` };
+        return resolvedFile?.type === 'dir'
+          ? { type: 'error', text: `cat: ${fileName}: Is a directory` }
+          : { type: 'error', text: `cat: ${fileName}: No such file or directory` };
       }
       
       const contents = [];
@@ -326,11 +381,11 @@ const TerminalContent = ({ projects = [] }) => {
       if (!fileName) {
         return { type: 'error', text: 'open: missing file operand' };
       }
-      const currentDir = getCurrentDirectory();
-      const file = fileName.includes('/') ? getNode(fileName) : currentDir[fileName];
-      const resolvedFile = file || findEntry(currentDir, fileName);
+      const resolvedFile = getFileEntry(fileName);
       if (!resolvedFile || resolvedFile.type !== 'file') {
-        return { type: 'error', text: `open: ${fileName}: No such file` };
+        return resolvedFile?.type === 'dir'
+          ? { type: 'error', text: `open: ${fileName}: Is a directory` }
+          : { type: 'error', text: `open: ${fileName}: No such file or directory` };
       }
       if (isOpenablePath(resolvedFile.content)) {
         window.open(resolvedFile.content, '_blank', 'noopener,noreferrer');
@@ -348,14 +403,21 @@ const TerminalContent = ({ projects = [] }) => {
       if (args.length < 2) {
         return { type: 'error', text: 'grep: missing pattern and file operand' };
       }
-      const [pattern, fileName] = args;
+      const pattern = args[0];
+      const fileName = getPathArg(args.slice(1));
       const currentDir = getCurrentDirectory();
       const expanded = expandWildcards(fileName, currentDir);
+
+      if (expanded.length === 0) {
+        return { type: 'error', text: `grep: ${fileName}: No such file or directory` };
+      }
       
       if (expanded.length === 1 && expanded[0] === fileName) {
-        const file = currentDir[fileName] || findEntry(currentDir, fileName);
+        const file = getFileEntry(fileName);
         if (!file || file.type !== 'file') {
-          return { type: 'error', text: `grep: ${fileName}: No such file` };
+          return file?.type === 'dir'
+            ? { type: 'error', text: `grep: ${fileName}: Is a directory` }
+            : { type: 'error', text: `grep: ${fileName}: No such file or directory` };
         }
         const lines = file.content.split('\n');
         const matches = lines.filter(line => line.toLowerCase().includes(pattern.toLowerCase()));
@@ -389,48 +451,38 @@ const TerminalContent = ({ projects = [] }) => {
       };
     },
     head: (args) => {
-      let lines = 10;
-      let fileName;
-      if (args[0]?.startsWith('-n')) {
-        lines = parseInt(args[0].slice(2)) || 10;
-        fileName = args[1];
-      } else {
-        fileName = args[0];
-      }
+      const { lineCount, fileName, error } = parseLinePreviewArgs(args);
+      if (error) return { type: 'error', text: `head: ${error}` };
       if (!fileName) {
         return { type: 'error', text: 'head: missing file operand' };
       }
-      const currentDir = getCurrentDirectory();
-      const file = currentDir[fileName] || findEntry(currentDir, fileName);
+      const file = getFileEntry(fileName);
       if (!file || file.type !== 'file') {
-        return { type: 'error', text: `head: ${fileName}: No such file` };
+        return file?.type === 'dir'
+          ? { type: 'error', text: `head: ${fileName}: Is a directory` }
+          : { type: 'error', text: `head: ${fileName}: No such file or directory` };
       }
       const fileLines = file.content.split('\n');
-      const headLines = fileLines.slice(0, lines);
+      const headLines = fileLines.slice(0, lineCount);
       return {
         type: 'output',
         text: headLines.join('\n')
       };
     },
     tail: (args) => {
-      let lines = 10;
-      let fileName;
-      if (args[0]?.startsWith('-n')) {
-        lines = parseInt(args[0].slice(2)) || 10;
-        fileName = args[1];
-      } else {
-        fileName = args[0];
-      }
+      const { lineCount, fileName, error } = parseLinePreviewArgs(args);
+      if (error) return { type: 'error', text: `tail: ${error}` };
       if (!fileName) {
         return { type: 'error', text: 'tail: missing file operand' };
       }
-      const currentDir = getCurrentDirectory();
-      const file = currentDir[fileName] || findEntry(currentDir, fileName);
+      const file = getFileEntry(fileName);
       if (!file || file.type !== 'file') {
-        return { type: 'error', text: `tail: ${fileName}: No such file` };
+        return file?.type === 'dir'
+          ? { type: 'error', text: `tail: ${fileName}: Is a directory` }
+          : { type: 'error', text: `tail: ${fileName}: No such file or directory` };
       }
       const fileLines = file.content.split('\n');
-      const tailLines = fileLines.slice(-lines);
+      const tailLines = lineCount === 0 ? [] : fileLines.slice(-lineCount);
       return {
         type: 'output',
         text: tailLines.join('\n')
@@ -441,22 +493,23 @@ const TerminalContent = ({ projects = [] }) => {
       if (!fileName) {
         return { type: 'error', text: 'wc: missing file operand' };
       }
-      const currentDir = getCurrentDirectory();
-      const file = currentDir[fileName] || findEntry(currentDir, fileName);
+      const file = getFileEntry(fileName);
       if (!file || file.type !== 'file') {
-        return { type: 'error', text: `wc: ${fileName}: No such file` };
+        return file?.type === 'dir'
+          ? { type: 'error', text: `wc: ${fileName}: Is a directory` }
+          : { type: 'error', text: `wc: ${fileName}: No such file or directory` };
       }
       const content = file.content;
-      const lineCount = content.split('\n').length;
+      const lineCount = (content.match(/\n/g) || []).length;
       const wordCount = content.trim().split(/\s+/).filter(w => w).length;
-      const charCount = content.length;
+      const byteCount = new TextEncoder().encode(content).length;
       return {
         type: 'output',
-        text: `  ${lineCount}  ${wordCount}  ${charCount} ${fileName}`
+        text: `  ${lineCount}  ${wordCount}  ${byteCount} ${fileName}`
       };
     },
     man: (args) => {
-      const cmdName = getPathArg(args);
+      const cmdName = getPathArg(args).toLowerCase();
       if (!cmdName) {
         return { type: 'error', text: 'What manual page do you want?' };
       }
@@ -468,7 +521,14 @@ const TerminalContent = ({ projects = [] }) => {
         head: 'HEAD(1)\n\nNAME\n    head - output the first part of files\n\nSYNOPSIS\n    head [-n N] [file]\n\nDESCRIPTION\n    Print the first N lines (default 10).',
         tail: 'TAIL(1)\n\nNAME\n    tail - output the last part of files\n\nSYNOPSIS\n    tail [-n N] [file]\n\nDESCRIPTION\n    Print the last N lines (default 10).',
         wc: 'WC(1)\n\nNAME\n    wc - print newline, word, and byte counts\n\nSYNOPSIS\n    wc [file]\n\nDESCRIPTION\n    Print newline, word, and byte counts for FILE.',
-        projects: 'PROJECTS(1)\n\nNAME\n    projects - list every project in this portfolio',
+        pwd: 'PWD(1)\n\nNAME\n    pwd - print the current working path\n\nSYNOPSIS\n    pwd',
+        open: 'OPEN(1)\n\nNAME\n    open - open a portfolio link or PDF\n\nSYNOPSIS\n    open [file]',
+        echo: 'ECHO(1)\n\nNAME\n    echo - display a line of text\n\nSYNOPSIS\n    echo [text]',
+        clear: 'CLEAR(1)\n\nNAME\n    clear - clear terminal output\n\nSYNOPSIS\n    clear',
+        date: 'DATE(1)\n\nNAME\n    date - display the current date and time\n\nSYNOPSIS\n    date',
+        man: 'MAN(1)\n\nNAME\n    man - display a command manual\n\nSYNOPSIS\n    man [command]',
+        help: 'HELP(1)\n\nNAME\n    help - list available commands\n\nSYNOPSIS\n    help',
+        projects: 'PROJECTS(1)\n\nNAME\n    projects - list every .proj file in this portfolio',
         about: 'ABOUT(1)\n\nNAME\n    about - display the contents of About.txt',
         resume: 'RESUME(1)\n\nNAME\n    resume - list the available resume files',
         whoami: 'WHOAMI(1)\n\nNAME\n    whoami - display a short introduction',
@@ -532,9 +592,10 @@ const TerminalContent = ({ projects = [] }) => {
 
     const [, commandPart, argPart] = commandMatch;
     const commandNames = Object.keys(commands);
+    const normalizedCommand = commandPart.toLowerCase();
 
     if (argPart === undefined) {
-      const allMatches = commandNames.filter(command => command.startsWith(commandPart));
+      const allMatches = commandNames.filter(command => command.startsWith(normalizedCommand));
       
       if (allMatches.length === 0) return;
 
@@ -542,7 +603,7 @@ const TerminalContent = ({ projects = [] }) => {
         setInput(`${allMatches[0]} ${afterCursor}`);
       } else {
         const completedCommand = getCommonPrefix(allMatches);
-        if (completedCommand !== commandPart) {
+        if (completedCommand !== normalizedCommand) {
           setInput(`${completedCommand}${afterCursor}`);
         } else {
           setOutput([...output, { type: 'system', text: allMatches.join('  ') }]);
@@ -551,30 +612,35 @@ const TerminalContent = ({ projects = [] }) => {
       return;
     }
 
-    if (!['cd', 'cat', 'open', 'grep', 'head', 'tail', 'wc'].includes(commandPart)) return;
+    if (!['ls', 'cd', 'cat', 'open', 'grep', 'head', 'tail', 'wc'].includes(normalizedCommand)) return;
 
-    const completedPath = completePath(argPart, commandPart === 'cd');
+    const hasLeadingArguments = ['ls', 'grep', 'head', 'tail'].includes(normalizedCommand);
+    const lastSpaceIndex = hasLeadingArguments ? argPart.lastIndexOf(' ') : -1;
+    const argumentPrefix = lastSpaceIndex >= 0 ? argPart.slice(0, lastSpaceIndex + 1) : '';
+    const pathPart = lastSpaceIndex >= 0 ? argPart.slice(lastSpaceIndex + 1) : argPart;
+
+    const completedPath = completePath(pathPart, normalizedCommand === 'cd');
     if (!completedPath) {
-      const parentMatch = argPart.includes('/') 
-        ? getPathMatch(argPart.slice(0, argPart.lastIndexOf('/'))) 
+      const parentMatch = pathPart.includes('/')
+        ? getPathMatch(pathPart.slice(0, pathPart.lastIndexOf('/')))
         : getPathMatch(currentPath);
       
       if (parentMatch && parentMatch.entry.type === 'dir') {
-        const partial = argPart.includes('/') 
-          ? argPart.slice(argPart.lastIndexOf('/') + 1) 
-          : argPart;
+        const partial = pathPart.includes('/')
+          ? pathPart.slice(pathPart.lastIndexOf('/') + 1)
+          : pathPart;
         const matches = Object.keys(parentMatch.node)
           .filter(name => name.toLowerCase().startsWith(partial.toLowerCase()));
         
         if (matches.length > 1) {
-          const prefix = argPart.includes('/') ? argPart.slice(0, argPart.lastIndexOf('/') + 1) : '';
-          setOutput([...output, { type: 'system', text: matches.map(m => prefix + m).join('  ') }]);
+          const prefix = pathPart.includes('/') ? pathPart.slice(0, pathPart.lastIndexOf('/') + 1) : '';
+          setOutput([...output, { type: 'system', text: matches.map(m => argumentPrefix + prefix + m).join('  ') }]);
         }
       }
       return;
     }
 
-    setInput(`${commandPart} ${completedPath}${afterCursor}`);
+    setInput(`${normalizedCommand} ${argumentPrefix}${completedPath}${afterCursor}`);
   };
 
   useEffect(() => {
