@@ -33,7 +33,7 @@ Production output is `app/dist/`. Preview serves that output locally; it does no
 - Project pages show **About**, **Technologies used**, then **Photo Gallery** when photos exist. Fullscreen content spans the available window width and scrolls to the last photo.
 - Project launchers have continuous idle animation and stronger hover/keyboard-focus reactions. Icons inside project pages retain idle motion without those hover reactions.
 - More Projects is a static folder at rest; hovering or keyboard-focusing it opens the folder and reveals project cards. Document and terminal icons have no looping idle animation.
-- Icon families have explicit dark-mode materials. Reduced-motion preferences disable animated icon movement.
+- The theme toggle stays in the bottom-right corner, beside the dock on mobile. Icon families have explicit dark-mode materials. Reduced-motion preferences disable animated icon movement.
 - The terminal supports file browsing, project information, command history and Tab completion. Shift+Tab moves focus back to the window controls.
 - Project loading has loading, empty and retry states. Missing photos display a fallback. Resume windows include a PDF viewer and download link.
 

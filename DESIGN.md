@@ -78,9 +78,9 @@ The folder has one back tab and one front panel, rounded joins, and no exposed b
 
 ### Responsive layout
 
-Mobile is **768px inclusive** in CSS and JavaScript. It uses a scrollable desktop, bottom dock for terminal/social links, and viewport-filling windows with hidden fullscreen controls.
+Mobile is **768px inclusive** in CSS and JavaScript. It uses a scrollable desktop, bottom dock for terminal/social links with space for the bottom-right theme toggle, and viewport-filling windows with hidden fullscreen controls.
 
-Above that breakpoint, windows remain draggable and the name and school line stay horizontally centered. At up to 1280px wide or up to 800px high, branding sits below the icon rows to avoid overlap. Desktop viewports at most 500px high use a centered header above a scrollable icon area, with the theme control in the header. These layout adjustments are separate from mobile window behavior. Larger desktops keep resumes at the right and the terminal at the lower left.
+Above that breakpoint, windows remain draggable and the name and school line stay horizontally centered. At up to 1280px wide or up to 800px high, branding sits below the icon rows to avoid overlap. Desktop viewports at most 500px high use a centered header above a scrollable icon area, with space beside the icons for the bottom-right theme control. These layout adjustments are separate from mobile window behavior. Larger desktops keep resumes at the right and the terminal at the lower left.
 
 ## Project data
 

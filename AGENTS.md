@@ -30,7 +30,7 @@ This repository is Benjamin Miller's React 19/Vite portfolio: draggable windows,
 
 ## Change guidance
 
-- Preserve open, stack, drag, fullscreen/restore, Back, Close and Escape behavior. Mobile is **768px inclusive**; keep CSS and JS aligned. Keep desktop name/school branding centered; use spacing to avoid icon overlap. Only very short desktop viewports need a centered header above scrollable icons.
+- Preserve open, stack, drag, fullscreen/restore, Back, Close and Escape behavior. Mobile is **768px inclusive**; keep CSS and JS aligned. Keep desktop name/school branding centered; use spacing to avoid icon overlap. Only very short desktop viewports need a centered header above scrollable icons. Keep the theme toggle in the bottom-right corner and clear of the mobile dock.
 - Preserve visible keyboard focus, dialog labels, focus restoration and modal Tab containment. Respect child handlers that prevent Tab's default. Test terminal completion and Shift+Tab when changing focus behavior.
 - Add static modules and registry entries together with icon mappings. Add projects with unique IDs, valid optional fields and matching photo filenames. `MAIN_PROJECT_IDS` selects featured projects; array order does not.
 - The gallery ignores legacy `imageSize` values; use `project-details.css` for layout changes.
