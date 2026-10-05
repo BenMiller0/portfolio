@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './assets/styles.css';
 import ProjectIcon from './components/ProjectIcon';
+import DesktopIcon from './components/DesktopIcon';
 import Window from './components/Window';
 import ProjectWindowContent from './windows/ProjectWindowContent';
 import { calculateRestorePosition, calculateWindowPosition, isMobileViewport } from './constants/windowLayout';
@@ -36,12 +37,10 @@ const createResumeWindowId = (title) => title.replace(/\s+/g, '').toLowerCase();
 const MAIN_PROJECT_IDS = ['project1', 'project3', 'project4'];
 
 const ProjectIconButton = ({ project, onClick }) => {
-  const isVader = project.id === 'project3';
-
   return (
     <button
       type="button"
-      className={`folder project-icon-button project-icon-button-${project.id}${isVader ? ' folder-vader' : ''}`}
+      className={`folder project-icon-button project-icon-button-${project.id}`}
       onClick={onClick}
     >
       <ProjectIcon projectId={project.id} />
@@ -247,7 +246,7 @@ const App = () => {
                   className={`doc-icon text-file-icon text-file-${id}`}
                   onClick={openSystemWindow}
                 >
-                  <div className="text-file-icon-image" />
+                  <DesktopIcon kind={id} />
                   <div className="folder-name" data-mobile-label={win.title}>{win.label}</div>
                 </button>
               );
@@ -263,7 +262,7 @@ const App = () => {
                 terminalDesktopWindow.color
               )}
             >
-              <div className="terminal-icon-image" />
+              <DesktopIcon kind="terminal" />
               <div className="folder-name">Terminal</div>
             </button>
             {socialLinks.map(link => (
@@ -275,7 +274,7 @@ const App = () => {
                 referrerPolicy="no-referrer"
                 className={`doc-icon social-doc-icon social-${link.id}`}
               >
-                <div className={link.iconClassName} />
+                <DesktopIcon kind={link.id} />
                 <div className="folder-name">{link.label}</div>
               </a>
             ))}
@@ -295,13 +294,13 @@ const App = () => {
                 onClick={() => setLoadAttempt(attempt => attempt + 1)}
                 aria-label="Retry loading projects"
               >
-                <div className="text-file-icon-image" />
+                <DesktopIcon kind="status" />
                 <div className="folder-name">projects_error.txt</div>
               </button>
             )}
             {projectStatus === 'empty' && (
               <div className="doc-icon project-state-icon" aria-label="No projects available">
-                <div className="text-file-icon-image" />
+                <DesktopIcon kind="status" />
                 <div className="folder-name">projects_empty.txt</div>
               </div>
             )}
@@ -331,7 +330,7 @@ const App = () => {
                   className="folder"
                   onClick={() => openMoreProjectsWindow()}
                 >
-                  <div className="folder-icon" />
+                  <DesktopIcon kind="projects" />
                   <div className="folder-name">More Projects</div>
                 </button>
               </div>
@@ -350,7 +349,7 @@ const App = () => {
                 className="doc-icon"
                 onClick={openResume}
               >
-                <div className="doc-icon-image" />
+                <DesktopIcon kind={resume.id} />
                 <div className="folder-name" data-mobile-label={resume.title}>{resume.label}</div>
               </button>
             );

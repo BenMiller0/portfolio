@@ -241,29 +241,6 @@ html, body {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.folder-icon {
-  width: 80px;
-  height: 60px;
-  background: var(--folder-color, linear-gradient(145deg, #2196F3, #0d8aee));
-  border-radius: 5px 5px 0 0;
-  position: relative;
-  margin-bottom: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
-}
-
-.folder-icon:after {
-  content: '';
-  position: absolute;
-  width: 30px;
-  height: 5px;
-  background: var(--folder-color, linear-gradient(145deg, #1a82d8, #0d8aee));
-  bottom: -5px;
-  left: 0;
-  border-radius: 0 0 5px 5px;
-  filter: brightness(0.85);
-}
-
 .folder-emoji {
   position: absolute;
   top: 50%;
@@ -272,11 +249,6 @@ html, body {
   font-size: 28px;
   line-height: 1;
   z-index: 1;
-}
-
-.folder:hover .folder-icon {
-  transform: translateY(-3px);
-  box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 .folder-name {
@@ -525,50 +497,6 @@ body.dark-mode .experience-dates {
   color: #b6c2d6;
 }
 
-.photo-gallery {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 10px;
-  align-items: flex-start;
-}
-
-.project-photo {
-  border-radius: 8px;
-  border: 2px solid #9fb0c3;
-  background: #f8fafc;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
-  flex: 0 1 auto;
-  align-self: flex-start;
-  display: block;
-  min-width: 200px;
-  height: auto;
-  max-width: 100%;
-}
-
-.project-photo-small {
-  max-width: 100px;
-}
-
-.project-photo-medium {
-  max-width: 300px;
-}
-
-.project-photo-vader_embedded {
-  max-width: 420px;
-  max-height: 420px;
-  object-fit: contain;
-  object-position: center;
-  border-radius: 8px;
-}
-
-.project-photo-large {
-  max-width: 500px;
-}
-
-.project-photo-xlarge {
-  max-width: 500px;
-}
-
 /* ===== More Projects Window ===== */
 .more-projects-window {
   padding: 10px;
@@ -627,88 +555,6 @@ body.dark-mode .experience-dates {
   max-width: 100px;
   padding: 5px;
   background: transparent;
-}
-
-.doc-icon-image {
-  width: 70px;
-  height: 80px;
-  background-image: url('/icons/doc-icon.png');
-  background-size: cover;
-  background-position: center;
-  border-radius: 5px;
-  margin-bottom: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.text-file-icon-image {
-  width: 70px;
-  height: 80px;
-  background-image: url('/icons/file-text-icon.png');
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  margin-bottom: 5px;
-  filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
-}
-
-.text-file-aboutWindow .text-file-icon-image {
-  filter: sepia(1) saturate(4) hue-rotate(218deg) brightness(0.96) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
-}
-
-.text-file-aboutSiteWindow .text-file-icon-image {
-  filter: sepia(1) saturate(4.2) hue-rotate(300deg) brightness(1.02) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
-}
-
-.text-file-experienceWindow .text-file-icon-image {
-  filter: sepia(1) saturate(5) hue-rotate(318deg) brightness(1.08) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
-}
-
-.github-icon-image {
-  width: 80px;
-  height: 80px;
-  background-image: url('/icons/github.png');
-  background-size: cover;
-  background-position: center;
-  border-radius: 5px;
-  margin-bottom: 5px;
-}
-
-.linkedin-icon-image {
-  width: 80px;
-  height: 80px;
-  background-image: url('/icons/linkedIn.png');
-  background-size: cover;
-  background-position: center;
-  border-radius: 5px;
-  margin-bottom: 5px;
-}
-
-.terminal-icon-image {
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(145deg, #1a1a2e, #0d1117);
-  border: 2px solid #00ff00;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Courier New', monospace;
-  font-size: 32px;
-  color: #00ff00;
-  margin-bottom: 5px;
-  box-shadow: none;
-  position: relative;
-}
-
-.terminal-icon-image::before {
-  content: '>_';
-}
-
-body.dark-mode .terminal-icon-image {
-  background: linear-gradient(145deg, #0d1117, #161b22);
-  border-color: #6ECFF5;
-  color: #6ECFF5;
-  box-shadow: none;
 }
 
 .doc-icon .folder-name {
@@ -887,39 +733,6 @@ body.dark-mode .school-display {
   -webkit-text-fill-color: transparent;
 }
 
-body.dark-mode .folder-icon {
-  background: linear-gradient(145deg, #4a6fa5, #2d4a6f);
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 15px rgba(110, 207, 245, 0.1);
-}
-
-body.dark-mode .folder-icon:after {
-  background: linear-gradient(145deg, #2d4a6f, #1a2f4a);
-}
-
-body.dark-mode .folder-aboutWindow .folder-icon {
-  background: #2d5a2d !important;
-}
-
-body.dark-mode .folder-aboutWindow .folder-icon:after {
-  background: #1a3d1a !important;
-}
-
-body.dark-mode .folder-experienceWindow .folder-icon {
-  background: #cc6600 !important;
-}
-
-body.dark-mode .folder-experienceWindow .folder-icon:after {
-  background: #994d00 !important;
-}
-
-body.dark-mode .folder-aboutSiteWindow .folder-icon {
-  background: #4a4a4a !important;
-}
-
-body.dark-mode .folder-aboutSiteWindow .folder-icon:after {
-  background: #2a2a2a !important;
-}
-
 body.dark-mode .folder:hover {
   background-color: rgba(110, 207, 245, 0.15);
 }
@@ -1008,15 +821,6 @@ body.dark-mode .more-projects-grid .folder-name {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
-body.dark-mode .more-projects-grid .folder-icon {
-  background: linear-gradient(145deg, #4a6fa5, #2d4a6f);
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 15px rgba(110, 207, 245, 0.1);
-}
-
-body.dark-mode .more-projects-grid .folder-icon:after {
-  background: linear-gradient(145deg, #2d4a6f, #1a2f4a);
-}
-
 body.dark-mode .window.fullscreen {
   position: fixed !important;
   width: 100vw !important;
@@ -1029,37 +833,6 @@ body.dark-mode .window.fullscreen {
   background: #141a32;
   border: none;
   z-index: 3000 !important;
-}
-
-body.dark-mode .github-icon-image {
-  filter: grayscale(100%) brightness(1.5);
-  transition: filter 0.3s ease;
-}
-
-body.dark-mode .linkedin-icon-image {
-  filter: brightness(0.7);
-  transition: filter 0.3s ease;
-}
-
-body.dark-mode .doc-icon-image {
-  filter: brightness(0.8);
-  transition: filter 0.3s ease;
-}
-
-body.dark-mode .text-file-icon-image {
-  transition: filter 0.3s ease;
-}
-
-body.dark-mode .text-file-aboutWindow .text-file-icon-image {
-  filter: sepia(1) saturate(2.5) hue-rotate(218deg) brightness(0.68) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.45));
-}
-
-body.dark-mode .text-file-aboutSiteWindow .text-file-icon-image {
-  filter: sepia(1) saturate(2.8) hue-rotate(300deg) brightness(0.72) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.45));
-}
-
-body.dark-mode .text-file-experienceWindow .text-file-icon-image {
-  filter: sepia(1) saturate(3.2) hue-rotate(318deg) brightness(0.74) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.45));
 }
 
 /* ===== Mobile-Specific Styles ===== */
@@ -1179,15 +952,6 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
     justify-content: flex-start;
   }
 
-  .folder-icon {
-    width: 64px;
-    height: 48px;
-  }
-
-  .folder-icon:after {
-    width: 25px;
-  }
-
   .folder-name {
     font-size: 12px;
     line-height: 1.22;
@@ -1212,23 +976,6 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
   .doc-icon {
     width: 100%;
     max-width: 112px;
-  }
-
-  .doc-icon-image,
-  .text-file-icon-image {
-    width: 52px;
-    height: 60px;
-  }
-
-  .github-icon-image, .linkedin-icon-image {
-    width: 56px;
-    height: 56px;
-  }
-
-  .terminal-icon-image {
-    width: 66px;
-    height: 66px;
-    font-size: 28px;
   }
 
   .terminal-doc-icon {
@@ -1344,23 +1091,6 @@ body.dark-mode .text-file-experienceWindow .text-file-icon-image {
   }
 
   /* Photo gallery */
-  .photo-gallery {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .project-photo {
-    min-width: unset;
-    width: 100%;
-    max-width: 100% !important;
-  }
-
-  .project-photo-small,
-  .project-photo-medium,
-  .project-photo-large,
-  .project-photo-xlarge {
-    max-width: 100% !important;
-  }
 
   /* Dark mode toggle */
   .dark-mode-toggle {
@@ -1692,14 +1422,6 @@ body.dark-mode input.terminal-input {
   caret-color: #ffffff;
 }
 
-body.dark-mode .folder-terminalWindow .folder-icon {
-  background: #2a2a2a !important;
-}
-
-body.dark-mode .folder-terminalWindow .folder-icon:after {
-  background: #1a1a1a !important;
-}
-
 @media (max-width: 768px) {
   .terminal {
     font-size: 13px;
@@ -1827,58 +1549,6 @@ body.dark-mode .folder-terminalWindow .folder-icon:after {
   background: rgba(255, 255, 255, 0.22);
 }
 
-.folder-icon,
-.doc-icon-image,
-.text-file-icon-image,
-.github-icon-image,
-.linkedin-icon-image,
-.terminal-icon-image {
-  transition:
-    transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    filter 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.folder-icon {
-  height: 55px;
-  margin-top: 7px;
-  overflow: visible;
-  border-radius: 5px 7px 8px 8px;
-  background: linear-gradient(145deg, #269ff2, #0877ca);
-  box-shadow:
-    0 7px 14px rgba(0, 30, 62, 0.24),
-    inset 0 1px rgba(255, 255, 255, 0.22);
-}
-
-.folder-icon::before {
-  content: "";
-  position: absolute;
-  top: -7px;
-  left: 0;
-  width: 33px;
-  height: 11px;
-  border-radius: 5px 5px 0 0;
-  background: #269ff2;
-}
-
-.folder-icon::after {
-  inset: 7px 0 0;
-  width: auto;
-  height: auto;
-  border-radius: 4px 7px 8px 8px;
-  background: linear-gradient(155deg, #2ba9ff, #0b87df);
-  filter: none;
-}
-
-.folder:hover .folder-icon,
-.doc-icon:hover .doc-icon-image,
-.doc-icon:hover .text-file-icon-image,
-.doc-icon:hover .github-icon-image,
-.doc-icon:hover .linkedin-icon-image,
-.doc-icon:hover .terminal-icon-image {
-  transform: translateY(-3px) scale(1.025);
-}
-
 .folder-name {
   line-height: 1.25;
 }
@@ -1894,14 +1564,6 @@ body.dark-mode .folder-terminalWindow .folder-icon:after {
 
 @keyframes desktop-icon-loading {
   to { opacity: 0.22; }
-}
-
-.project-state-icon .text-file-icon-image {
-  filter: grayscale(0.25);
-}
-
-.project-error-icon .text-file-icon-image {
-  filter: sepia(1) saturate(4) hue-rotate(315deg) brightness(0.85);
 }
 
 .window {
@@ -1981,102 +1643,6 @@ body.dark-mode .folder-terminalWindow .folder-icon:after {
 .window-content {
   overscroll-behavior: contain;
   scrollbar-color: #9fb0c3 transparent;
-}
-
-.project-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  margin: 18px 0 6px;
-}
-
-.project-action-link {
-  display: inline-flex;
-  min-height: 40px;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 15px;
-  border: 1px solid #9fb0c3;
-  border-radius: 7px;
-  color: #1f5f8b !important;
-  background: #f5f9fc;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition:
-    transform 150ms ease,
-    border-color 150ms ease,
-    background-color 150ms ease;
-}
-
-.project-action-link:hover {
-  border-color: #3498db;
-  background: #eaf5fc;
-  transform: translateY(-1px);
-}
-
-.project-action-primary {
-  border-color: #1681bd;
-  color: #fff !important;
-  background: #1681bd;
-}
-
-.project-action-primary:hover {
-  color: #fff !important;
-  background: #0d6fa8;
-}
-
-.project-photo-fallback {
-  display: grid;
-  min-width: 200px;
-  min-height: 160px;
-  place-items: center;
-  border: 2px dashed #9fb0c3;
-  border-radius: 8px;
-  color: #64748b;
-  background: #f8fafc;
-  font-size: 14px;
-}
-
-body.dark-mode .project-action-link {
-  border-color: #536783;
-  color: #cfeeff !important;
-  background: #24314d;
-}
-
-body.dark-mode .project-action-primary {
-  border-color: #249cda;
-  color: #fff !important;
-  background: #197fb6;
-}
-
-body.dark-mode .project-photo-fallback {
-  border-color: #536783;
-  color: #b6c2d6;
-  background: #1a2238;
-}
-
-body.dark-mode .project-photo {
-  border-color: #465a77;
-  background: #0b1324;
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, 0.42),
-    0 0 0 1px rgba(110, 207, 245, 0.05);
-}
-
-body.dark-mode .folder-icon {
-  background: linear-gradient(145deg, #365f8b, #1b3655);
-  box-shadow:
-    0 7px 16px rgba(0, 0, 0, 0.38),
-    inset 0 1px rgba(255, 255, 255, 0.14);
-}
-
-body.dark-mode .folder-icon::before {
-  background: #365f8b;
-}
-
-body.dark-mode .folder-icon::after {
-  background: linear-gradient(155deg, #416f9f, #244565);
 }
 
 body.dark-mode .desktop-background {
@@ -2242,55 +1808,6 @@ body.dark-mode .window {
     border-radius: 12px;
   }
 
-  .folder-icon {
-    width: 68px;
-    height: 52px;
-    margin: 7px 0 10px;
-    overflow: visible;
-    border: 0;
-    border-radius: 5px 7px 8px 8px;
-    background: linear-gradient(145deg, #269ff2, #0877ca);
-    box-shadow:
-      0 7px 16px rgba(4, 25, 46, 0.3),
-      inset 0 1px rgba(255, 255, 255, 0.24);
-    backdrop-filter: none;
-  }
-
-  .folder-icon::before {
-    inset: auto;
-    top: -7px;
-    left: 0;
-    width: 29px;
-    height: 11px;
-    border-radius: 5px 5px 0 0;
-    background: #269ff2;
-  }
-
-  .folder-icon::after {
-    display: block;
-    inset: 6px 0 0;
-    width: auto;
-    height: auto;
-    border-radius: 4px 7px 8px 8px;
-    background: linear-gradient(155deg, #35afff, #0b87df);
-    filter: none;
-  }
-
-  body.dark-mode .folder-icon {
-    background: linear-gradient(145deg, #3d75b2, #225588);
-    box-shadow:
-      0 7px 16px rgba(0, 0, 0, 0.34),
-      inset 0 1px rgba(255, 255, 255, 0.18);
-  }
-
-  body.dark-mode .folder-icon::before {
-    background: #3d75b2;
-  }
-
-  body.dark-mode .folder-icon::after {
-    background: linear-gradient(155deg, #4c87c6, #285f98);
-  }
-
   .folder-name,
   .doc-icon .folder-name {
     display: -webkit-box;
@@ -2313,23 +1830,6 @@ body.dark-mode .window {
   .folder-name[data-mobile-label]::after {
     content: attr(data-mobile-label);
     font-size: 11px;
-  }
-
-  .text-file-icon-image,
-  .doc-icon-image {
-    width: 64px;
-    height: 64px;
-    margin-bottom: 7px;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 16px;
-    background-color: rgba(241, 245, 249, 0.92);
-    background-size: auto 48px;
-    background-repeat: no-repeat;
-    box-shadow: 0 7px 18px rgba(4, 25, 46, 0.24);
-  }
-
-  .doc-icon-image {
-    background-size: auto 53px;
   }
 
   .folder:hover,
@@ -2390,21 +1890,6 @@ body.dark-mode .window {
 
   .system-icons > .social-linkedin {
     left: calc(50% + 36px);
-  }
-
-  .github-icon-image,
-  .linkedin-icon-image,
-  .terminal-icon-image {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 4px;
-    border-radius: 15px;
-    box-shadow: 0 6px 16px rgba(3, 20, 35, 0.28);
-  }
-
-  .terminal-icon-image {
-    border-width: 1px;
-    font-size: 24px;
   }
 
   .window {
@@ -2527,23 +2012,6 @@ body.dark-mode .window {
     display: none;
   }
 
-  .photo-gallery {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .project-actions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .project-photo {
-    width: 100%;
-    min-width: 0;
-    max-height: 52vh;
-    object-fit: contain;
-  }
-
   .resume-viewer {
     min-height: 0;
   }
@@ -2593,300 +2061,6 @@ body.dark-mode .window {
   }
 }
 
-/* ===== Darth Vader project folder ===== */
-.folder-icon-vader {
-  isolation: isolate;
-  color: #080a0d;
-  transition:
-    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    background 260ms ease,
-    border-radius 260ms ease,
-    box-shadow 260ms ease;
-}
-
-.folder-icon-vader::before,
-.folder-icon-vader::after {
-  transition:
-    inset 260ms ease,
-    width 260ms ease,
-    height 260ms ease,
-    border-radius 260ms ease,
-    background 260ms ease,
-    clip-path 260ms ease,
-    opacity 200ms ease;
-}
-
-.vader-figure {
-  position: absolute;
-  z-index: 4;
-  right: -1px;
-  bottom: -4px;
-  width: 82px;
-  height: 64px;
-  overflow: visible;
-  opacity: 0;
-  pointer-events: none;
-  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.72));
-  transform: translateY(10px) scale(0.72);
-  transform-origin: 50% 100%;
-  transition:
-    opacity 150ms ease,
-    transform 300ms cubic-bezier(0.16, 0.9, 0.25, 1.18);
-}
-
-.vader-cape {
-  fill: #030405;
-  stroke: #323840;
-  stroke-width: 1;
-}
-
-.vader-cape-fold {
-  fill: #111419;
-  opacity: 0.9;
-}
-
-.vader-helmet-shell {
-  fill: #020304;
-  stroke: #656d77;
-  stroke-width: 1;
-  stroke-linejoin: round;
-}
-
-.vader-dome {
-  fill: #15191e;
-  stroke: #6c7580;
-  stroke-width: 0.8;
-}
-
-.vader-face {
-  fill: #101318;
-  stroke: #515a65;
-  stroke-width: 0.8;
-  stroke-linejoin: round;
-}
-
-.vader-cheek {
-  fill: #252b32;
-  stroke: #737d88;
-  stroke-width: 0.55;
-}
-
-.vader-brow {
-  fill: #080a0c;
-  stroke: #8d98a5;
-  stroke-width: 0.65;
-  stroke-linejoin: round;
-}
-
-.vader-eye {
-  fill: #07090b;
-  stroke: #a3adb7;
-  stroke-width: 0.65;
-  stroke-linejoin: round;
-}
-
-.vader-nose {
-  fill: #1d2228;
-  stroke: #7b858f;
-  stroke-width: 0.65;
-  stroke-linejoin: round;
-}
-
-.vader-respirator {
-  fill: #090b0e;
-  stroke: #818b96;
-  stroke-width: 0.75;
-  stroke-linejoin: round;
-}
-
-.vader-grille {
-  fill: none;
-  stroke: #89939e;
-  stroke-width: 0.65;
-  stroke-linecap: round;
-}
-
-.vader-helmet-highlight {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.55);
-  stroke-width: 1.2;
-  stroke-linecap: round;
-  opacity: 0.5;
-}
-
-.vader-armor {
-  fill: #0b0d10;
-  stroke: #353c45;
-  stroke-width: 0.8;
-  stroke-linejoin: round;
-}
-
-.vader-armor-line {
-  fill: none;
-  stroke: #343b44;
-  stroke-width: 0.8;
-}
-
-.vader-chest-box > path:first-child {
-  fill: #090b0d;
-  stroke: #8a949e;
-  stroke-width: 0.75;
-  stroke-linejoin: round;
-}
-
-.vader-panel-edge {
-  fill: #12161a;
-  stroke: #414a54;
-  stroke-width: 0.55;
-}
-
-.vader-panel-bars {
-  fill: none;
-  stroke: #9ca6b0;
-  stroke-width: 0.55;
-}
-
-.vader-switch-red { fill: #ed3038; color: #ff3c44; }
-.vader-switch-blue { fill: #37c8ff; color: #37c8ff; }
-.vader-switch-amber { fill: #ffd43b; color: #ffd43b; }
-.vader-switch-white { fill: #e7f4ff; color: #e7f4ff; }
-
-.vader-belt-strap {
-  fill: #07090b;
-  stroke: #4a525c;
-  stroke-width: 0.6;
-}
-
-.vader-belt-box {
-  fill: #11151a;
-  stroke: #9099a3;
-  stroke-width: 0.7;
-}
-
-.vader-buckle {
-  fill: #1d2228;
-  stroke: #a2abb4;
-  stroke-width: 0.7;
-}
-
-.vader-buckle-detail {
-  fill: #06080a;
-  stroke: #626c76;
-  stroke-width: 0.5;
-}
-
-.vader-belt-light-red { fill: #ff3038; color: #ff3038; }
-.vader-belt-light-green { fill: #52e36c; color: #52e36c; }
-.vader-belt-light-blue { fill: #2ecbff; color: #2ecbff; }
-.vader-belt-light-amber { fill: #ffd43b; color: #ffd43b; }
-
-.folder-vader:hover .folder-icon-vader,
-.folder-vader:focus-visible .folder-icon-vader {
-  border-radius: 16px 16px 7px 7px;
-  background: linear-gradient(145deg, #15191e, #020304 72%);
-  box-shadow:
-    0 9px 17px rgba(0, 0, 0, 0.5),
-    0 0 14px rgba(190, 27, 34, 0.16),
-    inset 0 1px rgba(255, 255, 255, 0.14);
-}
-
-.folder-vader:hover .folder-icon-vader::before,
-.folder-vader:focus-visible .folder-icon-vader::before {
-  top: 25px;
-  left: 1px;
-  width: 78px;
-  height: 30px;
-  border-radius: 18px 18px 5px 5px;
-  background: linear-gradient(105deg, #030405, #1a1e23 50%, #030405);
-  clip-path: polygon(8% 28%, 36% 0, 64% 0, 92% 28%, 100% 100%, 0 100%);
-}
-
-.folder-vader:hover .folder-icon-vader::after,
-.folder-vader:focus-visible .folder-icon-vader::after {
-  inset: 7px 6px 3px;
-  border-radius: 15px 15px 5px 5px;
-  background: linear-gradient(145deg, #272d34, #050607 68%);
-  opacity: 0.72;
-}
-
-.folder-vader:hover .vader-figure,
-.folder-vader:focus-visible .vader-figure {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.folder-vader:hover .vader-switch,
-.folder-vader:focus-visible .vader-switch {
-  animation: vader-console-blink 760ms steps(2, end) infinite;
-}
-
-.folder-vader:hover .vader-switch-blue,
-.folder-vader:focus-visible .vader-switch-blue { animation-delay: 190ms; }
-.folder-vader:hover .vader-switch-amber,
-.folder-vader:focus-visible .vader-switch-amber { animation-delay: 380ms; }
-.folder-vader:hover .vader-switch-white,
-.folder-vader:focus-visible .vader-switch-white { animation-delay: 570ms; }
-
-.folder-vader:hover .vader-belt-light,
-.folder-vader:focus-visible .vader-belt-light {
-  animation: vader-console-blink 1.1s steps(2, end) infinite;
-}
-
-.folder-vader:hover .vader-belt-light-green,
-.folder-vader:focus-visible .vader-belt-light-green { animation-delay: 220ms; }
-.folder-vader:hover .vader-belt-light-blue,
-.folder-vader:focus-visible .vader-belt-light-blue { animation-delay: 440ms; }
-.folder-vader:hover .vader-belt-light-amber,
-.folder-vader:focus-visible .vader-belt-light-amber { animation-delay: 660ms; }
-
-.folder-vader:hover .vader-helmet-highlight,
-.folder-vader:focus-visible .vader-helmet-highlight {
-  animation: vader-helmet-gleam 2.4s ease-in-out infinite;
-}
-
-@keyframes vader-console-blink {
-  0%, 42% { filter: brightness(0.55) drop-shadow(0 0 0 transparent); }
-  43%, 100% { filter: brightness(1.5) drop-shadow(0 0 2px currentColor); }
-}
-
-@keyframes vader-helmet-gleam {
-  0%, 25%, 100% { opacity: 0.28; }
-  45%, 62% { opacity: 0.78; }
-}
-
-@media (max-width: 768px) {
-  .folder-vader:active .folder-icon-vader {
-    border-radius: 13px 13px 7px 7px;
-    background: linear-gradient(145deg, #15191e, #020304 72%);
-  }
-
-  .folder-vader:hover .folder-icon-vader::before,
-  .folder-vader:focus-visible .folder-icon-vader::before {
-    width: 66px;
-  }
-
-  .vader-figure {
-    right: -1px;
-    width: 70px;
-    height: 57px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .folder-icon-vader,
-  .folder-icon-vader::before,
-  .folder-icon-vader::after,
-  .vader-figure {
-    transition: none !important;
-  }
-
-  .folder-vader .vader-switch,
-  .folder-vader .vader-belt-light,
-  .folder-vader .vader-helmet-highlight {
-    animation: none !important;
-  }
-}
-
 /* ===== Animated project icons ===== */
 .project-icon-button {
   --project-glow: rgba(77, 195, 255, 0.46);
@@ -2925,7 +2099,7 @@ body.dark-mode .window {
 
 .project-icon-button:hover .project-visual,
 .project-icon-button:focus-visible .project-visual {
-  transform: translateY(-5px) scale(1.09);
+  transform: translateY(-7px) scale(1.15);
   filter:
     brightness(1.1)
     saturate(1.16)
@@ -2938,296 +2112,6 @@ body.dark-mode .window {
   border-radius: 18px;
   background: linear-gradient(135deg, rgba(55, 157, 218, 0.7), rgba(22, 88, 139, 0.7));
 }
-
-/* Taro animatronic bird */
-.project-icon-button-project1 { --project-glow: rgba(235, 170, 50, 0.52); }
-.taro-body { fill: #454957; stroke: #686e7d; stroke-width: 1.5; }
-.taro-wing { fill: #343845; stroke: #707685; stroke-width: 1.2; transform-origin: 18px 51px; }
-.taro-wing-feathers { fill: none; stroke: #777d8b; stroke-width: 1.5; stroke-linecap: round; }
-.taro-neck-ring { fill: #59606d; stroke: #9299a6; stroke-width: 1.2; }
-.taro-head { fill: #545361; stroke: #7c7b89; stroke-width: 1.5; }
-.taro-face-patch { fill: #75697c; opacity: 0.88; }
-.taro-crest { fill: none; stroke: #d2a442; stroke-width: 4; stroke-linecap: round; transform-origin: 26px 7px; }
-.taro-eye-white { fill: #fffdf5; stroke: #ddd8c9; stroke-width: 1; }
-.taro-eye-unit { transform-box: fill-box; transform-origin: center; }
-.taro-eye { fill: #242631; stroke: #595c69; stroke-width: 1; }
-.taro-eye-glint { fill: #fff; }
-.taro-beak-upper,
-.taro-beak-lower { transform-origin: 46px 32px; }
-.taro-beak-gold { fill: #d4a43a; stroke: #896523; stroke-width: 1.2; stroke-linejoin: round; }
-.taro-beak-sheen { fill: #d98a79; opacity: 0.72; }
-.taro-beak-tip { fill: #45434a; stroke: #27262b; stroke-width: 0.8; }
-.taro-mouth { fill: #5d3540; }
-.project-icon-button-project1:hover .taro-beak-lower,
-.project-icon-button-project1:focus-visible .taro-beak-lower {
-  animation: taro-talk 520ms cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.project-icon-button-project1:hover .taro-eye-unit,
-.project-icon-button-project1:focus-visible .taro-eye-unit {
-  animation: taro-blink 2.4s steps(1, end) infinite;
-}
-
-.project-icon-button-project1:hover .taro-crest,
-.project-icon-button-project1:focus-visible .taro-crest {
-  animation: taro-crest-bob 900ms ease-in-out infinite alternate;
-}
-
-.project-icon-button-project1:hover .taro-wing,
-.project-icon-button-project1:focus-visible .taro-wing {
-  animation: taro-wing-flutter 720ms ease-in-out infinite alternate;
-}
-
-@keyframes taro-talk {
-  0%, 35%, 100% { transform: rotate(0); }
-  55%, 82% { transform: rotate(10deg); }
-}
-
-@keyframes taro-blink {
-  0%, 46%, 52%, 100% { transform: scaleY(1); }
-  48%, 50% { transform: scaleY(0.08); }
-}
-
-@keyframes taro-crest-bob {
-  to { transform: rotate(-8deg) translateY(-1px); }
-}
-
-@keyframes taro-wing-flutter {
-  to { transform: rotate(-5deg) translateY(-2px); }
-}
-
-/* Remote verification monitor */
-.project-icon-button-project2 { --project-glow: rgba(48, 214, 255, 0.52); }
-.verify-monitor { fill: #26394b; stroke: #8aa1b5; stroke-width: 2; }
-.verify-screen { fill: #071924; stroke: #32c6f0; stroke-width: 1; }
-.verify-board { fill: #175f5c; stroke: #47e0bc; stroke-width: 1.2; }
-.verify-circuit { fill: none; stroke: #9bffe4; stroke-width: 1.1; }
-.verify-camera { fill: #26313c; stroke: #96a8b7; stroke-width: 1.3; }
-.verify-lens { fill: #0b3044; stroke: #39cfff; stroke-width: 1.4; }
-.verify-scan { fill: none; stroke: #56f6ff; stroke-width: 1.4; opacity: 0.7; }
-.verify-status { fill: #52e36c; }
-.verify-status-two { fill: #ffcc45; }
-.verify-stand { fill: #60788c; stroke: #26394b; stroke-width: 1.2; }
-
-.project-icon-button-project2:hover .verify-scan,
-.project-icon-button-project2:focus-visible .verify-scan {
-  animation: verify-scan 1.15s ease-in-out infinite alternate;
-}
-
-.project-icon-button-project2:hover .verify-status,
-.project-icon-button-project2:focus-visible .verify-status {
-  animation: project-led 650ms steps(2, end) infinite;
-}
-
-.project-icon-button-project2:hover .verify-status-two,
-.project-icon-button-project2:focus-visible .verify-status-two { animation-delay: 320ms; }
-
-@keyframes verify-scan {
-  from { transform: translateY(0); opacity: 0.35; }
-  to { transform: translateY(27px); opacity: 1; }
-}
-
-/* Vader stays visible as an icon; hover wakes the suit controls. */
-.project-icon-button-project3 { --project-glow: rgba(255, 38, 48, 0.4); }
-.project-visual-vader,
-.folder-vader:hover .project-visual-vader,
-.folder-vader:focus-visible .project-visual-vader {
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.project-visual-vader .vader-figure {
-  right: -1px;
-  bottom: 0;
-  width: 82px;
-  height: 64px;
-  opacity: 0.93;
-  transform: translateY(1px) scale(0.94);
-}
-
-.folder-vader:hover .project-visual-vader .vader-figure,
-.folder-vader:focus-visible .project-visual-vader .vader-figure {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-/* Computer-vision spell casting */
-.project-icon-button-project4 { --project-glow: rgba(198, 112, 255, 0.62); }
-.spell-orb { fill: rgba(72, 27, 113, 0.84); stroke: #c889ff; stroke-width: 1.5; }
-.spell-wand { transform-origin: 22px 51px; }
-.spell-wand-body { fill: none; stroke: #d8b681; stroke-width: 5; stroke-linecap: round; }
-.spell-wand-handle { fill: none; stroke: #61442e; stroke-width: 7; stroke-linecap: round; }
-.spell-star { fill: #fff5a5; stroke: #fff; stroke-width: 0.8; transform-box: fill-box; transform-origin: center; }
-.spell-star-small-one { fill: #80f4ff; }
-.spell-star-small-two { fill: #d9a3ff; }
-.spell-trail { fill: none; stroke: #eab6ff; stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 3 4; opacity: 0.55; }
-
-.project-icon-button-project4:hover .spell-wand,
-.project-icon-button-project4:focus-visible .spell-wand {
-  animation: wand-cast 1.25s ease-in-out infinite;
-}
-
-.project-icon-button-project4:hover .spell-star,
-.project-icon-button-project4:focus-visible .spell-star {
-  animation: spell-pop 900ms ease-in-out infinite alternate;
-}
-
-.project-icon-button-project4:hover .spell-star-small-one,
-.project-icon-button-project4:focus-visible .spell-star-small-one { animation-delay: 180ms; }
-.project-icon-button-project4:hover .spell-star-small-two,
-.project-icon-button-project4:focus-visible .spell-star-small-two { animation-delay: 360ms; }
-.project-icon-button-project4:hover .spell-trail,
-.project-icon-button-project4:focus-visible .spell-trail { animation: spell-trail 900ms linear infinite; }
-
-@keyframes wand-cast {
-  0%, 100% { transform: rotate(-5deg); }
-  50% { transform: rotate(12deg); }
-}
-
-@keyframes spell-pop {
-  to { transform: scale(1.35) rotate(22deg); filter: drop-shadow(0 0 4px currentColor); }
-}
-
-@keyframes spell-trail {
-  to { stroke-dashoffset: -14; }
-}
-
-/* Theme-park prediction chart */
-.project-icon-button-project5 { --project-glow: rgba(255, 112, 119, 0.52); }
-.ml-frame { fill: #172d42; stroke: #6fb6e8; stroke-width: 1.5; }
-.ml-grid { fill: none; stroke: #6b8aa0; stroke-width: 0.6; opacity: 0.5; }
-.ml-bar { fill: #2c82b9; transform-box: fill-box; transform-origin: bottom; }
-.ml-bar-two { fill: #37a7cc; }
-.ml-bar-three { fill: #53c5c3; }
-.ml-bar-four { fill: #ffb14a; }
-.ml-trend { fill: none; stroke: #ff6972; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; }
-.ml-point { fill: #fff; stroke: #ff6972; stroke-width: 1.5; }
-
-.project-icon-button-project5:hover .ml-bar,
-.project-icon-button-project5:focus-visible .ml-bar { animation: chart-grow 900ms ease-in-out infinite alternate; }
-.project-icon-button-project5:hover .ml-bar-two,
-.project-icon-button-project5:focus-visible .ml-bar-two { animation-delay: 120ms; }
-.project-icon-button-project5:hover .ml-bar-three,
-.project-icon-button-project5:focus-visible .ml-bar-three { animation-delay: 240ms; }
-.project-icon-button-project5:hover .ml-bar-four,
-.project-icon-button-project5:focus-visible .ml-bar-four { animation-delay: 360ms; }
-.project-icon-button-project5:hover .ml-trend,
-.project-icon-button-project5:focus-visible .ml-trend { animation: chart-draw 1.25s ease-in-out infinite; }
-
-@keyframes chart-grow {
-  from { transform: scaleY(0.35); opacity: 0.55; }
-  to { transform: scaleY(1); opacity: 1; }
-}
-
-@keyframes chart-draw {
-  from { stroke-dashoffset: 60; }
-  55%, 100% { stroke-dashoffset: 0; }
-}
-
-/* Campus events calendar */
-.project-icon-button-project6 { --project-glow: rgba(255, 104, 149, 0.5); }
-.events-page { fill: #f7f9fc; stroke: #62798e; stroke-width: 1.5; }
-.events-page-back { fill: #98b4c9; opacity: 0.7; transform-origin: 41px 58px; }
-.events-header { fill: none; stroke: #ff688f; stroke-width: 8; }
-.events-ring { fill: none; stroke: #43596b; stroke-width: 3; stroke-linecap: round; }
-.events-day { fill: #b8c9d6; }
-.events-day-active { fill: #ff688f; }
-.events-check { fill: none; stroke: #2fc981; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.events-alert { fill: #ffb43f; stroke: #fff0c1; stroke-width: 1; transform-box: fill-box; transform-origin: center; }
-.events-alert-mark { fill: none; stroke: #54370d; stroke-width: 1.7; stroke-linecap: round; }
-
-.project-icon-button-project6:hover .events-page-back,
-.project-icon-button-project6:focus-visible .events-page-back { animation: calendar-page 1.2s ease-in-out infinite; }
-.project-icon-button-project6:hover .events-alert,
-.project-icon-button-project6:focus-visible .events-alert { animation: event-bounce 700ms ease-in-out infinite alternate; }
-.project-icon-button-project6:hover .events-day-active,
-.project-icon-button-project6:focus-visible .events-day-active { animation: project-led 700ms ease-in-out infinite alternate; }
-
-@keyframes calendar-page {
-  50% { transform: translate(3px, -3px) rotate(4deg); }
-}
-
-@keyframes event-bounce {
-  to { transform: translateY(-3px) scale(1.08); }
-}
-
-/* Multithreaded file compressor */
-.project-icon-button-project7 { --project-glow: rgba(255, 196, 71, 0.5); }
-.compress-file { transform-box: fill-box; transform-origin: center; }
-.compress-file > path:first-child { fill: #d7e6ef; stroke: #536d7d; stroke-width: 1.5; stroke-linejoin: round; }
-.compress-file > path:nth-child(2) { fill: none; stroke: #7891a2; stroke-width: 1.2; }
-.compress-lines { fill: none; stroke: #5d7a8d; stroke-width: 1.5; stroke-linecap: round; }
-.compress-arrow { fill: none; stroke: #ffc447; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
-.compress-zip { fill: none; stroke: #ff9f35; stroke-width: 2; stroke-linejoin: round; }
-
-.project-icon-button-project7:hover .compress-file-left,
-.project-icon-button-project7:focus-visible .compress-file-left { animation: compress-left 1.1s ease-in-out infinite alternate; }
-.project-icon-button-project7:hover .compress-file-right,
-.project-icon-button-project7:focus-visible .compress-file-right { animation: compress-right 1.1s ease-in-out infinite alternate; }
-.project-icon-button-project7:hover .compress-arrow,
-.project-icon-button-project7:focus-visible .compress-arrow { animation: compress-arrow 1.1s ease-in-out infinite; }
-.project-icon-button-project7:hover .compress-zip,
-.project-icon-button-project7:focus-visible .compress-zip { animation: project-led 550ms steps(2, end) infinite; }
-
-@keyframes compress-left {
-  to { transform: translateX(9px) scaleX(0.78); }
-}
-
-@keyframes compress-right {
-  to { transform: translateX(-9px) scaleX(0.78); }
-}
-
-@keyframes compress-arrow {
-  0% { opacity: 0; }
-  40%, 80% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@keyframes project-led {
-  50% { opacity: 0.35; filter: brightness(0.65); }
-}
-
-/* Project scenes remain alive at rest; hover increases their energy. */
-.project-icon-button-project1 .taro-beak-lower { animation: taro-talk 3.8s ease-in-out infinite; }
-.project-icon-button-project1 .taro-eye-unit { animation: taro-blink 5.8s steps(1, end) infinite; }
-.project-icon-button-project1 .taro-crest { animation: taro-crest-bob 3.4s ease-in-out infinite alternate; }
-.project-icon-button-project1 .taro-wing { animation: taro-wing-flutter 3s ease-in-out infinite alternate; }
-
-.project-icon-button-project2 .verify-scan { animation: verify-scan 3.8s ease-in-out infinite alternate; }
-.project-icon-button-project2 .verify-status { animation: project-led 2.6s steps(2, end) infinite; }
-.project-icon-button-project2 .verify-status-two { animation-delay: 1.3s; }
-
-.project-icon-button-project3 .vader-switch { animation: vader-console-blink 2.8s steps(2, end) infinite; }
-.project-icon-button-project3 .vader-switch-blue { animation-delay: 500ms; }
-.project-icon-button-project3 .vader-switch-amber { animation-delay: 1s; }
-.project-icon-button-project3 .vader-switch-white { animation-delay: 1.5s; }
-.project-icon-button-project3 .vader-belt-light { animation: vader-console-blink 3.5s steps(2, end) infinite; }
-.project-icon-button-project3 .vader-belt-light-green { animation-delay: 650ms; }
-.project-icon-button-project3 .vader-belt-light-blue { animation-delay: 1.3s; }
-.project-icon-button-project3 .vader-belt-light-amber { animation-delay: 1.95s; }
-.project-icon-button-project3 .vader-helmet-highlight { animation: vader-helmet-gleam 5.5s ease-in-out infinite; }
-
-.project-icon-button-project4 .spell-wand { animation: wand-cast 4.6s ease-in-out infinite; }
-.project-icon-button-project4 .spell-star { animation: spell-pop 3.4s ease-in-out infinite alternate; }
-.project-icon-button-project4 .spell-star-small-one { animation-delay: 600ms; }
-.project-icon-button-project4 .spell-star-small-two { animation-delay: 1.2s; }
-.project-icon-button-project4 .spell-trail { animation: spell-trail 3s linear infinite; }
-
-.project-icon-button-project5 .ml-bar { animation: chart-grow 3.6s ease-in-out infinite alternate; }
-.project-icon-button-project5 .ml-bar-two { animation-delay: 360ms; }
-.project-icon-button-project5 .ml-bar-three { animation-delay: 720ms; }
-.project-icon-button-project5 .ml-bar-four { animation-delay: 1.08s; }
-.project-icon-button-project5 .ml-trend { animation: chart-draw 4.4s ease-in-out infinite; }
-
-.project-icon-button-project6 .events-page-back { animation: calendar-page 4.2s ease-in-out infinite; }
-.project-icon-button-project6 .events-alert { animation: event-bounce 2.8s ease-in-out infinite alternate; }
-.project-icon-button-project6 .events-day-active { animation: project-led 2.6s ease-in-out infinite alternate; }
-
-.project-icon-button-project7 .compress-file-left { animation: compress-left 3.8s ease-in-out infinite alternate; }
-.project-icon-button-project7 .compress-file-right { animation: compress-right 3.8s ease-in-out infinite alternate; }
-.project-icon-button-project7 .compress-arrow { animation: compress-arrow 3.8s ease-in-out infinite; }
-.project-icon-button-project7 .compress-zip { animation: project-led 1.8s steps(2, end) infinite; }
 
 body.dark-mode .project-visual {
   filter: drop-shadow(0 7px 8px rgba(0, 0, 0, 0.55));
@@ -3249,10 +2133,6 @@ body.dark-mode .project-icon-button:focus-visible .project-visual {
     margin: 5px 0 8px;
   }
 
-  .project-visual-vader .vader-figure {
-    width: 70px;
-    height: 57px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3262,241 +2142,6 @@ body.dark-mode .project-icon-button:focus-visible .project-visual {
     transition: none !important;
   }
 }
-
-/* ===== More Projects overflowing folder ===== */
-.more-projects-folder-icon {
-  width: 80px;
-  height: 55px;
-  margin-top: 7px;
-  overflow: visible;
-  border: 1px solid #0874b4;
-  border-radius: 6px 8px 9px 9px;
-  background: linear-gradient(145deg, #168ecb, #086ba8);
-  box-shadow:
-    0 7px 14px rgba(0, 30, 62, 0.3),
-    inset 0 1px rgba(255, 255, 255, 0.2);
-  isolation: isolate;
-}
-
-.more-projects-folder-icon::before {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  top: -8px;
-  left: 0;
-  width: 34px;
-  height: 15px;
-  border: 1px solid #0874b4;
-  border-bottom: 0;
-  border-radius: 7px 7px 0 0;
-  background: linear-gradient(145deg, #35c9f0, #1599d2);
-}
-
-.more-projects-folder-icon::after {
-  content: '';
-  position: absolute;
-  z-index: 3;
-  inset: 8px -1px -1px;
-  width: auto;
-  height: auto;
-  border: 1px solid #0795d0;
-  border-radius: 5px 7px 9px 9px;
-  background: linear-gradient(155deg, #35d3f4, #0aa7df 58%, #0785c7);
-  box-shadow:
-    inset 0 2px rgba(255, 255, 255, 0.22),
-    inset 0 -5px 9px rgba(0, 75, 135, 0.12);
-  clip-path: polygon(0 8%, 38% 8%, 45% 0, 100% 0, 100% 100%, 0 100%);
-}
-
-.project-peek {
-  position: absolute;
-  z-index: 2;
-  top: -11px;
-  left: 50%;
-  display: block;
-  width: 22px;
-  height: 27px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.82);
-  border-radius: 4px;
-  background: #f8fbff;
-  box-shadow: 0 3px 7px rgba(2, 18, 34, 0.32);
-  transform-origin: 50% 100%;
-}
-
-.project-peek svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.project-peek-verify {
-  margin-left: -23px;
-  color: #167f9f;
-  background: #d9f6ff;
-  transform: translateY(8px) rotate(-15deg);
-  animation: project-peek-left 4.8s ease-in-out infinite alternate;
-}
-
-.project-peek-chart {
-  margin-left: -10px;
-  color: #ba3e60;
-  background: #ffe0e9;
-  transform: translateY(1px) rotate(-5deg);
-  animation: project-peek-middle-left 4.2s ease-in-out 300ms infinite alternate;
-}
-
-.project-peek-calendar {
-  margin-left: 3px;
-  color: #6a45b8;
-  background: #eee5ff;
-  transform: translateY(3px) rotate(6deg);
-  animation: project-peek-middle-right 4.5s ease-in-out 650ms infinite alternate;
-}
-
-.project-peek-zip {
-  margin-left: 16px;
-  color: #9b6811;
-  background: #fff0c6;
-  transform: translateY(9px) rotate(16deg);
-  animation: project-peek-right 5s ease-in-out 900ms infinite alternate;
-}
-
-.more-projects-launcher:hover .project-peek,
-.more-projects-launcher:focus-visible .project-peek {
-  animation-duration: 850ms;
-  filter: brightness(1.08) saturate(1.12);
-  box-shadow:
-    0 6px 12px rgba(2, 18, 34, 0.42),
-    0 0 6px rgba(110, 207, 245, 0.28);
-}
-
-@keyframes project-peek-left {
-  to { transform: translate(-4px, 3px) rotate(-19deg); }
-}
-
-@keyframes project-peek-middle-left {
-  to { transform: translate(-1px, -5px) rotate(-7deg); }
-}
-
-@keyframes project-peek-middle-right {
-  to { transform: translate(2px, -4px) rotate(9deg); }
-}
-
-@keyframes project-peek-right {
-  to { transform: translate(5px, 4px) rotate(20deg); }
-}
-
-body.dark-mode .project-peek {
-  border-color: rgba(186, 220, 245, 0.62);
-  box-shadow: 0 4px 9px rgba(0, 0, 0, 0.52);
-}
-
-body.dark-mode .more-projects-folder-icon {
-  border-color: #183f65;
-  background: linear-gradient(145deg, #274f77, #153552);
-}
-
-body.dark-mode .more-projects-folder-icon::before {
-  border-color: #254f76;
-  background: linear-gradient(145deg, #4578a7, #2a5b87);
-}
-
-body.dark-mode .more-projects-folder-icon::after {
-  border-color: #315f8a;
-  background: linear-gradient(155deg, #4b7eaa, #315f8d 58%, #22476d);
-}
-
-@media (max-width: 768px) {
-  .more-projects-folder-icon {
-    width: 68px;
-    height: 52px;
-    margin-top: 7px;
-  }
-
-  .project-peek {
-    width: 20px;
-    height: 25px;
-  }
-
-  .project-peek-verify { margin-left: -21px; }
-  .project-peek-chart { margin-left: -9px; }
-  .project-peek-calendar { margin-left: 3px; }
-  .project-peek-zip { margin-left: 15px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .project-peek {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* ===== Animated project icon dark-mode palettes ===== */
-body.dark-mode .taro-body { fill: #262a35; stroke: #5b6372; }
-body.dark-mode .taro-wing { fill: #1c202a; stroke: #626a79; }
-body.dark-mode .taro-wing-feathers { stroke: #6f7786; }
-body.dark-mode .taro-neck-ring { fill: #343a46; stroke: #7f8795; }
-body.dark-mode .taro-head { fill: #363743; stroke: #70727f; }
-body.dark-mode .taro-face-patch { fill: #514958; }
-body.dark-mode .taro-eye-white { fill: #e7e9ec; stroke: #aeb4bd; }
-body.dark-mode .taro-eye { fill: #10131a; stroke: #68707d; }
-body.dark-mode .taro-beak-gold { fill: #b98a2f; stroke: #e0b657; }
-body.dark-mode .taro-beak-sheen { fill: #b46661; }
-body.dark-mode .taro-beak-tip { fill: #25272d; stroke: #777d87; }
-body.dark-mode .taro-mouth { fill: #351d27; }
-
-body.dark-mode .verify-monitor { fill: #111b29; stroke: #69839b; }
-body.dark-mode .verify-screen { fill: #020a11; stroke: #28b5df; }
-body.dark-mode .verify-board { fill: #0b4140; stroke: #3dcba9; }
-body.dark-mode .verify-circuit { stroke: #83f5d8; }
-body.dark-mode .verify-camera { fill: #161e28; stroke: #72889a; }
-body.dark-mode .verify-lens { fill: #071d2a; stroke: #2dbce9; }
-body.dark-mode .verify-stand { fill: #33475a; stroke: #7890a5; }
-
-body.dark-mode .vader-cape { fill: #020306; stroke: #56606d; }
-body.dark-mode .vader-cape-fold { fill: #171b21; }
-body.dark-mode .vader-helmet-shell { fill: #010204; stroke: #818b97; }
-body.dark-mode .vader-dome { fill: #252b33; stroke: #929ca7; }
-body.dark-mode .vader-face { fill: #191e25; stroke: #727e8a; }
-body.dark-mode .vader-cheek { fill: #303842; stroke: #949faa; }
-body.dark-mode .vader-armor { fill: #0d1116; stroke: #55606c; }
-
-body.dark-mode .spell-orb { fill: rgba(39, 15, 65, 0.94); stroke: #d197ff; }
-body.dark-mode .spell-wand-body { stroke: #e1c391; }
-body.dark-mode .spell-wand-handle { stroke: #7e5839; }
-body.dark-mode .spell-star { fill: #fff2a0; stroke: #fffbd8; }
-body.dark-mode .spell-trail { stroke: #e1a6ff; opacity: 0.82; }
-
-body.dark-mode .ml-frame { fill: #0b1524; stroke: #5794bf; }
-body.dark-mode .ml-grid { stroke: #58738a; opacity: 0.62; }
-body.dark-mode .ml-bar { fill: #246b9c; }
-body.dark-mode .ml-bar-two { fill: #2889ae; }
-body.dark-mode .ml-bar-three { fill: #3da7a8; }
-body.dark-mode .ml-bar-four { fill: #d88a30; }
-body.dark-mode .ml-trend { stroke: #ff7780; }
-body.dark-mode .ml-point { fill: #dcecff; stroke: #ff7780; }
-
-body.dark-mode .events-page { fill: #141e30; stroke: #647b92; }
-body.dark-mode .events-page-back { fill: #263650; }
-body.dark-mode .events-header { stroke: #d8527b; }
-body.dark-mode .events-ring { stroke: #a8b7c6; }
-body.dark-mode .events-day { fill: #53657b; }
-body.dark-mode .events-day-active { fill: #ff6f98; }
-body.dark-mode .events-check { stroke: #42d794; }
-body.dark-mode .events-alert { fill: #d89027; stroke: #f2d794; }
-body.dark-mode .events-alert-mark { stroke: #231b0c; }
-
-body.dark-mode .compress-file > path:first-child { fill: #202d42; stroke: #70879d; }
-body.dark-mode .compress-file > path:nth-child(2) { stroke: #8ca0b2; }
-body.dark-mode .compress-lines { stroke: #9bb2c4; }
-body.dark-mode .compress-arrow { stroke: #ffd166; }
-body.dark-mode .compress-zip { stroke: #ffaf4b; }
 
 /* ===== Terminal experience polish ===== */
 .terminal,

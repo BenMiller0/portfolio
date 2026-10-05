@@ -15,14 +15,12 @@ export const socialLinks = [
   {
     id: 'github',
     label: 'GitHub',
-    href: 'https://github.com/BenMiller0',
-    iconClassName: 'github-icon-image'
+    href: 'https://github.com/BenMiller0'
   },
   {
     id: 'linkedin',
     label: 'LinkedIn',
-    href: 'https://linkedin.com/in/benjamin-miller-ucsd',
-    iconClassName: 'linkedin-icon-image'
+    href: 'https://linkedin.com/in/benjamin-miller-ucsd'
   }
 ];
 

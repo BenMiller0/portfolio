@@ -1,0 +1,140 @@
+﻿/* A project document with an illustrated masthead and editorial section layout. */
+.window:has(.project-detail) { width: min(800px, calc(100vw - 40px)); }
+.window .window-content:has(.project-detail) { padding: 0; max-width: none; background: #f8f9fb; }
+.project-detail {
+  --detail-text: #263445;
+  --detail-muted: #5a6979;
+  --detail-rule: #dce2e8;
+  --detail-accent: #315d84;
+  --detail-cover: #eaf0f5;
+  --detail-bg: #f8f9fb;
+  max-width: 1000px;
+  min-height: 100%;
+  margin: 0 auto;
+  background: var(--detail-bg);
+  color: var(--detail-text);
+}
+.project-detail-project1 { --detail-accent: #735583; --detail-cover: #eeeaf2; }
+.project-detail-project2 { --detail-accent: #246c70; --detail-cover: #e7f0f0; }
+.project-detail-project3 { --detail-accent: #994355; --detail-cover: #eee9ec; }
+.project-detail-project4 { --detail-accent: #66508c; --detail-cover: #eceaf3; }
+.project-detail-project5 { --detail-accent: #975570; --detail-cover: #f1eaf0; }
+.project-detail-project6 { --detail-accent: #936049; --detail-cover: #f2ece7; }
+.project-detail-project7 { --detail-accent: #806030; --detail-cover: #efede6; }
+.project-detail-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 112px;
+  gap: 20px 28px;
+  align-items: center;
+  padding: 30px 32px 22px;
+  border-top: 3px solid var(--detail-accent);
+  border-bottom: 1px solid var(--detail-rule);
+  background: var(--detail-cover);
+}
+.window .project-detail .project-detail-heading h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--detail-text);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.5px;
+  text-shadow: none;
+  text-wrap: balance;
+}
+.project-detail .project-detail-summary {
+  max-width: 48ch;
+  margin: 12px 0 0;
+  color: var(--detail-muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.project-detail-emblem { display: grid; place-items: center; }
+.project-detail-emblem .project-visual { width: 112px; height: 90px; margin: 0; filter: drop-shadow(0 4px 3px rgb(20 30 40 / 20%)); }
+.project-detail-links {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.window .project-detail .project-detail-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid var(--detail-rule);
+  border-radius: 4px;
+  background: var(--detail-bg);
+  color: var(--detail-accent);
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+}
+.window .project-detail .project-detail-link:hover { border-color: var(--detail-accent); color: var(--detail-text); }
+.project-detail-link svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+.project-detail a:focus-visible { outline: 2px solid var(--detail-accent); outline-offset: 4px; }
+.project-detail-body { padding: 30px 32px 36px; }
+.project-detail-overview,
+.project-detail-stack {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 20px;
+  padding-bottom: 26px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid var(--detail-rule);
+}
+.window .window-content .project-detail h3 {
+  margin: 2px 0 0;
+  color: var(--detail-accent);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.project-detail-story { display: grid; gap: 16px; }
+.project-detail .project-detail-story p { margin: 0; max-width: 75ch; color: var(--detail-text); font-size: 14px; line-height: 1.8; }
+.project-detail .project-detail-technologies {
+  margin: 0;
+  color: var(--detail-text);
+  font: 13px/1.85 'Cascadia Mono', Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+.window .window-content .project-detail-gallery h3 { margin-bottom: 18px; }
+.project-detail-photos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 22px; }
+.project-detail-photos-single { grid-template-columns: minmax(0, 1fr); }
+.project-detail-photo-card { min-width: 0; margin: 0; }
+.project-detail-photo-link { display: block; cursor: zoom-in; }
+.project-detail-photo-link img {
+  display: block;
+  width: 100%;
+  max-height: 460px;
+  height: auto;
+  object-fit: contain;
+  object-position: top left;
+  border-radius: 3px;
+  cursor: zoom-in;
+}
+.project-detail-photo-card figcaption { margin-top: 10px; padding-left: 10px; border-left: 2px solid var(--detail-rule); color: var(--detail-muted); font-size: 12px; line-height: 1.5; }
+.project-detail-photo-fallback { padding: 40px 16px; border: 1px dashed var(--detail-rule); color: var(--detail-muted); font-size: 13px; }
+body.dark-mode .project-detail { --detail-text: #e0e7ef; --detail-muted: #a6b4c5; --detail-rule: #354255; --detail-accent: #9cc6e9; --detail-cover: #202e40; --detail-bg: #141e2d; }
+body.dark-mode .project-detail-project1 { --detail-accent: #c2a6d5; --detail-cover: #29273a; }
+body.dark-mode .project-detail-project2 { --detail-accent: #8bc8c6; --detail-cover: #203339; }
+body.dark-mode .project-detail-project3 { --detail-accent: #dfa0ac; --detail-cover: #302630; }
+body.dark-mode .project-detail-project4 { --detail-accent: #b9a5df; --detail-cover: #28283e; }
+body.dark-mode .project-detail-project5 { --detail-accent: #d9a2bf; --detail-cover: #31283a; }
+body.dark-mode .project-detail-project6 { --detail-accent: #d3b19a; --detail-cover: #332c2c; }
+body.dark-mode .project-detail-project7 { --detail-accent: #d6be91; --detail-cover: #302e28; }
+body.dark-mode .window .window-content:has(.project-detail) { background: #141e2d; }
+@media (max-width: 768px) {
+  .project-detail-hero { grid-template-columns: minmax(0, 1fr) 80px; padding: 24px 20px 20px; gap: 16px; }
+  .window .project-detail .project-detail-heading h2 { font-size: 23px; }
+  .project-detail .project-detail-summary { font-size: 13px; }
+  .project-detail-emblem .project-visual { width: 80px; height: 64px; }
+  .window .project-detail .project-detail-link { min-height: 44px; }
+  .project-detail-body { padding: 24px 20px 32px; }
+  .project-detail-overview, .project-detail-stack { grid-template-columns: minmax(0, 1fr); gap: 12px; padding-bottom: 22px; margin-bottom: 22px; }
+  .project-detail-photos { grid-template-columns: minmax(0, 1fr); }
+}
