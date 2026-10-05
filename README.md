@@ -1,146 +1,83 @@
-# Benjamin Miller Portfolio Website
+# Benjamin Miller Portfolio
 
-**Visit site here: https://benjaminmillerportfolio.onrender.com/**
+[Visit the portfolio](https://benjaminmillerportfolio.onrender.com/).
 
-A personal portfolio website built with **React** and **Vite**, featuring a desktop-inspired interface for projects in embedded systems, AI/ML, and web development. The app uses draggable windows, desktop-style icons, responsive mobile behavior, a terminal view, resume viewers, and a JSON-driven project showcase.
+A React 19 and Vite portfolio with a desktop interface: illustrated project icons, draggable windows, an interactive terminal, photo galleries, resume viewers, and persistent light/dark themes. The application lives in `app/`.
 
-See [DESIGN.md](./DESIGN.md) for detailed architecture and maintenance notes.
+See [DESIGN.md](DESIGN.md) for implementation details and browser verification, and [AGENTS.md](AGENTS.md) for contributor guidance.
 
----
+## Run locally
 
-## Tech Stack
+Use Node.js 22.12+ (or Node 20.19+ on the 20.x line), matching the installed Vite 7 engine requirement. Use npm with the committed lockfile.
 
-- **Frontend:** React 19 + Vite
-- **Styling:** Custom CSS with dark mode support
-- **Data:** JSON-based project configuration
-- **Structure:** Small React modules for layout constants, shared window metadata, and reusable hooks
-
----
-
-## Features
-
-- Desktop-inspired interface with draggable windows
-- Responsive desktop and mobile layouts
-- Persistent light/dark theme
-- Project showcase with photo galleries and external links
-- Keyboard-accessible folder and document icons
-- Fullscreen window support
-- Window stacking with z-index management
-- Escape-to-close and viewport-constrained dragging
-- Animated typewriter intro
-- Interactive terminal window
-- Resume PDF viewers
-- Project loading, empty, retry, and image-fallback states
-
----
-
-## Project Structure
-
-```text
-portfolio/
-|-- .gitignore
-|-- DESIGN.md
-|-- README.md
-`-- app/
-    |-- eslint.config.js
-    |-- index.html
-    |-- package.json
-    |-- package-lock.json
-    |-- vite.config.js
-    |-- public/
-    |   |-- _redirects
-    |   |-- doc-icon.png
-    |   |-- favcon.png
-    |   |-- github.png
-    |   |-- Resume_Benjamin_Miller.pdf
-    |   |-- linkedIn.png
-    |   |-- project_photos/
-    |   |-- projects.json
-    |   `-- software_resume.pdf
-    `-- src/
-        |-- App.jsx
-        |-- main.jsx
-        |-- assets/
-        |   `-- styles.css
-        |-- components/
-        |   `-- Window.jsx
-        |-- constants/
-        |   `-- windowLayout.js
-        |-- data/
-        |   `-- windowRegistry.jsx
-        |-- hooks/
-        |   `-- useTypewriter.js
-        `-- windows/
-            |-- ProjectWindowContent.jsx
-            |-- TerminalWindow.jsx
-            |-- aboutWindow.jsx
-            |-- experienceWindow.jsx
-            `-- readmeWindow.jsx
-```
-
----
-
-## Architecture Notes
-
-- `App.jsx` owns the page composition and window lifecycle: opening, closing, focus order, dragging updates, fullscreen state, project loading, and dark mode.
-- `components/Window.jsx` owns reusable window chrome: title bar, controls, drag/touch handlers, header color class mapping, and content shell.
-- `constants/windowLayout.js` owns window positioning constants and viewport helpers so layout math is not buried inside `App.jsx`.
-- `data/windowRegistry.jsx` owns static desktop metadata for system windows, social links, and resume links.
-- `hooks/useTypewriter.js` owns the reusable typewriter animation used by the intro text.
-- `windows/` contains focused content modules. Static windows export a config object with `title`, `label`, `color`, and `component`.
-- `public/projects.json` remains the source of truth for project cards and project detail windows.
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js v18 or higher
-- npm or yarn
-
-### Installation
-
-```bash
-git clone https://github.com/BenMiller0/portfolio.git
-cd portfolio/app
-npm install
+```sh
+cd app
+npm ci
 npm run dev
 ```
 
-### Production Build
+Vite prints the local URL. In Windows PowerShell, use `npm.cmd` if execution policy blocks the npm PowerShell shim.
 
-```bash
+```sh
+npm run lint
 npm run build
+npm run preview
 ```
 
----
+Production output is `app/dist/`. Preview serves that output locally; it does not deploy the site. If a restricted environment prevents Vite's default config bundler from accessing its temporary files, use `npm run dev -- --configLoader runner` or `npm run build -- --configLoader runner`.
 
-## Maintaining Content
+## Interface behavior
 
-### Add A Project
+- Desktop windows support dragging, stacking, fullscreen, restore, and Escape to close the front window. Opening an existing window focuses it.
+- At widths of 768px or less, windows fill the viewport and dragging is disabled. Desktop branding stays centered, with spacing below the icon rows on smaller screens. Very short desktops use a centered header and a scrollable icon area.
+- Project pages show **About**, **Technologies used**, then **Photo Gallery** when photos exist. Fullscreen content spans the available window width and scrolls to the last photo.
+- Project launchers have continuous idle animation and stronger hover/keyboard-focus reactions. Icons inside project pages retain idle motion without those hover reactions.
+- More Projects is a static folder at rest; hovering or keyboard-focusing it opens the folder and reveals project cards. Document and terminal icons have no looping idle animation.
+- Icon families have explicit dark-mode materials. Reduced-motion preferences disable animated icon movement.
+- The terminal supports file browsing, project information, command history and Tab completion. Shift+Tab moves focus back to the window controls.
+- Project loading has loading, empty and retry states. Missing photos display a fallback. Resume windows include a PDF viewer and download link.
 
-1. Add the project entry to `app/public/projects.json`.
-2. Add any images to `app/public/project_photos/`.
-3. Use `imageSize` values such as `small`, `medium`, `large`, or `xlarge` to control gallery sizing.
+## Source map
 
-### Add A Desktop Window
+| Location | Purpose |
+| --- | --- |
+| `app/src/App.jsx` | Desktop composition, project loading, window lifecycle, theme |
+| `app/src/components/Window.jsx` | Window chrome, dragging, focus and controls |
+| `app/src/components/DesktopIcon.jsx` | Documents, social icons, terminal, More Projects folder |
+| `app/src/components/ProjectIcon.jsx` | Project ID to SVG icon mapping |
+| `app/src/components/FeaturedProjectIcons.jsx` | Bird, Vader and wand illustrations |
+| `app/src/components/SupportingProjectIcons.jsx` | Verification, chart, calendar and compressor illustrations |
+| `app/src/assets/` | Shared styles and separate icon/project-detail stylesheets |
+| `app/src/constants/windowLayout.js` | Mobile breakpoint and placement estimates |
+| `app/src/hooks/` | Typewriter animation and reactive mobile viewport detection |
+| `app/src/data/windowRegistry.jsx` | Static windows, social links and resume paths |
+| `app/src/windows/` | Project details, terminal, About, README and experience |
+| `app/public/projects.json` | Project records |
+| `app/public/project_photos/` | Gallery originals |
+| `app/public/resumes/` | Hardware and software resume PDFs |
+| `app/public/icons/` | Supporting raster assets and favicon |
 
-1. Create a module in `app/src/windows/`.
-2. Export a window config object:
+## Maintain content
 
-```jsx
-export const newWindow = {
-  id: 'newWindow',
-  title: 'Window Title',
-  label: 'window_label.txt',
-  color: '#a78bfa',
-  component: NewWindowContent
-};
-```
+### Projects
 
-3. Register it in `app/src/data/windowRegistry.jsx`.
+1. Add a record with a unique `id`, `label` and `title` to `app/public/projects.json`. See [the project schema](DESIGN.md#project-data).
+2. Add gallery originals to `app/public/project_photos/` and list their exact filenames in `photos`.
+3. Add an illustration to `ProjectIcon.jsx`. Add optional summaries and photo captions in `ProjectWindowContent.jsx`.
+4. Update `MAIN_PROJECT_IDS` in `App.jsx` only when changing the featured projects. The current featured IDs are `project1`, `project3` and `project4`; all others appear in More Projects.
 
-### Add A Static Desktop Link
+Legacy `imageSize` values still present in the JSON are unused by the current gallery. Layout is controlled by `project-details.css`.
 
-Update `socialLinks` or `resumeLinks` in `app/src/data/windowRegistry.jsx` instead of editing icon markup directly in `App.jsx`.
+### Static windows and links
+
+Create a content module in `app/src/windows/`, export its window config, and register it in `systemWindows` in `windowRegistry.jsx`. Add a corresponding visual in `DesktopIcon.jsx`; registering a new ID alone does not create an icon.
+
+Update `socialLinks` or `resumeLinks` in the same registry for links and PDFs. Resume URLs are `/resumes/Resume_Benjamin_Miller.pdf` and `/resumes/Resume-Benjamin-Miller.pdf`. Keep terminal file links consistent when changing them.
+
+## Verification and hosting
+
+Run lint and build after code changes, then follow the [browser checklist](DESIGN.md#browser-verification). There is no committed automated browser suite or `npm test` script. A successful build does not verify appearance, scrolling, animation or keyboard behavior.
+
+For static hosting with the repository root as the build root, use `cd app && npm ci && npm run build` and publish `app/dist`. With `app/` as the configured root, use `npm ci && npm run build` and publish `dist`. Vite's base and asset URLs assume deployment at `/`.
+
+`app/public/_redirects` contains an SPA fallback. Configure the equivalent rewrite on hosts that do not read that file. Verify images and PDFs return their actual file types rather than fallback HTML.

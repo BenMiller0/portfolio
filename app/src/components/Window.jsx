@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useId, useRef } from 'react';
-import { MOBILE_BREAKPOINT } from '../constants/windowLayout';
+import React, { useCallback, useEffect, useId, useLayoutEffect, useRef } from 'react';
+import { useMobileViewport } from '../hooks/useMobileViewport';
 
 const HEADER_COLOR_MAP = {
   lightgreen: 'window-header-green',
@@ -24,6 +24,7 @@ const Window = ({
   onBack,
   isFullscreen,
   onToggleFullscreen,
+  returnFocus,
   headerColor
 }) => {
   const windowRef = useRef(null);
@@ -31,25 +32,51 @@ const Window = ({
   const dragState = useRef(null);
   const previousFocusRef = useRef(null);
   const titleId = useId();
+  const isMobile = useMobileViewport();
+  const isModal = isFullscreen || isMobile;
 
   useEffect(() => {
-    previousFocusRef.current = document.activeElement;
-    windowRef.current?.focus({ preventScroll: true });
+    previousFocusRef.current = returnFocus || document.activeElement;
+    if (!windowRef.current?.contains(document.activeElement)) {
+      windowRef.current?.focus({ preventScroll: true });
+    }
     const previousFocus = previousFocusRef.current;
+    const ownWindow = windowRef.current;
 
     return () => {
-      if (previousFocus instanceof HTMLElement && document.contains(previousFocus)) {
+      const shouldRestore = document.activeElement === document.body || ownWindow?.contains(document.activeElement);
+      if (shouldRestore && previousFocus instanceof HTMLElement && document.contains(previousFocus)) {
         previousFocus.focus({ preventScroll: true });
       }
     };
-  }, []);
+  }, [returnFocus]);
+
+  useLayoutEffect(() => {
+    if (isModal) return undefined;
+    const keepInView = () => {
+      const node = windowRef.current;
+      if (!node) return;
+      const margin = 8;
+      const x = Math.max(margin, Math.min(position.x, window.innerWidth - node.offsetWidth - margin));
+      const y = Math.max(margin, Math.min(position.y, window.innerHeight - node.offsetHeight - margin));
+      if (x !== position.x || y !== position.y) onDrag(id, { x, y });
+    };
+    keepInView();
+    window.addEventListener('resize', keepInView);
+    const observer = new ResizeObserver(keepInView);
+    observer.observe(windowRef.current);
+    return () => {
+      window.removeEventListener('resize', keepInView);
+      observer.disconnect();
+    };
+  }, [id, isModal, onDrag, position.x, position.y]);
 
   const startDrag = useCallback((event) => {
     if (
       isFullscreen ||
       event.button !== 0 ||
       event.target.closest('button') ||
-      window.innerWidth < MOBILE_BREAKPOINT
+      isMobile
     ) return;
 
     const rect = windowRef.current?.getBoundingClientRect();
@@ -66,7 +93,7 @@ const Window = ({
     };
     titlebarRef.current?.setPointerCapture(event.pointerId);
     windowRef.current?.classList.add('is-dragging');
-  }, [isFullscreen, onFocus]);
+  }, [isFullscreen, isMobile, onFocus]);
 
   const moveDrag = useCallback((event) => {
     if (!dragState.current || dragState.current.pointerId !== event.pointerId) return;
@@ -96,10 +123,10 @@ const Window = ({
   };
 
   const handleKeyDown = (event) => {
-    if (!isFullscreen || event.key !== 'Tab') return;
+    if (event.defaultPrevented || !isModal || event.key !== 'Tab') return;
     const focusable = Array.from(windowRef.current?.querySelectorAll(
       'button:not([disabled]), a[href], input:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
-    ) ?? []);
+    ) ?? []).filter(element => element.getClientRects().length > 0);
     if (focusable.length === 0) {
       event.preventDefault();
       windowRef.current?.focus();
@@ -107,7 +134,7 @@ const Window = ({
     }
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) {
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === windowRef.current)) {
       event.preventDefault();
       last.focus();
     } else if (!event.shiftKey && document.activeElement === last) {
@@ -116,7 +143,6 @@ const Window = ({
     }
   };
 
-  const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
   const positionStyle = isFullscreen ? {} : (isMobile ? {
     left: '50%',
     transform: 'translateX(-50%)',
@@ -137,10 +163,13 @@ const Window = ({
       className={`window ${isFullscreen ? 'fullscreen' : ''}`}
       style={{ ...positionStyle, ...style }}
       role="dialog"
-      aria-modal={isFullscreen ? 'true' : undefined}
+      aria-modal={isModal ? 'true' : undefined}
       aria-labelledby={titleId}
       tabIndex={-1}
       onPointerDown={onFocus}
+      onFocusCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) onFocus?.();
+      }}
       onKeyDown={handleKeyDown}
     >
       <div

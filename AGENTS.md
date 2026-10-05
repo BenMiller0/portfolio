@@ -1,30 +1,50 @@
 # Agent guide
 
-This repository is Benjamin Miller's portfolio: a React 19 single-page app built with Vite. The desktop-like UI has draggable windows, project folders, a terminal, resume viewers, and light/dark themes. The app lives in `app/`; the repository root contains documentation.
+This repository is Benjamin Miller's React 19/Vite portfolio: draggable windows, SVG project icons, a simulated terminal, galleries, resume viewers and light/dark themes. Work in `app/`; root Markdown files document the project.
 
 ## Start here
 
-- Read `README.md` for product context and `DESIGN.md` for architecture and maintenance notes. Check the current source when documentation and implementation differ.
-- Run app commands from `app/`: `npm ci` to install, `npm run dev` for local development, `npm run lint` for ESLint, and `npm run build` for a production build. `npm run preview` serves the built output.
-- `app/package-lock.json` is committed. Keep it in sync when dependencies change. There is currently no automated test script.
+- Read [README.md](README.md) for setup and [DESIGN.md](DESIGN.md) for architecture, visual requirements and browser verification. Check the source when docs differ; user instructions are the design authority.
+- Use the npm lockfile. Vite 7 requires Node 20.19+ on the 20.x line or 22.12+. From `app/`, use `npm ci`, `npm run dev`, `npm run lint`, `npm run build` and `npm run preview`.
+- In PowerShell, use `npm.cmd` if execution policy blocks `npm`. If the default Vite config bundler fails under restricted filesystem access, use `-- --configLoader runner` for dev/build.
+- Inspect the existing diff first. Preserve unrelated and unfinished user changes. There is no `npm test` script or committed automated browser suite.
 
 ## Where changes belong
 
-- `app/src/App.jsx`: page composition, project fetching and loading states, open-window state, focus order, fullscreen, theme, and the choice of primary project IDs.
-- `app/src/components/Window.jsx`: shared window chrome, pointer dragging, controls, and dialog focus behavior. `app/src/constants/windowLayout.js`: viewport breakpoints and window positioning.
-- `app/src/data/windowRegistry.jsx`: static desktop windows, external links, and resume links. `app/src/windows/`: window content and the terminal. `app/src/components/ProjectIcon.jsx`: project-specific SVG icons.
-- `app/src/assets/styles.css`: all app styles, including mobile, dark mode, focus, and reduced-motion rules. Check later rules in this file before changing a selector because several sections override earlier ones.
-- `app/public/projects.json`: project content. Image names in each project's `photos` array refer to files in `app/public/project_photos/`. Public assets are referenced from the site root, such as `/projects.json` or `/resumes/...`.
+- `app/src/App.jsx`: desktop composition, project loading/status, window state, stacking, fullscreen, theme and `MAIN_PROJECT_IDS`.
+- `app/src/components/Window.jsx`: chrome, dragging, viewport clamping and focus. `constants/windowLayout.js`: placement estimates and breakpoint. `hooks/useMobileViewport.js`: reactive breakpoint subscription.
+- `app/src/components/DesktopIcon.jsx`: documents, socials, terminal and More Projects. `ProjectIcon.jsx`: ID mapping. `FeaturedProjectIcons.jsx` and `SupportingProjectIcons.jsx`: project SVGs.
+- `app/src/assets/styles.css`: shared layout, windows, terminal, resumes and mobile rules. Separate files cover desktop icons, featured icons, supporting icons and project details. Inspect later overrides and computed styles before adding rules.
+- `app/src/data/windowRegistry.jsx`: static windows and link metadata. `app/src/windows/`: page content, gallery summaries/captions and terminal implementation.
+- `app/public/projects.json`: project records. Photos are in `public/project_photos/`, PDFs in `public/resumes/`, and raster icons in `public/icons/`. Public URLs start at `/`.
+
+## Preserve the interaction design
+
+- Project launchers retain dynamic idle motion and stronger hover/focus reactions. Detail icons retain idle motion but must not react to hovering the icon/header or focusing links.
+- More Projects is a static normal folder at rest with smooth opening/card reveal on hover or keyboard focus and smooth closing on exit. No exposed back-panel corners or doubled folder edges.
+- Documents have no looping idle animation. The terminal icon cursor does not blink. Keep GitHub's green status dot and LinkedIn's top highlight absent.
+- The bird shows both eyes and looks around. Vader has clearly switching LEDs referenced from the suit photo and audio waves on both sides. The wand glow stays attached to its tip. Every icon has explicit dark-mode styling.
+- Respect reduced motion. SVG gradient IDs must be unique per instance.
+- Project sections are **About**, **Technologies used**, then **Photo Gallery**. Preserve the restrained masthead/divider layout and original-image links without visible "View full size" overlays.
+- Fullscreen project articles fill the available width. Check the article itself for gutters, and scroll to the bottom in normal, fullscreen and short-height windows.
 
 ## Change guidance
 
-- Preserve the desktop window behavior across desktop and mobile: opening, focus/stacking, dragging, fullscreen, close/back, and Escape. The mobile breakpoint is defined in `windowLayout.js` and also used in CSS; keep them aligned if it changes.
-- Keep desktop controls keyboard accessible. Preserve dialog labels, focus restoration, visible focus styles, and reduced-motion behavior when editing interactions or styles.
-- For a new static window, add a focused module in `src/windows/` and register it in `src/data/windowRegistry.jsx`. For a new project, update `public/projects.json`, add any referenced photos, and consider whether it needs a custom icon in `ProjectIcon.jsx`. `App.jsx` selects primary folders by `MAIN_PROJECT_IDS`; other projects appear in More Projects.
-- Keep content edits separate from behavior changes where practical. Avoid broad formatting or CSS rewrites for a focused task. Update `README.md` or `DESIGN.md` when setup steps or architecture change.
+- Preserve open, stack, drag, fullscreen/restore, Back, Close and Escape behavior. Mobile is **768px inclusive**; keep CSS and JS aligned. Keep desktop name/school branding centered; use spacing to avoid icon overlap. Only very short desktop viewports need a centered header above scrollable icons.
+- Preserve visible keyboard focus, dialog labels, focus restoration and modal Tab containment. Respect child handlers that prevent Tab's default. Test terminal completion and Shift+Tab when changing focus behavior.
+- Add static modules and registry entries together with icon mappings. Add projects with unique IDs, valid optional fields and matching photo filenames. `MAIN_PROJECT_IDS` selects featured projects; array order does not.
+- The gallery ignores legacy `imageSize` values; use `project-details.css` for layout changes.
+- Avoid broad CSS rewrites for focused fixes. Remove obsolete rules belonging to the change and preserve unrelated work.
+- Update all affected root docs when setup, architecture, behavior or maintenance instructions change. The on-site README is a separate React module.
 
-## Before finishing
+## Audit and verification before finishing
 
-- Run `npm run lint` and `npm run build` from `app/` for code changes. For content-only changes, verify JSON parses and referenced assets exist. Report any check that could not be run.
-- For UI changes, check a desktop and narrow viewport, light and dark themes, and the interaction affected by the change. For window changes, include keyboard navigation and fullscreen in the check.
-- Review `git diff` and leave generated `app/dist/`, `node_modules/`, and local environment files out of commits.
+Proactively inspect adjacent states and shared components. Do not wait for the user to identify another example of the same defect. Reproduce observed issues, fix the cause and verify in a browser. Lint/build success alone is not a visual audit.
+
+- Inspect changed icons at natural size and 4-8x enlargement in both themes. Check idle, hover entry, intermediate frames, full hover, exit and keyboard focus. Look at silhouettes, overlapping surfaces, attachment points and clipping.
+- Test launchers and detail-page icon copies separately. Header hover and link focus must not trigger launcher motion.
+- Inspect desktop, compact desktop, short-height and 320/390px mobile layouts. Check branding/label overlap, overflow, visible controls and 768px transitions.
+- For shared window changes, test all seven projects, fullscreen width/bottom scrolling, restore, drag bounds, keyboard stacking, Escape, More Projects -> child -> Back -> Close, and terminal input.
+- Follow [DESIGN.md's checklist](DESIGN.md#browser-verification) for relevant failures and assets. Compare animation configurations or equal timestamps instead of unrelated live frames.
+- Run lint and build after code changes. For content-only edits, validate JSON, local links and assets. Review every root Markdown file when asked for a documentation audit, including this guide.
+- Review `git diff --check` and the final diff. Keep `app/dist/`, dependencies and local screenshot/test artifacts out of commits. Report actual verification, untested limitations and unresolved issues without claiming exhaustive bug freedom.

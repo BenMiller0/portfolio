@@ -48,13 +48,12 @@ const DesktopIcon = ({ kind }) => {
           <g className="desktop-linkedin-mark"><circle cx="23" cy="24" r="4.5" /><path d="M19 33h8v28h-8Zm15 0h8v4c3-6 19-7 19 9v15h-8V47c0-8-11-8-11 0v14h-8Z" /></g>
         </>}
         {kind === 'projects' && <>
-          <path className="desktop-folder-back" d="M5 18V12q0-4 4-4h21l7 7h34q4 0 4 4v37H5Z" />
+          <path className="desktop-folder-back" d="M8 29V13a5 5 0 0 1 5-5h15q2 0 3.5 1.5l6 6Q39 17 41 17h26a5 5 0 0 1 5 5v31a5 5 0 0 1-5 5H13a5 5 0 0 1-5-5Z" />
           <g className="desktop-folder-preview desktop-folder-preview-one"><rect x="23" y="11" width="23" height="29" rx="3" /><path d="M28 18h13v10H28Zm3 14h7" /></g>
           <g className="desktop-folder-preview desktop-folder-preview-two"><rect x="28" y="10" width="23" height="29" rx="3" /><path d="M33 31V23m6 8V18m6 13V21" /></g>
           <g className="desktop-folder-preview desktop-folder-preview-three"><rect x="34" y="11" width="23" height="29" rx="3" /><path d="m42 20-4 5 4 5m6-10 4 5-4 5" /></g>
           <g className="desktop-folder-lid">
-            <path className="desktop-folder-front" d="M5 28h26l7-7h34q4 0 4 4l-4 32q0 3-4 3H10q-4 0-4-4Z" fill={`url(#${id}-surface)`} />
-            <path className="desktop-folder-seam" d="M12 32h20l7-7h29" />
+            <path className="desktop-folder-front" d="M9 25h62q5 0 4.5 5l-2.5 25q-.5 5-5.5 5h-55Q7.5 60 7 55L4.5 30Q4 25 9 25Z" fill={`url(#${id}-surface)`} />
           </g>
         </>}
       </svg>

@@ -7,6 +7,7 @@ import ProjectWindowContent from './windows/ProjectWindowContent';
 import { calculateRestorePosition, calculateWindowPosition, isMobileViewport } from './constants/windowLayout';
 import { resumeLinks, socialLinks, systemWindows, getTerminalDesktopWindow } from './data/windowRegistry';
 import { useTypewriter } from './hooks/useTypewriter';
+import { useMobileViewport } from './hooks/useMobileViewport';
 
 const PROFILE_NAME = 'Benjamin Miller';
 const SCHOOL_NAME = 'UC San Diego - Computer Science';
@@ -56,7 +57,9 @@ const App = () => {
   const [openWindows, setOpenWindows] = useState([]);
   const [darkMode, setDarkMode] = useState(getInitialDarkMode);
   const [announcement, setAnnouncement] = useState('');
+  const isMobile = useMobileViewport();
   const moreProjectsFullscreenRef = useRef(false);
+  const moreProjectsLauncherRef = useRef(null);
   const { value: typedName, done: nameTyped } = useTypewriter(PROFILE_NAME, 50);
   const { value: typedSchool } = useTypewriter(SCHOOL_NAME, 40, nameTyped ? 150 : 0);
 
@@ -98,10 +101,10 @@ const App = () => {
 
   useEffect(() => {
     const hasFullscreen = openWindows.some(win => win.isFullscreen);
-    const shouldLockPage = hasFullscreen || (isMobileViewport() && openWindows.length > 0);
+    const shouldLockPage = hasFullscreen || (isMobile && openWindows.length > 0);
     document.body.classList.toggle('fullscreen-window-open', shouldLockPage);
     document.documentElement.classList.toggle('fullscreen-window-open', shouldLockPage);
-  }, [openWindows]);
+  }, [isMobile, openWindows]);
 
   const bringToFront = useCallback((id) => {
     setOpenWindows(windows => {
@@ -113,6 +116,10 @@ const App = () => {
   }, []);
 
   const openWindow = useCallback((id, title, content, onBack = null, color = null, options = {}) => {
+    const returnFocus = options.returnFocus ?? document.activeElement;
+    const existingWindow = Array.from(document.querySelectorAll('[data-window-id]'))
+      .find(node => node.dataset.windowId === id);
+    existingWindow?.focus({ preventScroll: true });
     setAnnouncement(`${title} opened.`);
     setOpenWindows(windows => {
       const maxZIndex = Math.max(...windows.map(win => win.zIndex), 100);
@@ -134,7 +141,8 @@ const App = () => {
           zIndex: maxZIndex + 1,
           onBack,
           isFullscreen: options.isFullscreen ?? false,
-          color
+          color,
+          returnFocus
         }
       ];
     });
@@ -205,10 +213,14 @@ const App = () => {
         reopenMoreProjects={openMoreProjectsWindow}
         closeMoreProjects={() => closeWindow('moreProjects')}
         moreProjectsFullscreenRef={moreProjectsFullscreenRef}
+        moreProjectsLauncherRef={moreProjectsLauncherRef}
       />,
       null,
       null,
-      preserveFullscreen ? { isFullscreen: moreProjectsFullscreenRef.current } : { isFullscreen: false }
+      {
+        isFullscreen: preserveFullscreen && moreProjectsFullscreenRef.current,
+        returnFocus: moreProjectsLauncherRef.current
+      }
     );
   }, [moreProjects, openWindow, closeWindow]);
 
@@ -328,6 +340,7 @@ const App = () => {
                 <button
                   type="button"
                   className="folder"
+                  ref={moreProjectsLauncherRef}
                   onClick={() => openMoreProjectsWindow()}
                 >
                   <DesktopIcon kind="projects" />
@@ -371,6 +384,7 @@ const App = () => {
           isFullscreen={win.isFullscreen}
           onToggleFullscreen={() => toggleFullscreen(win.id)}
           headerColor={win.color}
+          returnFocus={win.returnFocus}
         >
           {win.content}
         </Window>
@@ -400,7 +414,7 @@ const App = () => {
   );
 };
 
-const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, closeMoreProjects, moreProjectsFullscreenRef }) => (
+const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, closeMoreProjects, moreProjectsFullscreenRef, moreProjectsLauncherRef }) => (
   <div className="more-projects-window">
     <h2>More Projects</h2>
     <div className="more-projects-grid">
@@ -413,17 +427,15 @@ const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, 
             project.title,
             <ProjectWindowContent project={project} />,
             () => {
-              const projectWindow = document.querySelector('.window.fullscreen');
-              const isProjectFullscreen = projectWindow !== null;
-              if (isProjectFullscreen) {
-                moreProjectsFullscreenRef.current = true;
-              }
+              const projectWindow = Array.from(document.querySelectorAll('.window'))
+                .find(node => node.dataset.windowId === project.id);
+              moreProjectsFullscreenRef.current = projectWindow?.classList.contains('fullscreen') ?? false;
               reopenMoreProjects(true);
             },
             null,
-            { isFullscreen: wasFullscreen }
+            { isFullscreen: wasFullscreen, returnFocus: moreProjectsLauncherRef.current }
           );
-          setTimeout(() => closeMoreProjects(), 50);
+          closeMoreProjects();
         };
 
         return (

@@ -28,11 +28,11 @@
 .vader-audio-waves path { animation: suit-audio 1.8s ease-in-out infinite; }
 .vader-audio-waves path:nth-child(2) { animation-delay: -.3s; }
 .vader-audio-waves path:nth-child(3) { animation-delay: -.6s; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .vader-led { animation-duration: .85s; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .vader-led { animation-duration: .85s; }
 
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .vader-aura { opacity: 1; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .vader-rim { opacity: 1; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .vader-console {
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .vader-aura { opacity: 1; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .vader-rim { opacity: 1; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .vader-console {
   filter: drop-shadow(0 0 2px rgb(112 199 255 / 35%));
 }
 
@@ -65,7 +65,7 @@
 .taro-pupil { animation: bird-look 7s ease-in-out infinite; }
 .taro-jaw { transform-origin: 45px 35px; animation: bird-chatter 3.8s ease-in-out infinite; }
 .taro-wing-unit { transform-origin: 29px 45px; animation: bird-wave 4.8s ease-in-out infinite; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .taro-pupil { animation-duration: 3.5s; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .taro-pupil { animation-duration: 3.5s; }
 
 @keyframes bird-curiosity {
   0%, 12%, 100% { transform: rotate(0); }
@@ -108,11 +108,11 @@
 .spell-spark-two { animation-delay: -1.5s; }
 .spell-spark-three { animation-delay: -3s; }
 .spell-dust { opacity: .65; animation: magic-dust 4.8s ease-out infinite; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .spell-ribbon:not(.spell-ribbon-soft) {
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .spell-ribbon:not(.spell-ribbon-soft) {
   stroke-dasharray: 100;
   animation-duration: 1.6s;
 }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .spell-dust { animation-duration: 1.6s; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .spell-dust { animation-duration: 1.6s; }
 
 @keyframes wand-flourish {
   0%, 100% { transform: rotate(0); }
@@ -178,15 +178,15 @@ body.dark-mode .vader-audio-waves { stroke: #64bfdd; }
 body.dark-mode .vader-speaker rect { fill: #7388a4; }
 body.dark-mode .featured-icon { filter: drop-shadow(0 1px 1px rgb(164 184 221 / 16%)); }
 
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .vader-bust { animation: suit-engaged 1.8s ease-in-out infinite; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .vader-audio-waves { stroke-width: 2.1; filter: drop-shadow(0 0 2px #6cdbff); }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .vader-audio-waves path { animation-duration: .8s; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .taro-head-unit { animation: bird-engaged 2.8s ease-in-out infinite; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .taro-wing-unit { animation: bird-flap 1s ease-in-out infinite; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .taro-jaw { animation-duration: .85s; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .spell-cast-unit { animation: wand-engaged 1.2s ease-in-out infinite; }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .spell-spark { animation-duration: .8s; filter: drop-shadow(0 0 2px #c8e8ff); }
-:is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .spell-ribbon { stroke-width: 2; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .vader-bust { animation: suit-engaged 1.8s ease-in-out infinite; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .vader-audio-waves { stroke-width: 2.1; filter: drop-shadow(0 0 2px #6cdbff); }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .vader-audio-waves path { animation-duration: .8s; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .taro-head-unit { animation: bird-engaged 2.8s ease-in-out infinite; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .taro-wing-unit { animation: bird-flap 1s ease-in-out infinite; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .taro-jaw { animation-duration: .85s; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .spell-cast-unit { animation: wand-engaged 1.2s ease-in-out infinite; }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .spell-spark { animation-duration: .8s; filter: drop-shadow(0 0 2px #c8e8ff); }
+:is(.project-icon-button:hover, .project-icon-button:focus-visible) .spell-ribbon { stroke-width: 2; }
 @keyframes suit-engaged { 50% { transform: scale(1.04, 1.05); } }
 @keyframes bird-engaged { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-11deg) translateY(-2px); } 70% { transform: rotate(8deg) translateY(1px); } }
 @keyframes bird-flap { 50% { transform: rotate(24deg) translateY(-2px); } }
@@ -198,7 +198,7 @@ body.dark-mode .featured-icon { filter: drop-shadow(0 1px 1px rgb(164 184 221 / 
     animation: none !important;
     transition: none !important;
   }
-  :is(.project-icon-button:hover, .project-icon-button:focus-visible, .project-detail-hero:hover, .project-detail-hero:focus-within) .project-visual:has(.featured-icon) {
+  :is(.project-icon-button:hover, .project-icon-button:focus-visible) .project-visual:has(.featured-icon) {
     transform: none;
   }
 }

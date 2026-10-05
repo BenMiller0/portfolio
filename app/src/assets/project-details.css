@@ -14,6 +14,11 @@
   background: var(--detail-bg);
   color: var(--detail-text);
 }
+.window.fullscreen .project-detail {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
 .project-detail-project1 { --detail-accent: #735583; --detail-cover: #eeeaf2; }
 .project-detail-project2 { --detail-accent: #246c70; --detail-cover: #e7f0f0; }
 .project-detail-project3 { --detail-accent: #994355; --detail-cover: #eee9ec; }

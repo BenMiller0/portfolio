@@ -691,7 +691,7 @@ const TerminalContent = ({ projects = [] }) => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Tab') {
+    if (e.key === 'Tab' && !e.shiftKey) {
       handleTabCompletion(e);
     } else if (e.key === 'Enter') {
       executeCommand(input);

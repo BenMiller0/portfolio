@@ -1,241 +1,100 @@
-# Design Document - Benjamin Miller Portfolio Website
+# Portfolio design and maintenance
 
-## Overview
+This document describes the current React/Vite application. See [README.md](README.md) for setup and hosting commands and [AGENTS.md](AGENTS.md) for contribution requirements.
 
-This portfolio is a React/Vite single-page app with a desktop-inspired interface. It presents projects, resumes, experience, social links, and a terminal-style explorer through draggable window components.
+## Architecture
 
-**Live Site:** https://benjaminmillerportfolio.onrender.com/
+Paths below are relative to `app/src/`.
 
-The current architecture keeps `App.jsx` focused on application orchestration while moving layout math, static registry data, and animation behavior into smaller modules.
+| Module | Responsibility |
+| --- | --- |
+| `App.jsx` | Fetch projects, compose desktop icons, manage windows and theme |
+| `components/Window.jsx` | Dialog shell, controls, pointer dragging, focus restoration and containment |
+| `constants/windowLayout.js` | `MOBILE_BREAKPOINT`, initial placement and restore-position estimates |
+| `hooks/useMobileViewport.js` | Subscribe to the breakpoint with `matchMedia` and `useSyncExternalStore` |
+| `hooks/useTypewriter.js` | Intro text and reduced-motion behavior |
+| `data/windowRegistry.jsx` | `systemWindows`, `getTerminalDesktopWindow(projects)`, `socialLinks`, `resumeLinks` |
+| `windows/ProjectWindowContent.jsx` | Masthead, descriptions, technologies, gallery and failed-image fallback |
+| `windows/TerminalWindow.jsx` | In-memory file explorer, commands, completion and history |
+| `windows/aboutWindow.jsx`, `readmeWindow.jsx`, `experienceWindow.jsx` | Static window content |
 
-## Technology Stack
+The on-site README window is a React content module; it does not render the repository's `README.md`.
 
-- **Frontend Framework:** React 19
-- **Build Tool:** Vite
-- **Styling:** Custom CSS with dark mode and responsive mobile overrides
-- **Content Data:** `public/projects.json`
-- **Deployment:** Static deployment on Render
+### Project loading
 
-## Project Structure
+`App.jsx` fetches `/projects.json`, checks for a list, and filters records for string `id`, `label` and `title` fields. This is basic validation, not a complete schema validator. Authors must validate optional fields and ensure IDs are unique.
 
-```text
-portfolio/
-|-- README.md
-|-- DESIGN.md
-`-- app/
-    |-- public/
-    |   |-- projects.json
-    |   |-- project_photos/
-    |   |-- Resume_Benjamin_Miller.pdf
-    |   |-- software_resume.pdf
-    |   |-- doc-icon.png
-    |   |-- file-text-icon.png
-    |   |-- github.png
-    |   |-- linkedIn.png
-    |   `-- favcon.png
-    `-- src/
-        |-- App.jsx
-        |-- main.jsx
-        |-- assets/
-        |   `-- styles.css
-        |-- components/
-        |   `-- Window.jsx
-        |-- constants/
-        |   `-- windowLayout.js
-        |-- data/
-        |   `-- windowRegistry.jsx
-        |-- hooks/
-        |   `-- useTypewriter.js
-        `-- windows/
-            |-- ProjectWindowContent.jsx
-            |-- TerminalWindow.jsx
-            |-- aboutWindow.jsx
-            |-- experienceWindow.jsx
-            `-- readmeWindow.jsx
-```
+Loading placeholders become project buttons after success. Empty data and failed requests have separate states; the error button retries the fetch. `MAIN_PROJECT_IDS` selects `project1`, `project3` and `project4` in that order. JSON array order does not choose the featured projects. Remaining records populate More Projects.
 
-## Module Responsibilities
+### Window lifecycle
 
-### `src/App.jsx`
+`openWindows` stores IDs, titles, content elements, positions, z-indices, fullscreen flags, optional Back callbacks, header colors and focus-return targets. Opening an existing ID raises and focuses its window. Pointer interaction and keyboard focus entering a window raise it. Escape closes the window with the highest state z-index.
 
-`App.jsx` is the application shell. It composes the desktop, icons, project folders, resume icons, dark mode toggle, and active windows.
+`Window.jsx` uses pointer capture while dragging. Placement helpers supply initial estimates; a layout effect and `ResizeObserver` clamp restored windows using actual dimensions. Restore calculates a fresh position rather than remembering the pre-fullscreen drag position.
 
-It owns:
+More Projects opens a child and closes the folder window. Back reopens More Projects using the child's current fullscreen state. The desktop folder button remains the focus-return target, avoiding attempts to focus detached controls.
 
-- Loading project data from `/projects.json`
-- Validating project records and exposing loading, empty, and retry states through desktop icons
-- Window lifecycle state
-- Window focus and z-index updates
-- Window position updates from drag events
-- Fullscreen toggling
-- Persistent theme preference and Escape-to-close behavior
-- Dark mode class toggling
-- Splitting projects into primary projects and the "More Projects" window
+At 768px and below, every window uses the viewport layout and modal focus behavior regardless of its explicit fullscreen flag. Crossing the breakpoint updates dragging, focus containment and background scroll locking. Resume viewers initially open fullscreen.
 
-`App.jsx` should stay mostly orchestration-focused. New static icon data should usually go into `data/windowRegistry.jsx`, and new positioning behavior should usually go into `constants/windowLayout.js`.
+### Focus and scrolling
 
-### `src/components/Window.jsx`
+- Dialogs and controls have labels. Opening focuses the window unless a child, such as the terminal input, already received focus.
+- Closing restores focus to a connected launcher when focus belonged to the closing window. It must not steal focus from a newly opened child.
+- Fullscreen and mobile windows wrap Tab/Shift+Tab among visible controls. Hidden fullscreen buttons must not enter the mobile tab order.
+- The window respects `defaultPrevented` from child handlers. Terminal Tab completion stays in the input; Shift+Tab leaves it.
+- Window shells use a flex column with a fixed title bar and shrinking, scrollable content. `min-height: 0` prevents clipping in short viewports.
+- Fullscreen project articles have no width cap or centered outer margin. Keep paragraph reading measure without reintroducing blank gutters around the page.
 
-`Window.jsx` is the reusable window shell.
+Keyboard operation is supported, but the site has not been certified against an accessibility standard. Keyboard window movement and automated accessibility checks remain possible improvements.
 
-It owns:
+## Styling and illustrations
 
-- Title bar rendering
-- Close, fullscreen, and optional back controls
-- Header color mapping
-- Pointer-based title-bar dragging constrained to the viewport
-- Focus restoration and fullscreen focus containment
-- Mobile drag disabling
+| Stylesheet in `app/src/assets/` | Scope |
+| --- | --- |
+| `styles.css` | Desktop, branding, shared windows, terminal, resumes, mobile layout |
+| `desktop-icons.css` | Documents, socials, terminal icon and More Projects |
+| `featured-project-icons.css` | Bird, Vader and wand materials and motion |
+| `supporting-project-icons.css` | Verification, chart, calendar and compressor icons |
+| `project-details.css` | Mastheads, sections, photos, themes and responsive details |
 
-The component receives content through `children`, so project windows, static text windows, terminal windows, and resume viewers can all share the same chrome.
+`ProjectIcon.jsx` maps IDs to SVGs from `FeaturedProjectIcons.jsx` and `SupportingProjectIcons.jsx`. `DesktopIcon.jsx` renders the other illustrations. Gradients use `useId()` because desktop and window copies coexist. Unknown project IDs currently have no illustration; add a mapping when adding a project.
 
-### `src/constants/windowLayout.js`
+Shared CSS has successive overrides. Inspect all matching rules and computed styles before adding another. CSS controls rendered dimensions; `windowLayout.js` provides positioning estimates.
 
-This module centralizes viewport and positioning rules:
+### Motion and visual requirements
 
-- `MOBILE_BREAKPOINT`
-- `WINDOW_LAYOUT`
-- `isMobileViewport()`
-- `calculateWindowPosition()`
-- `calculateRestorePosition()`
+| Context | Expected behavior |
+| --- | --- |
+| Project launchers, including More Projects children | Continuous idle motion; stronger hover and keyboard-focus reaction |
+| Project detail icons | Idle motion only; hovering icon/header or focusing links must not amplify or switch animation |
+| More Projects folder | Static closed folder; front opens and three cards fan out on hover/focus; smooth reverse on exit |
+| Document icons | No looping idle animation; brief hover/focus response allowed |
+| Terminal icon | Steady cursor, no blinking idle animation |
+| Reduced-motion preference | No animated icon movement; folder hover/focus state may change immediately |
 
-Keeping these constants here makes it easier to tune desktop/mobile window behavior without digging through the main app component.
+The bird shows both eyes and looks around. Vader uses the suit photo as its button-color reference, independently blinking LEDs, and audio waves on both sides. The wand glow stays attached to its tip. Every icon family has explicit dark-mode materials. Keep the GitHub status dot and LinkedIn top highlight absent.
 
-### `src/data/windowRegistry.jsx`
+The folder has one back tab and one front panel, rounded joins, and no exposed back-panel corners underneath. Inspect all animation stages at enlarged scale as well as normal icon size.
 
-This module stores desktop metadata:
+### Responsive layout
 
-- `systemWindows` for About, README, and Experience windows
-- `terminalDesktopWindow` for the terminal icon/window config
-- `socialLinks` for GitHub and LinkedIn icons
-- `resumeLinks` for hardware and software resume icons
+Mobile is **768px inclusive** in CSS and JavaScript. It uses a scrollable desktop, bottom dock for terminal/social links, and viewport-filling windows with hidden fullscreen controls.
 
-When adding a new static desktop icon, prefer updating this registry instead of adding another hard-coded block in `App.jsx`.
+Above that breakpoint, windows remain draggable and the name and school line stay horizontally centered. At up to 1280px wide or up to 800px high, branding sits below the icon rows to avoid overlap. Desktop viewports at most 500px high use a centered header above a scrollable icon area, with the theme control in the header. These layout adjustments are separate from mobile window behavior. Larger desktops keep resumes at the right and the terminal at the lower left.
 
-### `src/hooks/useTypewriter.js`
+## Project data
 
-Reusable hook for character-by-character text animation.
-
-It accepts:
-
-- `text`
-- `delay`
-- `startDelay`
-
-It returns:
-
-- `value`, the currently typed text
-- `done`, whether typing has completed
-
-The intro name and school text use this hook.
-
-### `src/windows/`
-
-Window content lives here:
-
-- `aboutWindow.jsx` exports the About Me window config
-- `readmeWindow.jsx` exports the site README window config
-- `experienceWindow.jsx` stores experience data as objects and renders the list from data
-- `ProjectWindowContent.jsx` renders JSON-backed project details
-- `TerminalWindow.jsx` implements the terminal-style file explorer
-
-Static windows export config objects with this shape:
-
-```jsx
-export const aboutWindow = {
-  id: 'aboutWindow',
-  title: 'About Me',
-  label: 'about_me.txt',
-  color: '#a78bfa',
-  component: AboutContent
-};
-```
-
-## Data Flow
-
-### Project Loading
-
-1. `App.jsx` mounts.
-2. It fetches `/projects.json`.
-3. Projects are stored in React state.
-4. The first three projects render as primary desktop folders.
-5. Remaining projects render inside the "More Projects" window.
-6. Each project opens `ProjectWindowContent` inside the shared `Window` shell.
-
-### Window Lifecycle
-
-1. User clicks an icon or folder.
-2. `openWindow()` checks whether the window ID is already open.
-3. Existing windows are brought to front.
-4. New windows receive a calculated position, z-index, title, content, optional back handler, fullscreen flag, and header color.
-5. `openWindows.map(...)` renders each `Window`.
-6. Drag, close, focus, back, and fullscreen events flow back into `App.jsx` through callbacks.
-
-### Registry-Driven Icons
-
-Static desktop icons are rendered from registry data:
-
-- Text windows come from `systemWindows`
-- Terminal comes from `terminalDesktopWindow`
-- External profile links come from `socialLinks`
-- Resume viewers come from `resumeLinks`
-
-This keeps repeated JSX out of the main component and makes new icons easier to add.
-
-## Styling System
-
-### Main CSS File
-
-All styling currently lives in `src/assets/styles.css`.
-
-Primary sections:
-
-1. Base styles
-2. Background and branding
-3. Desktop icons and folders
-4. Window chrome and window content
-5. Project photos
-6. Experience list
-7. Resume viewer
-8. Dark mode overrides
-9. Mobile overrides
-10. Terminal styles
-
-Window header styles now share a base rule for layout and typography, with color-specific classes only overriding color and text shadow.
-
-### Responsive Strategy
-
-Desktop:
-
-- Fixed viewport
-- Draggable windows
-- Multiple windows visible
-- Resume icons positioned on the right
-
-Mobile:
-
-- Scrollable desktop content
-- Windows centered
-- Dragging disabled
-- Fullscreen window mode prevents body scroll
-- Resume icons move into normal document flow
-
-## Maintenance Guide
-
-### Add A Project
-
-Update `app/public/projects.json`:
+Example record in `app/public/projects.json`:
 
 ```json
 {
   "id": "project8",
   "label": "Short Desktop Label",
   "title": "Full Project Title",
-  "description": "First bullet\nSecond bullet",
+  "description": "First paragraph.\nSecond paragraph.",
   "technologies": "React, Vite, CSS",
   "github": "https://github.com/user/repo",
   "photos": ["example.png"],
-  "imageSize": "medium",
   "miscLink": {
     "displayName": "Demo",
     "url": "https://example.com"
@@ -243,24 +102,21 @@ Update `app/public/projects.json`:
 }
 ```
 
-Then add images to `app/public/project_photos/`.
+- `id`, `label` and `title` are required strings. Use a unique ID that does not collide with a static window.
+- `description` is split into paragraphs at newlines. `technologies` is a comma-separated string.
+- `photos` is an array of filenames in `app/public/project_photos/`; omit it or use an empty array for no gallery. Filenames are URL-encoded and case must match the assets.
+- `github` and `miscLink.url` should be HTTP(S) links. Project-page links are filtered to those protocols and open in a new tab.
+- `imageSize` is legacy and unused. Control sizing through CSS.
 
-### Add A Static Window
+Pages use solid project-colored mastheads, restrained link buttons, section labels, dividers, plain technologies lists and unframed photos. Section order is **About**, **Technologies used**, **Photo Gallery**; empty sections are omitted. Optional summaries and filename-based captions live in `ProjectWindowContent.jsx`.
 
-1. Create a new file in `app/src/windows/`.
-2. Export a component and window config object.
-3. Register the config in `app/src/data/windowRegistry.jsx`.
+Photos preserve aspect ratio and use two desktop columns or one mobile column. Links open the originals without a visible "View full size" overlay. A failed image replaces its link with an "Image unavailable" fallback.
 
-Example:
+## Other content
+
+Add a content component in `app/src/windows/` and export its config:
 
 ```jsx
-const ContactContent = () => (
-  <>
-    <h2>Contact</h2>
-    <p>Contact details go here.</p>
-  </>
-);
-
 export const contactWindow = {
   id: 'contactWindow',
   title: 'Contact',
@@ -270,69 +126,23 @@ export const contactWindow = {
 };
 ```
 
-Then:
+Define `ContactContent`, register the config in `systemWindows`, and add its visual to `DesktopIcon.jsx`. Registry IDs and visual mappings are separate. Edit the `experiences` array in `experienceWindow.jsx` for experience content.
 
-```jsx
-export const systemWindows = {
-  aboutWindow,
-  aboutSiteWindow,
-  experienceWindow,
-  contactWindow
-};
-```
+Resume/social metadata live in `windowRegistry.jsx`. The terminal also contains static About, Experience, social and resume file content; update those copies when the associated information changes. Terminal project files are generated from project records. This is an in-memory explorer, not a system shell.
 
-### Add A Resume Or External Link
+## Browser verification
 
-Update `resumeLinks` or `socialLinks` in `app/src/data/windowRegistry.jsx`.
+Lint and build cannot detect visual regressions. There is no committed browser test suite. Use an actual browser, inspect screenshots, and report tested behavior and remaining limitations.
 
-### Tune Window Layout
+1. **Desktop composition:** inspect 1440x900, 1024x600 and 820x600 in both themes. Branding, labels, resumes and controls must not overlap. Check a short viewport such as 820x300 and scroll to every launcher.
+2. **Icon geometry and motion:** inspect changed icons at actual size and 4-8x enlargement. Check idle, hover entry, intermediate frames, full hover, exit and keyboard focus. Look for detached glows, protruding panels, inconsistent outlines and clipping. Check repeated SVG instances have unique IDs.
+3. **Every project:** open all seven, verify headings/links and scroll to the last caption. Hover the detail icon/header and focus links; idle animation must not change. Repeat in dark mode.
+4. **Fullscreen:** maximize/restore at 1440, 1920 and 2560px widths. Compare article width with content client width, not just outer window width. Scroll to the bottom and check title-bar controls.
+5. **Window interaction:** drag to viewport edges, resize, reopen existing windows, switch overlapping windows by mouse and keyboard, and use Escape. Verify visible stacking matches the active window.
+6. **More Projects:** open a child, use Back, and close. Repeat after maximizing and restoring the child. Verify size and focus return to the folder.
+7. **Mobile and zoom:** test 320px, 390px and the exact 768px breakpoint; resize from 820px to mobile and back with a window open. Check overflow, scroll locking, long titles, controls and browser zoom/reflow.
+8. **Keyboard and motion:** test Tab, Shift+Tab, Enter, Escape, terminal completion/history, and reduced motion. Check detail pages as well as desktop launchers.
+9. **Failure states:** test failed project fetch and Retry, empty data, and a failed image. Check all local photos and both PDFs return real image/PDF data, not fallback HTML. Inspect console errors.
+10. **Final review:** review the diff and rerun checks affected by fixes. Keep builds and local screenshot/test artifacts out of commits.
 
-Update `app/src/constants/windowLayout.js` for:
-
-- Breakpoint changes
-- Default desktop/mobile window sizes
-- Initial y positions
-- Cascading window offset
-- Restore-from-fullscreen position
-
-### Update Experience
-
-Edit the `experiences` array in `app/src/windows/experienceWindow.jsx`. The component renders the list from data, so no repeated JSX blocks are needed.
-
-## Accessibility Notes
-
-Implemented:
-
-- Semantic headings and lists inside windows
-- Labeled dialog windows and controls
-- Keyboard-accessible desktop icons
-- Escape-to-close, focus restoration, and fullscreen focus containment
-- Mobile tap target adjustments
-- Dark mode contrast overrides
-- Reduced-motion support
-- Screen-reader window-state announcements
-
-Possible future improvements:
-
-- Keyboard window movement
-- Automated browser accessibility regression checks
-
-## Deployment
-
-Render static site settings:
-
-- Build command: `cd app && npm install && npm run build`
-- Output directory: `app/dist`
-
-SPA fallback is handled by `app/public/_redirects`:
-
-```text
-/* /index.html 200
-```
-
-## Future Improvements
-
-- Persist window positions between visits
-- Split very large CSS sections into smaller files if the styling surface grows
-- Add keyboard window movement
-- Add lightweight tests for window positioning helpers and project rendering
+For animation comparisons, inspect names/timing or pause animations at the same timestamp; unrelated live frames can mistake idle motion for a hover regression. The first frame alone cannot verify an animated icon.

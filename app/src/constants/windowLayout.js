@@ -13,7 +13,7 @@ export const WINDOW_LAYOUT = {
   offset: 30
 };
 
-export const isMobileViewport = () => window.innerWidth < MOBILE_BREAKPOINT;
+export const isMobileViewport = () => window.innerWidth <= MOBILE_BREAKPOINT;
 
 export const getCenteredWindowX = (widthPercent, maxWidth) => {
   const estimatedWidth = Math.min(window.innerWidth * widthPercent, maxWidth);
