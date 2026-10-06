@@ -15,6 +15,7 @@ dist-ssr/
 # Local configuration and browser-audit artifacts
 *.local
 .preview.local/
+/run
 
 # Editor directories and files
 .vscode/*
