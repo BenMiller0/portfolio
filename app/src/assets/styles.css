@@ -1763,9 +1763,9 @@ body.dark-mode .window {
 @media (max-width: 768px) {
   .desktop-background {
     background:
-      radial-gradient(circle at 82% 12%, rgba(125, 211, 252, 0.42), transparent 31%),
-      radial-gradient(circle at 10% 74%, rgba(45, 212, 191, 0.24), transparent 38%),
-      linear-gradient(155deg, #155e75 0%, #0e7490 42%, #164e63 100%);
+      radial-gradient(circle at 82% 12%, rgba(125, 211, 252, 0.36), transparent 31%),
+      radial-gradient(circle at 10% 74%, rgba(45, 212, 191, 0.20), transparent 38%),
+      linear-gradient(155deg, #13566b 0%, #0c6881 42%, #14475b 100%);
   }
 
   body.dark-mode .desktop-background {
@@ -1905,7 +1905,7 @@ body.dark-mode .window {
     content: '';
     position: fixed;
     z-index: 20;
-    right: 74px;
+    right: 10px;
     bottom: calc(8px + env(safe-area-inset-bottom, 0px));
     left: 10px;
     height: 96px;
@@ -1930,15 +1930,15 @@ body.dark-mode .window {
   }
 
   .system-icons > .terminal-doc-icon {
-    left: calc(50% - 144px);
+    left: calc(50% - 112px);
   }
 
   .system-icons > .social-github {
-    left: calc(50% - 70px);
+    left: calc(50% - 38px);
   }
 
   .system-icons > .social-linkedin {
-    left: calc(50% + 4px);
+    left: calc(50% + 36px);
   }
 
   .window {
@@ -1956,6 +1956,14 @@ body.dark-mode .window {
     border: 0;
     border-radius: 0;
     animation: mobile-app-open 220ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  }
+
+  .window.is-window-replacement {
+    animation-name: mobile-app-replace !important;
+  }
+
+  .window.has-completed-entry {
+    animation: none !important;
   }
 
   .window.fullscreen {
@@ -2010,7 +2018,7 @@ body.dark-mode .window {
   .dark-mode-toggle {
     top: auto;
     right: 14px;
-    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(116px + env(safe-area-inset-bottom, 0px));
     display: grid;
     width: 44px;
     height: 44px;
@@ -2099,6 +2107,17 @@ body.dark-mode .window {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes mobile-app-replace {
+  from {
+    opacity: 1;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

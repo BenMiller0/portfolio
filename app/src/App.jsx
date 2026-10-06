@@ -8,6 +8,7 @@ import { calculateRestorePosition, calculateWindowPosition, isMobileViewport } f
 import { resumeLinks, socialLinks, systemWindows, getTerminalDesktopWindow } from './data/windowRegistry';
 import { useTypewriter } from './hooks/useTypewriter';
 import { useMobileViewport } from './hooks/useMobileViewport';
+import { MAIN_PROJECT_IDS, getProjectGroups } from './data/projectLayout';
 
 const PROFILE_NAME = 'Benjamin Miller';
 const SCHOOL_NAME = 'UC San Diego - Computer Science';
@@ -35,7 +36,6 @@ const chunkItems = (items, size) =>
   );
 
 const createResumeWindowId = (title) => title.replace(/\s+/g, '').toLowerCase();
-const MAIN_PROJECT_IDS = ['project1', 'project3', 'project4'];
 
 const ProjectIconButton = ({ project, onClick }) => {
   return (
@@ -126,9 +126,9 @@ const App = () => {
       const windowExists = windows.some(win => win.id === id);
 
       if (windowExists) {
-        return windows.map(win =>
-          win.id === id ? { ...win, zIndex: maxZIndex + 1 } : win
-        );
+        return windows
+          .filter(win => win.id !== options.replaceWindowId || win.id === id)
+          .map(win => win.id === id ? { ...win, zIndex: maxZIndex + 1 } : win);
       }
 
       return [
@@ -142,7 +142,8 @@ const App = () => {
           onBack,
           isFullscreen: options.isFullscreen ?? false,
           color,
-          returnFocus
+          returnFocus,
+          replacesWindowId: options.replaceWindowId ?? null
         }
       ];
     });
@@ -154,6 +155,16 @@ const App = () => {
     }
     setAnnouncement('Window closed.');
     setOpenWindows(windows => windows.filter(win => win.id !== id));
+  }, []);
+
+  const finishWindowReplacement = useCallback((id, replacedWindowId) => {
+    setOpenWindows(windows => windows
+      .filter(win => win.id !== replacedWindowId)
+      .map(win => win.id === id ? {
+        ...win,
+        replacesWindowId: null,
+        hasCompletedEntry: true
+      } : win));
   }, []);
 
   const updateWindowPosition = useCallback((id, newPosition) => {
@@ -195,15 +206,11 @@ const App = () => {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [closeWindow, openWindows]);
 
-  const mainProjects = useMemo(() => MAIN_PROJECT_IDS
-    .map(id => projects.find(project => project.id === id))
-    .filter(Boolean), [projects]);
-  const moreProjects = useMemo(() => projects
-    .filter(project => !MAIN_PROJECT_IDS.includes(project.id)), [projects]);
+  const { mainProjects, moreProjects } = useMemo(() => getProjectGroups(projects), [projects]);
   const projectChunks = useMemo(() => chunkItems(mainProjects, 3), [mainProjects]);
   const terminalDesktopWindow = useMemo(() => getTerminalDesktopWindow(projects), [projects]);
 
-  const openMoreProjectsWindow = useCallback((preserveFullscreen = false) => {
+  const openMoreProjectsWindow = useCallback((preserveFullscreen = false, replaceWindowId = null) => {
     openWindow(
       'moreProjects',
       'More Projects',
@@ -219,7 +226,8 @@ const App = () => {
       null,
       {
         isFullscreen: preserveFullscreen && moreProjectsFullscreenRef.current,
-        returnFocus: moreProjectsLauncherRef.current
+        returnFocus: moreProjectsLauncherRef.current,
+        replaceWindowId
       }
     );
   }, [moreProjects, openWindow, closeWindow]);
@@ -370,25 +378,33 @@ const App = () => {
         </div>
       </div>
 
-      {openWindows.map(win => (
-        <Window
-          key={win.id}
-          id={win.id}
-          title={win.title}
-          onClose={() => closeWindow(win.id)}
-          position={win.position}
-          onDrag={updateWindowPosition}
-          onFocus={() => bringToFront(win.id)}
-          onBack={win.onBack}
-          style={{ zIndex: win.zIndex }}
-          isFullscreen={win.isFullscreen}
-          onToggleFullscreen={() => toggleFullscreen(win.id)}
-          headerColor={win.color}
-          returnFocus={win.returnFocus}
-        >
-          {win.content}
-        </Window>
-      ))}
+      {openWindows.map(win => {
+        const isBeingReplaced = openWindows.some(candidate => candidate.replacesWindowId === win.id);
+
+        return (
+          <Window
+            key={win.id}
+            id={win.id}
+            title={win.title}
+            onClose={() => closeWindow(win.id)}
+            position={win.position}
+            onDrag={updateWindowPosition}
+            onFocus={() => bringToFront(win.id)}
+            onBack={win.onBack}
+            style={{ zIndex: win.zIndex }}
+            isFullscreen={win.isFullscreen}
+            onToggleFullscreen={() => toggleFullscreen(win.id)}
+            headerColor={win.color}
+            returnFocus={win.returnFocus}
+            replacesWindowId={win.replacesWindowId}
+            hasCompletedEntry={win.hasCompletedEntry}
+            isBeingReplaced={isBeingReplaced}
+            onOpened={finishWindowReplacement}
+          >
+            {win.content}
+          </Window>
+        );
+      })}
 
       <button
         className={`dark-mode-toggle ${darkMode ? 'dark' : 'light'}`}
@@ -414,41 +430,49 @@ const App = () => {
   );
 };
 
-const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, closeMoreProjects, moreProjectsFullscreenRef, moreProjectsLauncherRef }) => (
-  <div className="more-projects-window">
-    <h2>More Projects</h2>
-    <div className="more-projects-grid">
-      {projects.map(project => {
-        const openProject = (event) => {
-          event?.stopPropagation();
-          const wasFullscreen = moreProjectsFullscreenRef.current;
-          openProjectWindow(
-            project.id,
-            project.title,
-            <ProjectWindowContent project={project} />,
-            () => {
-              const projectWindow = Array.from(document.querySelectorAll('.window'))
-                .find(node => node.dataset.windowId === project.id);
-              moreProjectsFullscreenRef.current = projectWindow?.classList.contains('fullscreen') ?? false;
-              reopenMoreProjects(true);
-            },
-            null,
-            { isFullscreen: wasFullscreen, returnFocus: moreProjectsLauncherRef.current }
-          );
-          closeMoreProjects();
-        };
+const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, closeMoreProjects, moreProjectsFullscreenRef, moreProjectsLauncherRef }) => {
+  const isMobile = useMobileViewport();
 
-        return (
-          <ProjectIconButton
-            key={project.id}
-            project={project}
-            onClick={openProject}
-          />
-        );
-      })}
+  return (
+    <div className="more-projects-window">
+      <h2>More Projects</h2>
+      <div className="more-projects-grid">
+        {projects.map(project => {
+          const openProject = (event) => {
+            event?.stopPropagation();
+            const wasFullscreen = moreProjectsFullscreenRef.current;
+            openProjectWindow(
+              project.id,
+              project.title,
+              <ProjectWindowContent project={project} />,
+              (replaceWindowId = null) => {
+                const projectWindow = Array.from(document.querySelectorAll('.window'))
+                  .find(node => node.dataset.windowId === project.id);
+                moreProjectsFullscreenRef.current = projectWindow?.classList.contains('fullscreen') ?? false;
+                reopenMoreProjects(true, replaceWindowId);
+              },
+              null,
+              {
+                isFullscreen: wasFullscreen,
+                returnFocus: moreProjectsLauncherRef.current,
+                replaceWindowId: isMobile ? 'moreProjects' : null
+              }
+            );
+            if (!isMobile) closeMoreProjects();
+          };
+
+          return (
+            <ProjectIconButton
+              key={project.id}
+              project={project}
+              onClick={openProject}
+            />
+          );
+        })}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ResumeViewerContent = ({ pdfPath, title }) => (
   <div className="resume-viewer">

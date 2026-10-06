@@ -2,6 +2,8 @@
 
 This document describes the current React/Vite application. See [README.md](README.md) for setup and hosting commands and [AGENTS.md](AGENTS.md) for contribution requirements.
 
+Task-specific agent workflows live in `skills/<name>/SKILL.md`, indexed in [AGENTS.md](AGENTS.md#repository-skills). Keep architectural facts here and focused implementation/verification guidance in the relevant skill. The skills directory is documentation only; it is not bundled into the site.
+
 ## Architecture
 
 Paths below are relative to `app/src/`.
@@ -14,8 +16,11 @@ Paths below are relative to `app/src/`.
 | `hooks/useMobileViewport.js` | Subscribe to the breakpoint with `matchMedia` and `useSyncExternalStore` |
 | `hooks/useTypewriter.js` | Intro text and reduced-motion behavior |
 | `data/windowRegistry.jsx` | `systemWindows`, `getTerminalDesktopWindow(projects)`, `socialLinks`, `resumeLinks` |
+| `data/projectLayout.js` | Shared `MAIN_PROJECT_IDS`, `MORE_PROJECTS_DIRECTORY` and `getProjectGroups(projects)` for desktop/terminal placement |
 | `windows/ProjectWindowContent.jsx` | Masthead, descriptions, technologies, gallery and failed-image fallback |
 | `windows/TerminalWindow.jsx` | In-memory file explorer, commands, completion and history |
+| `windows/vimSession.js` | Browser-native modal editing state and virtual-file adapter interface |
+| `components/VimEditor.jsx`, `components/vimHighlight.jsx` | Editor keyboard/touch input, cursor and syntax rendering |
 | `windows/aboutWindow.jsx`, `readmeWindow.jsx`, `experienceWindow.jsx` | Static window content |
 
 The on-site README window is a React content module; it does not render the repository's `README.md`.
@@ -32,7 +37,7 @@ Loading placeholders become project buttons after success. Empty data and failed
 
 `Window.jsx` uses pointer capture while dragging. Placement helpers supply initial estimates; a layout effect and `ResizeObserver` clamp restored windows using actual dimensions. Restore calculates a fresh position rather than remembering the pre-fullscreen drag position.
 
-More Projects opens a child and closes the folder window. Back reopens More Projects using the child's current fullscreen state. The desktop folder button remains the focus-return target, avoiding attempts to focus detached controls.
+More Projects opens a child and closes the folder window. On mobile, the inert outgoing window remains visually behind the incoming window until its entrance animation finishes, preventing a flash of the desktop in both the project and Back handoffs. Back reopens More Projects using the child's current fullscreen state. The desktop folder button remains the focus-return target, avoiding attempts to focus detached controls.
 
 At 768px and below, every window uses the viewport layout and modal focus behavior regardless of its explicit fullscreen flag. Crossing the breakpoint updates dragging, focus containment and background scroll locking. Resume viewers initially open fullscreen.
 
@@ -56,6 +61,7 @@ Keyboard operation is supported, but the site has not been certified against an 
 | `featured-project-icons.css` | Bird, Vader and wand materials and motion |
 | `supporting-project-icons.css` | Verification, chart, calendar and compressor icons |
 | `project-details.css` | Mastheads, sections, photos, themes and responsive details |
+| `vim-editor.css` | Classic black Vim surface, line numbers, block cursor, syntax colors and mobile touch keys |
 
 `ProjectIcon.jsx` maps IDs to SVGs from `FeaturedProjectIcons.jsx` and `SupportingProjectIcons.jsx`. `DesktopIcon.jsx` renders the other illustrations. Gradients use `useId()` because desktop and window copies coexist. Unknown project IDs currently have no illustration; add a mapping when adding a project.
 
@@ -78,7 +84,7 @@ The folder has one back tab and one front panel, rounded joins, and no exposed b
 
 ### Responsive layout
 
-Mobile is **768px inclusive** in CSS and JavaScript. It uses a scrollable desktop, bottom dock for terminal/social links with space for the bottom-right theme toggle, and viewport-filling windows with hidden fullscreen controls.
+Mobile is **768px inclusive** in CSS and JavaScript. It uses a scrollable desktop, a full-width bottom dock for terminal/social links, a bottom-right theme toggle above the dock, and viewport-filling windows with hidden fullscreen controls.
 
 Above that breakpoint, windows remain draggable and the name and school line stay horizontally centered. At up to 1280px wide or up to 800px high, branding sits below the icon rows to avoid overlap. Desktop viewports at most 500px high use a centered header above a scrollable icon area, with space beside the icons for the bottom-right theme control. These layout adjustments are separate from mobile window behavior. Larger desktops keep resumes at the right and the terminal at the lower left.
 
@@ -128,21 +134,35 @@ export const contactWindow = {
 
 Define `ContactContent`, register the config in `systemWindows`, and add its visual to `DesktopIcon.jsx`. Registry IDs and visual mappings are separate. Edit the `experiences` array in `experienceWindow.jsx` for experience content.
 
-Resume/social metadata live in `windowRegistry.jsx`. The terminal also contains static About, Experience, social and resume file content; update those copies when the associated information changes. Terminal project files are generated from project records. This is an in-memory explorer, not a system shell.
+Resume/social metadata live in `windowRegistry.jsx`, which passes those records and the registered document labels to the terminal. The terminal still contains static About, README and Experience text; update those copies when the associated content changes.
+
+The terminal's virtual `~` directory mirrors the desktop documents, links, resumes and featured projects. `getProjectGroups` from `data/projectLayout.js` selects the same three featured IDs, in order, for both views; remaining project files are under `~/More Projects/`. Omit that folder when no additional projects exist, as on the desktop. Navigation and completion support relative, `~/` and `/` paths and directory names containing spaces. `cat`/`grep` wildcards match filenames within the selected directory (for example, `cat "More Projects/*.proj"`); they do not recursively expand directory patterns. This is an in-memory explorer, not a system shell. See README for the command list; `ls` accepts a path but no flags, and the old `head`, `tail`, `resume`, `projects` and `about` commands are absent.
+
+Shell help is built from `HELP_ENTRIES` in `TerminalWindow.jsx`. The longest command label determines description padding, including `grep <term> <file>`. Preserve monospace/preformatted output and the command-list-only presentation; longer instructions belong in manual pages or editor help.
+
+### Custom Vim
+
+`TerminalWindow` owns the filesystem for its entire mounted lifetime and passes a read/write adapter to `VimEditor`. Writes update only these virtual entries, including new text files in existing folders; PDF entries remain non-editable. Closing Vim retains written files, while closing Terminal resets the filesystem. Unsaved buffers prompt on editor quit; the window's Close control retains its normal immediate-close behavior.
+
+`VimSession` is a dependency-free state machine with per-buffer undo/redo, modes, counted motions/operators, text objects, registers, macros, marks, dot repeat, search/substitution and Ex-style file/buffer commands. `VIM_HELP` is the command reference. This is not upstream Vim and does not support Vimscript, plugins, shell execution, split windows or visual-block mode; regex patterns use JavaScript syntax. Keep help and implementation aligned.
+
+The UI uses a native textarea for editing/IME input and selection, with a non-interactive, aria-hidden syntax layer. Highlighting renders React text, never raw HTML. Scroll positions, tab width and line metrics must stay synchronized across text, syntax and gutter. Both themes retain the reference's classic black surface, warm text/line numbers, magenta comments, violet built-ins, cyan filler lines and gray block cursor. Desktop has no editor toolbar; mobile has small touch keys below the command line. Escape is contained inside Vim, Tab indents in Insert/Replace mode, and Shift+Tab leaves the editor.
 
 ## Browser verification
 
 Lint and build cannot detect visual regressions. There is no committed browser test suite. Use an actual browser, inspect screenshots, and report tested behavior and remaining limitations.
+
+Put ad hoc browser-audit scripts, screenshots and temporary browser profiles in the ignored `.preview.local/` directory. This disposable workspace is separate from Vite's `npm run preview` command and from the generated `app/dist/` production build.
 
 1. **Desktop composition:** inspect 1440x900, 1024x600 and 820x600 in both themes. Branding, labels, resumes and controls must not overlap. Check a short viewport such as 820x300 and scroll to every launcher.
 2. **Icon geometry and motion:** inspect changed icons at actual size and 4-8x enlargement. Check idle, hover entry, intermediate frames, full hover, exit and keyboard focus. Look for detached glows, protruding panels, inconsistent outlines and clipping. Check repeated SVG instances have unique IDs.
 3. **Every project:** open all seven, verify headings/links and scroll to the last caption. Hover the detail icon/header and focus links; idle animation must not change. Repeat in dark mode.
 4. **Fullscreen:** maximize/restore at 1440, 1920 and 2560px widths. Compare article width with content client width, not just outer window width. Scroll to the bottom and check title-bar controls.
 5. **Window interaction:** drag to viewport edges, resize, reopen existing windows, switch overlapping windows by mouse and keyboard, and use Escape. Verify visible stacking matches the active window.
-6. **More Projects:** open a child, use Back, and close. Repeat after maximizing and restoring the child. Verify size and focus return to the folder.
+6. **More Projects:** open a child, use Back, and close. On mobile, verify the folder-to-child transition never flashes the desktop. Repeat after maximizing and restoring the child. Verify size and focus return to the folder.
 7. **Mobile and zoom:** test 320px, 390px and the exact 768px breakpoint; resize from 820px to mobile and back with a window open. Check overflow, scroll locking, long titles, controls and browser zoom/reflow.
-8. **Keyboard and motion:** test Tab, Shift+Tab, Enter, Escape, terminal completion/history, and reduced motion. Check detail pages as well as desktop launchers.
+8. **Keyboard and motion:** test Tab, Shift+Tab, Enter, Escape, terminal completion/history, and reduced motion. In Vim check editing, counted operators, undo/redo, macros, search/substitute, buffers, `:wq`, unsaved `:q`, discard, help/Escape, syntax/cursor alignment while scrolling and mobile touch keys. Verify saved virtual files through `cat`; window close/reopen resets them. Check detail pages as well as desktop launchers.
 9. **Failure states:** test failed project fetch and Retry, empty data, and a failed image. Check all local photos and both PDFs return real image/PDF data, not fallback HTML. Inspect console errors.
-10. **Final review:** review the diff and rerun checks affected by fixes. Keep builds and local screenshot/test artifacts out of commits.
+10. **Final review:** review the diff and rerun checks affected by fixes. Keep generated builds out of commits and confirm local screenshot/test artifacts remain under `.preview.local/`.
 
 For animation comparisons, inspect names/timing or pause animations at the same timestamp; unrelated live frames can mistake idle motion for a hover regression. The first frame alone cannot verify an animated icon.

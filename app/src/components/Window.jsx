@@ -25,15 +25,33 @@ const Window = ({
   isFullscreen,
   onToggleFullscreen,
   returnFocus,
-  headerColor
+  headerColor,
+  replacesWindowId,
+  hasCompletedEntry,
+  isBeingReplaced,
+  onOpened
 }) => {
   const windowRef = useRef(null);
   const titlebarRef = useRef(null);
   const dragState = useRef(null);
   const previousFocusRef = useRef(null);
+  const openedRef = useRef(false);
   const titleId = useId();
   const isMobile = useMobileViewport();
   const isModal = isFullscreen || isMobile;
+
+  const notifyOpened = useCallback(() => {
+    if (openedRef.current || !replacesWindowId) return;
+    openedRef.current = true;
+    onOpened?.(id, replacesWindowId);
+  }, [id, onOpened, replacesWindowId]);
+
+  useEffect(() => {
+    openedRef.current = false;
+    if (!replacesWindowId) return undefined;
+    const fallbackTimer = window.setTimeout(notifyOpened, 350);
+    return () => window.clearTimeout(fallbackTimer);
+  }, [notifyOpened, replacesWindowId]);
 
   useEffect(() => {
     previousFocusRef.current = returnFocus || document.activeElement;
@@ -118,6 +136,10 @@ const Window = ({
 
   const handleBack = (event) => {
     event.stopPropagation();
+    if (isMobile) {
+      onBack?.(id);
+      return;
+    }
     onClose();
     onBack?.();
   };
@@ -160,12 +182,17 @@ const Window = ({
     <section
       ref={windowRef}
       data-window-id={id}
-      className={`window ${isFullscreen ? 'fullscreen' : ''}`}
+      className={`window ${isFullscreen ? 'fullscreen' : ''} ${replacesWindowId ? 'is-window-replacement' : ''} ${hasCompletedEntry ? 'has-completed-entry' : ''}`}
       style={{ ...positionStyle, ...style }}
       role="dialog"
       aria-modal={isModal ? 'true' : undefined}
+      aria-hidden={isBeingReplaced ? 'true' : undefined}
+      inert={isBeingReplaced ? true : undefined}
       aria-labelledby={titleId}
       tabIndex={-1}
+      onAnimationEnd={(event) => {
+        if (event.target === event.currentTarget) notifyOpened();
+      }}
       onPointerDown={onFocus}
       onFocusCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) onFocus?.();
