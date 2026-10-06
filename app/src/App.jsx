@@ -232,11 +232,11 @@ const App = () => {
     );
   }, [moreProjects, openWindow, closeWindow]);
 
-  const openResumeViewer = useCallback((pdfPath, title) => {
+  const openResumeViewer = useCallback((pdfPath, title, description) => {
     openWindow(
       createResumeWindowId(title),
       title,
-      <ResumeViewerContent pdfPath={pdfPath} title={title} />,
+      <ResumeViewerContent pdfPath={pdfPath} title={title} description={description} />,
       null,
       '#cc3333',
       { isFullscreen: true, position: { x: 0, y: 0 } }
@@ -361,7 +361,7 @@ const App = () => {
 
         <div className="resume-icons">
           {resumeLinks.map(resume => {
-            const openResume = () => openResumeViewer(resume.path, resume.title);
+            const openResume = () => openResumeViewer(resume.path, resume.title, resume.description);
 
             return (
               <button
@@ -474,9 +474,10 @@ const MoreProjectsContent = ({ projects, openProjectWindow, reopenMoreProjects, 
   );
 };
 
-const ResumeViewerContent = ({ pdfPath, title }) => (
+const ResumeViewerContent = ({ pdfPath, title, description }) => (
   <div className="resume-viewer">
     <h2>{title}</h2>
+    <p className="resume-summary">{description}</p>
     {isMobileViewport() && <p>If the PDF does not display below, please use the download button.</p>}
     <iframe
       src={pdfPath}

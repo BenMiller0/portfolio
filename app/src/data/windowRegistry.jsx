@@ -31,12 +31,14 @@ export const resumeLinks = [
     id: 'hardware-resume',
     label: 'Hardware Resume',
     title: 'Hardware Resume',
+    description: 'This résumé highlights my experience with low-level programming, firmware, and embedded systems.',
     path: '/resumes/Resume_Benjamin_Miller.pdf'
   },
   {
     id: 'software-resume',
     label: 'Software Resume',
     title: 'Software Resume',
+    description: 'This résumé highlights my experience in application development and machine learning.',
     path: '/resumes/Resume-Benjamin-Miller.pdf'
   }
 ];
