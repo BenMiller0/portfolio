@@ -3,6 +3,7 @@ import VimEditor from '../components/VimEditor';
 import { VIM_HELP } from './vimSession';
 import '../assets/vim-editor.css';
 import { getProjectGroups, MORE_PROJECTS_DIRECTORY } from '../data/projectLayout';
+import { workExperience, leadershipExperience, formatExperienceText } from '../data/experience';
 
 const USER = 'ben';
 const HOST = 'portfolio';
@@ -56,23 +57,17 @@ const createFileSystem = (projects, { systemWindows, socialLinks, resumeLinks })
     '~': {
       type: 'dir',
       children: {
-        [systemWindows.aboutWindow.label]: {
-          type: 'file',
-          content: 'Benjamin Miller\nUC San Diego - Computer Science\nEmbedded Systems & Software Engineer'
-        },
         [systemWindows.aboutSiteWindow.label]: {
           type: 'file',
-          content: 'This portfolio is designed to look and feel like a desktop environment, showcasing projects in embedded systems, AI/ML, and app/web app development.'
+          content: systemWindows.aboutSiteWindow.text
         },
         [systemWindows.experienceWindow.label]: {
           type: 'file',
-          content: [
-            'Electronic Props Designer, Star Wars Club at UCSD',
-            'Software Engineering Lead & VP, Themed Entertainment Association at UCSD',
-            'Software Engineering Intern, Western Digital',
-            'Software Developer Intern, Center for Applied Internet Data Analysis',
-            'Resident Advisor, COSMOS UC San Diego'
-          ].join('\n')
+          content: formatExperienceText(workExperience)
+        },
+        [systemWindows.leadershipWindow.label]: {
+          type: 'file',
+          content: formatExperienceText(leadershipExperience)
         },
         ...Object.fromEntries(socialLinks.map(link => [
           `${link.label}.url`, { type: 'file', content: link.href }

@@ -9,6 +9,7 @@ import { resumeLinks, socialLinks, systemWindows, getTerminalDesktopWindow } fro
 import { useTypewriter } from './hooks/useTypewriter';
 import { useMobileViewport } from './hooks/useMobileViewport';
 import { MAIN_PROJECT_IDS, getProjectGroups } from './data/projectLayout';
+import { findLinkedProject } from './data/projectLinks';
 
 const PROFILE_NAME = 'Benjamin Miller';
 const SCHOOL_NAME = 'UC San Diego - Computer Science';
@@ -42,6 +43,7 @@ const ProjectIconButton = ({ project, onClick }) => {
     <button
       type="button"
       className={`folder project-icon-button project-icon-button-${project.id}`}
+      data-project-id={project.id}
       onClick={onClick}
     >
       <ProjectIcon projectId={project.id} />
@@ -60,6 +62,7 @@ const App = () => {
   const isMobile = useMobileViewport();
   const moreProjectsFullscreenRef = useRef(false);
   const moreProjectsLauncherRef = useRef(null);
+  const initialProjectOpenedRef = useRef(false);
   const { value: typedName, done: nameTyped } = useTypewriter(PROFILE_NAME, 50);
   const { value: typedSchool } = useTypewriter(SCHOOL_NAME, 40, nameTyped ? 150 : 0);
 
@@ -173,6 +176,12 @@ const App = () => {
     ));
   }, []);
 
+  const resizeWindow = useCallback((id, { x, y, width, height }) => {
+    setOpenWindows(windows => windows.map(win => win.id === id ? {
+      ...win, position: { x, y }, size: { width, height }
+    } : win));
+  }, []);
+
   const toggleFullscreen = useCallback((id) => {
     setAnnouncement('Window size changed.');
     setOpenWindows(windows => {
@@ -231,6 +240,33 @@ const App = () => {
       }
     );
   }, [moreProjects, openWindow, closeWindow]);
+
+  useEffect(() => {
+    if (projectStatus !== 'ready' || initialProjectOpenedRef.current) return;
+    initialProjectOpenedRef.current = true;
+    const project = findLinkedProject(projects, window.location);
+    if (!project) return;
+
+    const isMoreProject = moreProjects.some(candidate => candidate.id === project.id);
+    const launcher = isMoreProject
+      ? moreProjectsLauncherRef.current
+      : Array.from(document.querySelectorAll('.projects-container .project-icon-button'))
+        .find(node => node.dataset.projectId === project.id);
+
+    openWindow(
+      project.id,
+      project.title,
+      <ProjectWindowContent project={project} />,
+      isMoreProject ? (replaceWindowId = null) => {
+        const projectWindow = Array.from(document.querySelectorAll('[data-window-id]'))
+          .find(node => node.dataset.windowId === project.id);
+        moreProjectsFullscreenRef.current = projectWindow?.classList.contains('fullscreen') ?? false;
+        openMoreProjectsWindow(true, replaceWindowId);
+      } : null,
+      null,
+      { isFullscreen: false, returnFocus: launcher }
+    );
+  }, [projectStatus, projects, moreProjects, openWindow, openMoreProjectsWindow]);
 
   const openResumeViewer = useCallback((pdfPath, title, description) => {
     openWindow(
@@ -389,6 +425,8 @@ const App = () => {
             onClose={() => closeWindow(win.id)}
             position={win.position}
             onDrag={updateWindowPosition}
+            size={win.size}
+            onResize={resizeWindow}
             onFocus={() => bringToFront(win.id)}
             onBack={win.onBack}
             style={{ zIndex: win.zIndex }}

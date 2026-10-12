@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useId, useLayoutEffect, useRef } from 'react';
 import { useMobileViewport } from '../hooks/useMobileViewport';
+import { useWindowResize } from '../hooks/useWindowResize';
 
 const HEADER_COLOR_MAP = {
   lightgreen: 'window-header-green',
@@ -19,6 +20,8 @@ const Window = ({
   onClose,
   position,
   onDrag,
+  size,
+  onResize,
   onFocus,
   style,
   onBack,
@@ -39,6 +42,10 @@ const Window = ({
   const titleId = useId();
   const isMobile = useMobileViewport();
   const isModal = isFullscreen || isMobile;
+  const { previewBounds, resizeState, startResize, moveResize, stopResize, resizeWithKeyboard } = useWindowResize({
+    windowRef, enabled: !isModal, id, onResize, onFocus
+  });
+  const activeSize = !isModal && (previewBounds || size);
 
   const notifyOpened = useCallback(() => {
     if (openedRef.current || !replacesWindowId) return;
@@ -73,7 +80,7 @@ const Window = ({
     if (isModal) return undefined;
     const keepInView = () => {
       const node = windowRef.current;
-      if (!node) return;
+      if (!node || resizeState.current) return;
       const margin = 8;
       const x = Math.max(margin, Math.min(position.x, window.innerWidth - node.offsetWidth - margin));
       const y = Math.max(margin, Math.min(position.y, window.innerHeight - node.offsetHeight - margin));
@@ -87,7 +94,7 @@ const Window = ({
       window.removeEventListener('resize', keepInView);
       observer.disconnect();
     };
-  }, [id, isModal, onDrag, position.x, position.y]);
+  }, [id, isModal, onDrag, position.x, position.y, resizeState]);
 
   const startDrag = useCallback((event) => {
     if (
@@ -171,8 +178,8 @@ const Window = ({
     top: '72px',
     position: 'fixed'
   } : {
-    left: `${position.x}px`,
-    top: `${position.y}px`,
+    left: `${previewBounds?.x ?? position.x}px`,
+    top: `${previewBounds?.y ?? position.y}px`,
     position: 'absolute'
   });
 
@@ -182,8 +189,8 @@ const Window = ({
     <section
       ref={windowRef}
       data-window-id={id}
-      className={`window ${isFullscreen ? 'fullscreen' : ''} ${replacesWindowId ? 'is-window-replacement' : ''} ${hasCompletedEntry ? 'has-completed-entry' : ''}`}
-      style={{ ...positionStyle, ...style }}
+      className={`window ${isFullscreen ? 'fullscreen' : ''} ${activeSize ? 'has-custom-size' : ''} ${previewBounds ? 'is-resizing' : ''} ${replacesWindowId ? 'is-window-replacement' : ''} ${hasCompletedEntry ? 'has-completed-entry' : ''}`}
+      style={{ ...positionStyle, ...style, ...(activeSize ? { width: activeSize.width, height: activeSize.height } : {}) }}
       role="dialog"
       aria-modal={isModal ? 'true' : undefined}
       aria-hidden={isBeingReplaced ? 'true' : undefined}
@@ -238,6 +245,26 @@ const Window = ({
         </div>
       </div>
       <div className="window-content">{children}</div>
+      {!isModal && ['n', 'e', 's', 'w', 'ne', 'nw', 'se', 'sw'].map(direction => {
+        const Handle = direction === 'se' ? 'button' : 'div';
+        return (
+          <Handle
+            key={direction}
+            className={`window-resize-handle window-resize-${direction}`}
+            {...(direction === 'se' ? {
+              type: 'button',
+              'aria-label': 'Resize window',
+              title: 'Resize window (arrow keys; Shift for larger steps)',
+              onKeyDown: resizeWithKeyboard
+            } : { 'aria-hidden': true })}
+            onPointerDown={event => startResize(event, direction)}
+            onPointerMove={moveResize}
+            onPointerUp={stopResize}
+            onPointerCancel={stopResize}
+            onLostPointerCapture={stopResize}
+          />
+        );
+      })}
     </section>
   );
 };

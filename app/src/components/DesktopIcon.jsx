@@ -2,9 +2,9 @@ import { useId } from 'react';
 import '../assets/desktop-icons.css';
 
 const documentMarks = {
-  aboutWindow: <><circle cx="37" cy="31" r="6" /><path d="M26 49v-3c0-9 22-9 22 0v3Z" /></>,
   aboutSiteWindow: <path d="m29 30-7 7 7 7m16-14 7 7-7 7m-6-17-5 20" />,
   experienceWindow: <><rect x="23" y="29" width="30" height="20" rx="3" /><path d="M32 29v-5h12v5M23 37q15 8 30 0m-15 1v5" /></>,
+  leadershipWindow: <><circle cx="39" cy="27" r="5" /><circle cx="26" cy="36" r="4" /><circle cx="52" cy="36" r="4" /><path d="M32 41v-3c0-7 14-7 14 0v3M19 49v-3c0-7 14-7 14 0v3Zm26 0v-3c0-7 14-7 14 0v3Z" /></>,
   'hardware-resume': <><rect x="29" y="24" width="18" height="18" rx="2" /><path d="M34 20v4m8-4v4m-8 18v4m8-4v4M25 29h4m-4 8h4m18-8h4m-4 8h4M34 29h8v8h-8Z" /></>,
   'software-resume': <path d="m30 26-8 8 8 8m16-16 8 8-8 8m-5-20-6 24" />,
   status: <><path d="M25 30h25M25 37h25M25 44h16" /><circle cx="53" cy="54" r="5" /></>

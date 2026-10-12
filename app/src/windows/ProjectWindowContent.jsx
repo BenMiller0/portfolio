@@ -14,6 +14,7 @@ const projectSummaries = {
 
 const photoCaptions = {
   'Taro.png': 'Taro, the interactive animatronic',
+  'Taro_embedded_system.jpg': "Taro's embedded electronics",
   'vader_suit.jpg': 'The finished Darth Vader suit',
   'vader_embedded.jpg': 'Inside the embedded electronics',
   'wand_spell_caster.jpg': 'The spell-casting wand',

@@ -11,6 +11,7 @@ Use [README's terminal guide](../../README.md#terminal-folders) for user-facing 
 
 - `windows/TerminalWindow.jsx` owns shell commands, completion, history, virtual files and the editor's read/write adapter. Keep command dispatch, completion, `HELP_ENTRIES` and manual pages consistent. Help shows only the command list; description padding is calculated from the longest label, not manually spaced per row.
 - `data/projectLayout.js` supplies shared featured/More Projects grouping. `data/windowRegistry.jsx` supplies document labels and link/PDF records. Do not recreate those lists in the terminal.
+- The home documents are `README.txt`, `experience.txt` and `leadership.txt`. README's registry `text` comes from `windows/readmeWindow.jsx` and includes the biography, skills and portfolio description. Work/leadership text is formatted from shared entries in `data/experience.js`; preserve the leadership order Star Wars Club, Roblox + RBXDev, then TEA. There is no separate About Me file.
 - `windows/vimSession.js` owns modal editing and buffer state without browser/React dependencies. Update `VIM_HELP` when supported editing commands change; do not imply upstream Vim compatibility.
 - `components/VimEditor.jsx` owns native input, focus and selection. `components/vimHighlight.jsx` renders text spans, not HTML; `assets/vim-editor.css` owns the classic terminal appearance.
 
@@ -25,6 +26,7 @@ The textarea, syntax layer and gutter must share font metrics, tab width and scr
 ## Verify the changed behavior
 
 - Exercise quoted paths, case-insensitive matching, relative paths, `~/`, `/`, completion and filenames containing spaces. Confirm root/More Projects placement still matches the desktop.
+- After document changes, compare `ls`, `cat`, Tab completion and Vim reads with the matching desktop windows, including dates, bullets and entry order.
 - For engine changes, drive `VimSession` with an in-memory adapter: test the affected operator/count/text object, undo/redo and repeat/macro behavior. Check errors leave usable state.
 - In a browser, save a file with `:wq` and read it with `cat`; check unsaved `:q`, discard with `:q!`, switching buffers, and close/reopen reset. Test Escape, Tab and Shift+Tab from input, command entry and help.
 - For rendering changes, inspect both themes at desktop, short-height and 320/390/768px widths; include long lines, scrolling, block cursor, syntax colors and touch controls. Check help description alignment, especially `grep` and wrapped mobile output.

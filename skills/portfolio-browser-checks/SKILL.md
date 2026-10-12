@@ -17,6 +17,8 @@ Use available browser tools; no particular browser automation package is require
 
 - Layout: measure the actual article/control bounds, document overflow and scroll reachability, not just the outer window. Include normal and fullscreen states where relevant.
 - Responsive changes: test 320px, 390px and exactly 768px; cross to 820px with a window open. Include a short desktop such as 820x300, not only a wide screenshot.
+- Window resizing: use real pointer gestures on all edges/corners, observe intermediate bounds, and verify release/repeated gestures never restart the opening animation. Check keyboard sizing, viewport limits, fullscreen restore and cleanup when closing or crossing the mobile breakpoint mid-gesture. Mobile/fullscreen must omit handles.
+- Direct links and documents: follow DESIGN's project-link and document checks, including delayed loading/Retry, the three document launchers, and agreement between desktop and terminal content. Local preview success does not establish that a deployed host has the required rewrite.
 - Animations: inspect intermediate frames or equal paused timestamps, both directions and reduced motion. Confirm which CSS animation is applied; unrelated idle frames can look like a regression.
 - Keyboard: use real key events and inspect active focus. Test Enter, Escape, Tab and Shift+Tab through the affected controls; programmatic clicks alone do not verify keyboard behavior.
 - Terminal: exercise native input, completion and help alignment. For Vim, test typing, save/discard and cursor/syntax/gutter synchronization rather than checking only editor visibility.

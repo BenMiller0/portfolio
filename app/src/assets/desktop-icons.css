@@ -17,6 +17,7 @@
 .desktop-surface-end { stop-color: var(--icon-bottom); }
 .desktop-visual-aboutSiteWindow { --icon-top: #ffe8e2; --icon-bottom: #efa69f; --icon-edge: #dc918d; --icon-ink: #a34654; --icon-fold: #de8a85; }
 .desktop-visual-experienceWindow { --icon-top: #fff2c0; --icon-bottom: #efbd63; --icon-edge: #d3a352; --icon-ink: #8b5c22; --icon-fold: #dfa143; }
+.desktop-visual-leadershipWindow { --icon-top: #dcf8ea; --icon-bottom: #89cfb3; --icon-edge: #68ae92; --icon-ink: #286950; --icon-fold: #6eb499; }
 .desktop-visual-hardware-resume,
 .desktop-visual-software-resume { --icon-top: #f7fbff; --icon-bottom: #bed1e3; --icon-edge: #91aac2; --icon-ink: #426484; --icon-fold: #9db6ce; }
 .desktop-visual-terminal { --icon-top: #28485b; --icon-bottom: #122b3d; --icon-edge: #8ec0d5; --icon-ink: #94f4c9; }
@@ -62,6 +63,7 @@ body.dark-mode .desktop-folder-preview path { stroke: #bbd7ec; }
 body.dark-mode .desktop-visual { --icon-top: #423757; --icon-bottom: #241d39; --icon-edge: #9b83bd; --icon-ink: #d5b8f8; --icon-fold: #66517d; filter: drop-shadow(0 5px 7px rgb(0 0 0 / 45%)); }
 body.dark-mode .desktop-visual-aboutSiteWindow { --icon-top: #573440; --icon-bottom: #311d2e; --icon-edge: #bd8595; --icon-ink: #ffb9bf; --icon-fold: #7f4f60; }
 body.dark-mode .desktop-visual-experienceWindow { --icon-top: #53432d; --icon-bottom: #30291f; --icon-edge: #b89d66; --icon-ink: #f3d394; --icon-fold: #7f6540; }
+body.dark-mode .desktop-visual-leadershipWindow { --icon-top: #294e43; --icon-bottom: #172f29; --icon-edge: #75b39b; --icon-ink: #b2edd1; --icon-fold: #426f5d; }
 body.dark-mode .desktop-visual-hardware-resume,
 body.dark-mode .desktop-visual-software-resume { --icon-top: #35465e; --icon-bottom: #1a2639; --icon-edge: #819bbb; --icon-ink: #b7d7f5; --icon-fold: #4c6582; }
 body.dark-mode .desktop-pdf-badge rect { fill: #90384e; stroke: #d78195; }

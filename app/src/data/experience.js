@@ -1,0 +1,59 @@
+export const workExperience = [
+  {
+    role: 'Embedded Software Engineering Intern, Western Digital',
+    dates: 'Sep. 2025 - Dec. 2025, Jun. 2026 - Sep. 2026',
+    bullets: [
+      'Developed and debugged embedded C++ firmware within a multi-threaded codebase, implementing and validating system behaviors through unit and integration testing.',
+      'Investigated firmware bugs involving asynchronous power offs, error handling, and system state transitions, identifying root causes through debugging tools and code-level analysis.',
+      'Contributed to the development of firmware for next generation HAMR (Heat-Assisted Magnetic Recording) storage devices to improve device reliability and performance.',
+      'Leveraged Agentic AI tools and MCP (model context protocol) integrations to automate development workflows resulting in higher efficiency.',
+      'Improved system infrastructure by implementing embedded C++ features and enhanced error handling, increasing system stability in production codebase.',
+      'Developed an internal tool for accelerating integration testing with a Python microservice and full-stack application (Flask, SQLite, JavaScript), demonstrated successfully to management.'
+    ]
+  },
+  {
+    role: 'Software Developer Intern, Center for Applied Internet Data Analysis',
+    dates: 'Apr. 2025 - Aug. 2025',
+    bullets: [
+      'Enhanced website usability by developing and maintaining JavaScript and Python scripts, streamlining content management workflows.',
+      'Maintained a website with 2,000+ daily visitors, ensuring reliability and performance with Git-based collaborative version control.'
+    ]
+  },
+  {
+    role: 'Resident Advisor, Jacobs School of Engineering  ',
+    dates: 'Jul. 2024 - Aug. 2024',
+    bullets: [
+      'Mentored students in the COSMOS engineering summer program’s Video Game Programming and AI Design group, providing guidance, support, and advice throughout the program.'
+    ]
+  }
+];
+
+export const leadershipExperience = [
+  {
+    role: 'Electronic Props Designer, Star Wars Club at UC San Diego',
+    dates: 'Mar. 2026 - Present',
+    bullets: [
+      'Designed embedded systems and C++ firmware for props for film making and on campus promotional props using a real time operating system (RTOS) and microcontrollers resulting in screen accurate prop recreations.'
+    ]
+  },
+  {
+    role: 'Embedded Systems Designer, Roblox + RBXDev at UC San Diego',
+    dates: 'Sep. 2026 - Present',
+    bullets: [
+      'Contributing to the architecture and system design of a complex embedded system, including hardware, firmware, power, and wireless communication considerations.',
+      'Evaluating design tradeoffs involving performance, reliability, power consumption, and usability.'
+    ]
+  },
+  {
+    role: 'Software Engineering Lead & VP, Themed Entertainment Association at UC San Diego',
+    dates: 'Jun. 2024 - Jun. 2026',
+    bullets: [
+      "Led software development including launching the association's website (JavaScript, CI/CD) and themed attraction production software (Python, C, C++), enabling reliable themed attraction operations.",
+      'Organized and represented UCSD in national engineering team competitions, coordinating interdisciplinary collaboration and ensuring effective teamwork.'
+    ]
+  }
+];
+
+export const formatExperienceText = entries => entries.map(({ role, dates, bullets }) =>
+  [role, dates, ...bullets.map(bullet => `- ${bullet}`)].join('\n')
+).join('\n\n');

@@ -1,12 +1,12 @@
-import { aboutWindow } from '../windows/aboutWindow';
 import { aboutSiteWindow } from '../windows/readmeWindow';
 import { experienceWindow } from '../windows/experienceWindow';
+import { leadershipWindow } from '../windows/leadershipWindow';
 import { terminalWindow } from '../windows/TerminalWindow';
 
 export const systemWindows = {
-  aboutWindow,
   aboutSiteWindow,
-  experienceWindow
+  experienceWindow,
+  leadershipWindow
 };
 
 export const getTerminalDesktopWindow = (projects) => terminalWindow(projects, {

@@ -15,6 +15,8 @@ For photos, compare the JSON filename with the exact file under `app/public/proj
 
 Inspect status, response content type and body. A 200 response containing SPA fallback HTML is not a successful image/PDF fetch. Vite's asset paths assume deployment at `/`; investigate base-path assumptions before changing filenames or adding rewrites. `app/public/_redirects` only affects hosts that recognize that file.
 
+Project paths resolve through `data/projectLinks.js` after successful loading. On Render Static Sites, clean paths need a dashboard rewrite from `/*` to `/index.html`; `_redirects` alone does not configure it. Root `/?project=<slug-or-id>` links avoid that path-rewrite dependency. Check deployed rewrites separately from Vite preview, and preserve stable `slug` values when editing project labels.
+
 ## Verify recovery and adjacent behavior
 
 - For fetch/loading fixes, check successful load, delayed load, failure with Retry and empty project data using temporary browser request overrides where available. Restore overrides afterward; do not corrupt committed data to simulate failure.

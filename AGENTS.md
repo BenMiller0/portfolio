@@ -1,6 +1,6 @@
 # Agent guide
 
-This repository is Benjamin Miller's React 19/Vite portfolio: draggable windows, SVG project icons, a simulated terminal, galleries, resume viewers and light/dark themes. Work in `app/`; root Markdown files document the project.
+This repository is Benjamin Miller's React 19/Vite portfolio: draggable/resizable windows, SVG project icons, a simulated terminal, galleries, resume viewers and light/dark themes. Work in `app/`; root Markdown files document the project.
 
 ## Start here
 
@@ -27,18 +27,21 @@ Keep these guides synchronized when their workflows change. README covers setup 
 ## Where changes belong
 
 - `app/src/App.jsx`: desktop composition, project loading/status, window state, stacking, fullscreen and theme. `data/projectLayout.js`: shared `MAIN_PROJECT_IDS` and grouping for the desktop and terminal.
-- `app/src/components/Window.jsx`: chrome, dragging, viewport clamping and focus. `constants/windowLayout.js`: placement estimates and breakpoint. `hooks/useMobileViewport.js`: reactive breakpoint subscription.
+- `app/src/components/Window.jsx`: chrome, dragging, resize handles, viewport clamping and focus. `hooks/useWindowResize.js`: frame-scheduled resize previews, bounds, pointer cleanup and keyboard sizing. `constants/windowLayout.js`: placement estimates and breakpoint. `hooks/useMobileViewport.js`: reactive breakpoint subscription.
 - `app/src/components/DesktopIcon.jsx`: documents, socials, terminal and More Projects. `ProjectIcon.jsx`: ID mapping. `FeaturedProjectIcons.jsx` and `SupportingProjectIcons.jsx`: project SVGs.
 - `app/src/assets/styles.css`: shared layout, windows, terminal, resumes and mobile rules. Separate files cover desktop icons, featured icons, supporting icons and project details. Inspect later overrides and computed styles before adding rules.
 - `app/src/data/windowRegistry.jsx`: static windows and link metadata. `app/src/windows/`: page content, gallery summaries/captions and terminal implementation.
+- `app/src/data/experience.js`: work and leadership entries shared by desktop documents and terminal files. `components/ExperienceList.jsx` renders both lists; `experienceWindow.jsx` and `leadershipWindow.jsx` register separate documents.
 - `app/src/windows/vimSession.js`: custom modal editor engine and command help. `components/VimEditor.jsx`, `components/vimHighlight.jsx` and `assets/vim-editor.css`: editor input/rendering. Keep native textarea, syntax layer and gutter metrics/scroll synchronized; preserve the classic black terminal appearance in both themes.
 - `app/public/projects.json`: project records. Photos are in `public/project_photos/`, PDFs in `public/resumes/`, and raster icons in `public/icons/`. Public URLs start at `/`.
+- `app/src/data/projectLinks.js`: initial project URL matching. Keep project `slug` values stable; direct links open normal desktop windows after loading, with root `?project=` links available without hosting rewrites.
 
 ## Preserve the interaction design
 
 - Project launchers retain dynamic idle motion and stronger hover/focus reactions. Detail icons retain idle motion but must not react to hovering the icon/header or focusing links.
 - More Projects is a static normal folder at rest with smooth opening/card reveal on hover or keyboard focus and smooth closing on exit. No exposed back-panel corners or doubled folder edges.
 - Documents have no looping idle animation. The terminal icon cursor does not blink. Keep GitHub's green status dot and LinkedIn's top highlight absent.
+- The document row contains README, Experience and Leadership. Biography and skills belong in README; keep the terminal's three document files aligned with those windows. Leadership order is Star Wars Club, Roblox + RBXDev, then TEA.
 - The bird shows both eyes and looks around. Vader has clearly switching LEDs referenced from the suit photo and audio waves on both sides. The wand glow stays attached to its tip. Every icon has explicit dark-mode styling.
 - Respect reduced motion. SVG gradient IDs must be unique per instance.
 - Project sections are **About**, **Technologies used**, then **Photo Gallery**. Preserve the restrained masthead/divider layout and original-image links without visible "View full size" overlays.
@@ -48,6 +51,7 @@ Keep these guides synchronized when their workflows change. README covers setup 
 
 - Preserve open, stack, drag, fullscreen/restore, Back, Close and Escape behavior. Mobile is **768px inclusive**; keep CSS and JS aligned. Keep desktop name/school branding centered; use spacing to avoid icon overlap. Only very short desktop viewports need a centered header above scrollable icons. Keep the theme toggle in the bottom-right corner and clear of the mobile dock.
 - Preserve visible keyboard focus, dialog labels, focus restoration and modal Tab containment. Respect child handlers that prevent Tab's default. Test terminal completion and Shift+Tab when changing focus behavior.
+- Resizing is desktop-only, with pointer-captured edge/corner handles and arrow-key sizing from the bottom-right grip. Preserve chosen sizes through fullscreen/restore and breakpoint changes, viewport clamping and pointer cleanup. Resizing must not replay the opening animation.
 - Vim owns Escape while active; Tab indents in Insert/Replace and Shift+Tab leaves it. Saves affect only the current Terminal's virtual filesystem, never portfolio source files or host files. Test save/discard, undo/redo, macros, buffers, syntax/cursor scrolling and mobile touch controls when changing the editor. Document supported commands honestly; this is a custom implementation, not full upstream Vim compatibility.
 - Add static modules and registry entries together with icon mappings. Add projects with unique IDs, valid optional fields and matching photo filenames. `MAIN_PROJECT_IDS` in `data/projectLayout.js` selects featured projects; array order does not. Keep the terminal root and More Projects directory aligned with those groups; document filenames and social/resume links come from the window registry.
 - The gallery ignores legacy `imageSize` values; use `project-details.css` for layout changes.

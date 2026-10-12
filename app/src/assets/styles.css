@@ -372,14 +372,14 @@ html, body {
 }
 
 /* Windows with red headers (resume windows) - larger when not fullscreen */
-.window:not(.fullscreen):has(.window-header-red) {
+.window:not(.fullscreen):not(.has-custom-size):has(.window-header-red) {
   width: min(900px, 90vw) !important;
   min-width: 0 !important;
   max-width: 90vw !important;
   max-height: 85vh !important;
 }
 
-.window:not(.fullscreen):has(.window-header-red) .window-content {
+.window:not(.fullscreen):not(.has-custom-size):has(.window-header-red) .window-content {
   max-width: 900px !important;
   max-height: 85vh !important;
 }
@@ -2122,6 +2122,77 @@ body.dark-mode .window {
     transform: translateY(0) scale(1);
   }
 }
+
+/* Desktop resizing uses local frame updates; only the finished size is saved. */
+@media (min-width: 769px) {
+  .window.has-custom-size:not(.fullscreen) {
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    min-width: 0;
+    container: resizable-window / inline-size;
+    animation: none;
+  }
+
+  .window.has-custom-size:not(.fullscreen) > .window-content {
+    min-width: 0;
+    max-width: none;
+    max-height: none;
+  }
+
+  .window.has-custom-size .window-content .terminal {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .window.is-resizing {
+    transition: none;
+  }
+
+  .window-resize-handle {
+    position: absolute;
+    z-index: 5;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .window .window-resize-n, .window .window-resize-s { left: 14px; right: 14px; height: 5px; cursor: ns-resize; }
+  .window .window-resize-e, .window .window-resize-w { top: 14px; bottom: 14px; width: 5px; cursor: ew-resize; }
+  .window-resize-n { top: 0; }
+  .window-resize-s { bottom: 0; }
+  .window-resize-e { right: 0; }
+  .window-resize-w { left: 0; }
+  .window-resize-ne, .window-resize-nw, .window-resize-se, .window-resize-sw { width: 14px; height: 14px; }
+  .window .window-resize-ne { top: 0; right: 0; cursor: nesw-resize; }
+  .window .window-resize-nw { top: 0; left: 0; cursor: nwse-resize; }
+  .window .window-resize-se { bottom: 0; right: 0; cursor: nwse-resize; }
+  .window .window-resize-sw { bottom: 0; left: 0; cursor: nesw-resize; }
+
+  .window-resize-se::after {
+    content: '';
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid #657f99;
+    border-bottom: 2px solid #657f99;
+    border-radius: 0 0 2px 0;
+    pointer-events: none;
+  }
+
+  body.dark-mode .window-resize-se::after { border-color: #a6b4c5; }
+  .window .window-resize-se:focus-visible { outline-offset: -3px; }
+}
+
+body.is-resizing-window, body.is-resizing-window * {
+  cursor: var(--window-resize-cursor) !important;
+  user-select: none !important;
+}
+
+body.is-resizing-window iframe { pointer-events: none; }
 
 @keyframes mobile-app-replace {
   from {

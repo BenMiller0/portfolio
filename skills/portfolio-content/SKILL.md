@@ -10,8 +10,9 @@ Start with [README's maintenance guide](../../README.md#maintain-content), [DESI
 ## Follow the content into every consumer
 
 - Project records live in `app/public/projects.json`. Use unique IDs and exact photo filenames. Add corresponding mappings in `app/src/components/ProjectIcon.jsx`; optional gallery captions and project summaries live in `windows/ProjectWindowContent.jsx`.
+- Project `slug` values define published direct links. Keep them stable, unique and lowercase hyphenated, without collisions with IDs or asset paths. Update README's link table when adding a project.
 - Featured placement is selected by `app/src/data/projectLayout.js`, not JSON order. Verify the desktop launchers and terminal root/More Projects directory agree after regrouping.
-- Static documents require a content module, a `systemWindows` registry entry and a `DesktopIcon.jsx` mapping. Resume/social URLs come from `data/windowRegistry.jsx`. Terminal About/README/Experience text has separate static copies; update relevant copies with content changes.
+- Static documents require a content module, a `systemWindows` registry entry and a `DesktopIcon.jsx` mapping. Resume/social URLs come from `data/windowRegistry.jsx`. README includes the biography, skills and portfolio description, with terminal text derived in `readmeWindow.jsx`; there is no separate About Me document. Work/leadership entries live in `data/experience.js`, shared by the two document windows and terminal files; preserve their intended ordering.
 - The on-site README is `app/src/windows/readmeWindow.jsx`; it does not render root `README.md`. Root docs and `skills/` are contributor guidance, not site content.
 
 ## Preserve illustration and gallery behavior

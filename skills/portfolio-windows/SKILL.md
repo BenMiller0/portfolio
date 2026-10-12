@@ -1,6 +1,6 @@
 ---
 name: portfolio-windows
-description: Change this portfolio's responsive desktop layout, window lifecycle, focus, dragging or More Projects handoffs.
+description: Change this portfolio's responsive desktop layout, window lifecycle, focus, dragging, resizing or More Projects handoffs.
 ---
 
 # Portfolio windows
@@ -11,9 +11,13 @@ Read [DESIGN's window lifecycle](../../DESIGN.md#window-lifecycle) and [browser 
 
 `App.jsx` owns open windows, z-order, fullscreen state and replacement relationships. `components/Window.jsx` owns chrome, drag bounds, focus and entry completion. Breakpoint logic lives in `constants/windowLayout.js` and `hooks/useMobileViewport.js`; CSS must agree that 768px is mobile. Inspect later overrides in `assets/styles.css` and browser computed styles before adding a rule.
 
+`hooks/useWindowResize.js` previews desktop edge/corner resizing locally via animation frames and commits bounds to App only at gesture completion. Preserve chosen dimensions across fullscreen and breakpoint changes, suppress opening-animation replay during/after resizing, and clean up pointer capture/cursors on cancellation, unmount and viewport changes. Keep handles absent on mobile/fullscreen. Check keyboard sizing from the bottom-right grip, narrow content/container queries, terminal/Vim height, PDF pointer interception and all eight directions.
+
 For More Projects on mobile, retain the outgoing window behind its replacement until entry completion. The outgoing window must be inert and hidden from assistive technology. Preserve the completion guard and fallback timer for disabled/interrupted animation. Test both folder-to-project and Back; a fix for only one direction is incomplete. Do not extend the mobile handoff animation to desktop unless asked.
 
 Opening an existing window should focus it. Closing must restore a connected launcher without stealing focus from an incoming child. Back preserves fullscreen state. Window Tab containment must respect child `defaultPrevented`, especially terminal completion and Vim insertion; Vim contains Escape while active.
+
+Direct project links resolve once after successful loading and open non-fullscreen desktop windows. Preserve the one-time guard, Retry recovery, launcher focus restoration and More Projects Back behavior. Check refresh and Close without reopening; mobile retains its viewport layout.
 
 ## Inspect adjacent states
 
